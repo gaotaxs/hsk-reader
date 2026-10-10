@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HSK 2/3 Local Chinese Reader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f7fc" />
+  <meta name="description" content="An elegant, private Chinese reading and handwriting practice tool for HSK 2 and HSK 3." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="HSK Reader" />
+  <title>HSK Reader · Read, Learn, Practice</title>
   <style>
     :root{
       --bg:#f7f4ef;--card:#fffaf3;--text:#1f2937;--muted:#6b7280;--line:#e5ded4;
@@ -206,14 +210,259 @@
       .side-label,.sidebar-collapsed .side-label{font-size:9px}
       .side-tab,.sidebar-collapsed .side-tab{min-height:56px!important;height:56px!important}
     }
+
+    /* v0.32 Studio Refresh — cohesive, high-contrast, mobile-first visual system */
+    :root{
+      color-scheme:light;
+      --bg:#f3f6fb;--card:#ffffff;--text:#192a41;--muted:#687b91;--line:#dfe7f0;
+      --accent:#245de5;--accent-strong:#174ac2;--accent2:#8258d6;--ok:#0d886f;--learn:#bd3c3c;--danger:#be3643;
+      --hsk2-bg:#eaf1ff;--hsk2-border:#5f92fb;--hsk3-bg:#f1ebfd;--hsk3-border:#a48ce5;
+      --shadow:0 8px 30px rgba(27,58,103,.055);--radius:20px;
+    }
+    [data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#101a2a;--card:#172539;--text:#eff5ff;--muted:#a1b3ca;--line:#30425b;
+      --accent:#74a2ff;--accent-strong:#4c82ef;--accent2:#c1a5ff;--ok:#57d8b4;--learn:#ffa19a;--danger:#ff8992;
+      --hsk2-bg:#223d64;--hsk2-border:#74a2ff;--hsk3-bg:#3a3054;--hsk3-border:#c1a5ff;
+      --shadow:0 14px 35px rgba(0,0,0,.17);
+    }
+    html{scroll-padding-top:96px;-webkit-text-size-adjust:100%}
+    body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;letter-spacing:-.008em;background:var(--bg);-webkit-tap-highlight-color:transparent}
+    body:not([data-no-decoration]){background-image:radial-gradient(ellipse 800px 560px at 100% -80px,rgba(75,133,249,.045),transparent 75%)}
+    button{min-height:40px;font-weight:600;letter-spacing:-.01em;border-radius:12px;transition:background .16s,border-color .16s,box-shadow .16s,transform .16s}
+    button:hover{transform:none;box-shadow:0 2px 8px rgba(40,67,105,.06)}
+    button:active{transform:scale(.985)}
+    .primary{background:#245de5;border-color:#245de5;color:#fff;box-shadow:0 3px 8px rgba(36,93,229,.12)}
+    .primary:hover{background:#174ac2;border-color:#174ac2;box-shadow:0 5px 14px rgba(36,93,229,.16)}
+    [data-theme="dark"] .primary{background:#366dce;border-color:#507deb;color:#fff}
+    .good,.learn{font-weight:650}
+    .card{padding:20px;border-radius:20px;box-shadow:var(--shadow);border-color:var(--line)}
+    .card h2{font-size:19px;font-weight:750;letter-spacing:-.025em}
+    header{border-color:var(--line);background:color-mix(in srgb,var(--card) 90%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+    header .wrap{padding:13px 28px}
+    .topbar{min-height:53px}
+    .header-identity{min-width:0;display:grid;gap:4px}
+    .header-kicker,.card-eyebrow,.nav-caption{font-weight:760;font-size:10px;letter-spacing:.125em;color:var(--muted)}
+    .header-kicker span:first-child{color:var(--line);padding:0 4px}
+    .header-title-row{display:flex;gap:11px;align-items:center;min-width:0}
+    header h1{font-size:24px;line-height:1.15;font-weight:800;letter-spacing:-.04em}
+    .version-badge{font-weight:700;font-size:10px;color:var(--accent);border-color:color-mix(in srgb,var(--accent) 14%,var(--line));background:color-mix(in srgb,var(--hsk2-bg) 75%,var(--card));padding:4px 8px}
+    .header-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
+    .header-progress-wrap{display:flex;align-items:center;gap:9px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--card);color:var(--muted);font-size:12px}
+    .progress-orbit{--completion:0%;display:block;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:conic-gradient(var(--accent) var(--completion),var(--line) 0);position:relative}
+    .progress-orbit::before{content:"";position:absolute;inset:5px;background:var(--card);border-radius:50%}
+    #darkToggle{min-width:42px;width:42px;height:42px;padding:0;display:grid;place-items:center;background:var(--card);font-size:19px;border-radius:13px}
+    .sidebar{background:var(--card);box-shadow:none;border-color:var(--line);padding:18px 12px;gap:0}
+    .sidebar-top{height:56px;gap:4px;margin-bottom:28px;justify-content:space-between}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-glyph{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#386eed,#2456c8);color:white;font-family:"PingFang SC","Noto Sans CJK SC",serif;font-size:25px;box-shadow:0 4px 12px rgba(33,87,204,.18)}
+    .sidebar-title{font-size:16px;font-weight:820;letter-spacing:-.035em;padding:0;line-height:1.1;max-width:135px}
+    .sidebar-title small{display:block;color:var(--muted);font-weight:750;font-size:9px;letter-spacing:.045em;padding-top:5px}
+    .sidebar-toggle{background:transparent;min-width:36px;width:36px;height:38px;color:var(--muted);border-color:transparent}
+    .nav-caption{margin:0 10px 9px}
+    .sidebar-nav{gap:5px}
+    .side-tab{min-height:49px;height:49px;border-radius:13px;font-size:14px;font-weight:650;color:var(--muted);transition:background .17s,border-color .17s,color .17s}
+    .side-tab:hover{background:var(--bg);color:var(--text)}
+    .side-tab.active{background:color-mix(in srgb,var(--accent) 11%,var(--card));color:var(--accent);border-color:transparent;box-shadow:inset 3px 0 0 var(--accent)}
+    .sidebar-footnote{position:absolute;bottom:24px;left:22px;right:12px;font-size:11px;color:var(--muted);line-height:1.6}
+    .sidebar-footnote span:not(.privacy-dot){opacity:.8}.privacy-dot{display:inline-block;width:7px;height:7px;background:#16a085;border-radius:50%;margin-right:6px}
+    .sidebar-collapsed .sidebar-brand,.sidebar-collapsed .nav-caption,.sidebar-collapsed .sidebar-footnote{display:none}
+    .sidebar-collapsed .sidebar-top{justify-content:center}
+    .sidebar-collapsed .sidebar-toggle{border-color:var(--line);background:var(--bg)}
+    .sidebar-collapsed .sidebar{padding:18px 12px}
+    .sidebar-collapsed .sidebar-nav{margin-top:9px}
+    .sidebar-collapsed .side-tab.active{box-shadow:none}
+    .app-main{padding:22px 28px 40px}
+    .grid{gap:16px}.grid.reader{gap:18px;grid-template-columns:minmax(315px,365px) minmax(0,1fr)}
+    .left-stack{gap:16px}
+    .reader-editor-card{scroll-margin-top:90px}
+    .editor-card-heading{margin-bottom:14px}
+    .card-eyebrow{color:var(--accent);font-size:10px;margin-bottom:5px}
+    .editor-card-heading strong,.reader-output-head strong,.reader-controls-card strong{font-size:16px;font-weight:780;letter-spacing:-.026em}
+    #finishEditingBtn,#editPassageBtn{display:none}
+    textarea{background:var(--bg);border-radius:14px;min-height:186px}
+    #inputText{font-size:17px;line-height:1.85;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;resize:vertical}
+    .reader-actions button{height:42px;min-height:42px;font-weight:700;font-size:13px}
+    .reader-mini-actions{gap:7px}.reader-mini-actions button{border-radius:10px}
+    #draftNotice{font-size:11px}
+    .reader-controls-card .control-grid{gap:8px;margin-top:16px}
+    .toggle{border-color:var(--line);background:var(--bg);cursor:pointer;min-height:43px;font-weight:590;font-size:13px}
+    .toggle:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--card))}
+    input[type="checkbox"]{accent-color:#245de5}
+    .reader-output-card{min-height:610px;scroll-margin-top:95px;display:flex;flex-direction:column}
+    .reader-output-head{display:flex;align-items:start;justify-content:space-between;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+    .reader-quick-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+    .reader-quick-actions button{min-height:36px;padding:7px 11px;font-size:12px}
+    .reader-match-stats{font-size:12px;margin-top:7px}
+    .reader-instruction{font-size:12px;color:var(--muted);line-height:1.45;margin-top:14px}
+    .reader-view{flex:1;font-size:28px;line-height:1.95;padding:8px 3px 3px;margin-top:8px;min-height:320px;overflow-wrap:anywhere}
+    .tok{line-height:1.17;border-bottom-width:2px;border-radius:7px;padding:2px 4px 3px;margin:2px 2px 4px;transition:background .18s ease}
+    .tok.word-known{background:color-mix(in srgb,var(--ok) 8%,var(--card));border-color:color-mix(in srgb,var(--ok) 70%,var(--line))}
+    .tok.word-learning{background:color-mix(in srgb,var(--learn) 10%,var(--card));border-color:color-mix(in srgb,var(--learn) 65%,var(--line))}
+    .tok:active{background:color-mix(in srgb,var(--accent) 22%,var(--card))}
+    .scroll tbody tr:hover td{background:color-mix(in srgb,var(--accent) 3%,transparent)}
+    .vocab-browser-card,.flash-top-card,.quiz-top-card{padding:20px}
+    .vocab-toolbar-grid,.flash-toolbar,.quiz-toolbar{gap:14px}
+    .vocab-browser-title strong{font-size:19px}
+    .flashcard{background:radial-gradient(ellipse at 50% 8%,color-mix(in srgb,var(--hsk2-bg) 75%,var(--card)),var(--card) 70%);border-color:var(--line);min-height:340px;position:relative}
+    .flash-front{font-size:74px;letter-spacing:.04em;font-weight:650}
+    .flash-tap-hint{bottom:17px;font-size:12px}
+    .flash-deck-progress{height:5px;border-radius:999px;overflow:hidden;background:var(--bg);margin:16px 0 0}
+    .flash-deck-progress>span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+    .flash-nav-arrow{width:44px;height:44px;box-shadow:0 3px 15px rgba(0,0,0,.065)}
+    .quiz-main-card{padding:24px 24px 18px}
+    #quizOptions{counter-reset:answers}
+    #quizOptions .quiz-option{counter-increment:answers;gap:12px;min-height:58px;border-radius:14px}
+    #quizOptions .quiz-option::before{content:counter(answers);display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:12px;color:var(--muted);font-weight:750}
+    .progress-stat{background:color-mix(in srgb,var(--accent) 3%,var(--card));padding:18px 12px}
+    .progress-stat strong{font-size:25px;letter-spacing:-.04em}
+    .danger-zone{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+    .danger-zone strong{font-size:14px}.danger-zone p{margin:4px 0 0;line-height:1.4}
+    .device-probe-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px 0}
+    .device-probe-results>div{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);display:grid;gap:6px;overflow-wrap:anywhere}
+    .device-probe-results span{font-size:12px;color:var(--muted)}.device-probe-results strong{font-size:14px}
+    .device-probe-results .probe-input{grid-column:1 / -1}
+    dialog{box-shadow:0 24px 90px rgba(5,22,52,.25);border-radius:22px}
+    .modal-body{border-radius:22px}
+    .word-top{gap:16px}.word-char{font-size:59px}
+    .word-english{font-size:19px;font-weight:650}
+    .word-actions{max-width:none}.word-actions button{min-height:43px}
+    .stroke-panel{background:var(--bg);border-radius:16px}
+    .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,240px)!important;gap:12px}
+    .stroke-panel.trace-mode .stroke-box{width:240px!important}
+    .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:240px!important;height:240px!important}
+    .stroke-panel.trace-mode .stroke-char{background-color:var(--card);background-image:linear-gradient(90deg,transparent calc(50% - .5px),color-mix(in srgb,var(--accent) 18%,transparent) 50%,transparent calc(50% + .5px)),linear-gradient(0deg,transparent calc(50% - .5px),color-mix(in srgb,var(--accent) 18%,transparent) 50%,transparent calc(50% + .5px));border-color:color-mix(in srgb,var(--accent) 32%,var(--line));border-radius:13px}
+    .stroke-controls button{min-height:43px}
+    [data-theme="dark"] .stroke-panel.trace-mode .stroke-char{background-color:#1d2d43}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:2px solid color-mix(in srgb,var(--accent) 20%,transparent);outline-offset:1px}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media (max-width:1170px) and (min-width:901px){
+      .grid.reader{grid-template-columns:minmax(270px,320px) minmax(0,1fr)}
+      .reader-quick-actions button{padding:7px 9px}
+    }
+    @media (max-width:980px) and (min-width:721px){
+      .sidebar{padding:18px 10px}.sidebar-brand,.nav-caption,.sidebar-footnote{display:none}
+      .sidebar-top{justify-content:center}.sidebar-toggle{border-color:var(--line);background:var(--bg)}
+      header .wrap{margin-left:72px}
+    }
+    @media (max-width:900px){
+      .grid.reader{grid-template-columns:minmax(0,1fr)!important;display:flex;flex-direction:column;gap:16px}
+      .reader-output-card{order:-1;min-height:390px}
+      .left-stack{order:0}
+      #editPassageBtn,#finishEditingBtn{display:inline-flex;align-items:center;justify-content:center}
+      body:not(.editor-open) .reader-editor-card{display:none}
+      .reader-editor-card{scroll-margin-top:88px}
+      .reader-instruction{margin-top:11px}
+      .reader-view{min-height:260px}
+      .reader-output-head{align-items:start}
+    }
+    @media (max-width:720px){
+      html{scroll-padding-top:84px}
+      header .wrap,.sidebar-collapsed header .wrap{padding:9px 16px!important;margin-left:0!important}
+      .topbar{align-items:center;min-height:45px}
+      .header-kicker{font-size:9px;line-height:1.3;letter-spacing:.095em}
+      .header-title-row{gap:8px}
+      header h1{font-size:22px;line-height:1.12;letter-spacing:-.04em;max-width:none}
+      .version-badge{padding:3px 7px;font-size:9px}
+      .header-actions{gap:8px}
+      .header-progress-wrap{display:none}
+      #darkToggle{min-width:38px;width:38px;height:38px;border-radius:11px;font-size:17px}
+      .sidebar,.sidebar-collapsed .sidebar{padding:6px 9px calc(6px + env(safe-area-inset-bottom,0px))!important;height:calc(66px + env(safe-area-inset-bottom,0px))!important;background:color-mix(in srgb,var(--card) 97%,transparent)!important;box-shadow:0 -8px 25px rgba(20,37,66,.065)!important}
+      .sidebar-top,.nav-caption,.sidebar-footnote{display:none!important}
+      .sidebar-nav{gap:2px!important}
+      .side-tab,.sidebar-collapsed .side-tab{height:54px!important;min-height:54px!important;gap:3px!important;padding:5px 1px!important;border-radius:12px!important;flex-direction:column!important}
+      .side-tab.active{background:color-mix(in srgb,var(--accent) 10%,var(--card));color:var(--accent);box-shadow:none}
+      .side-icon,.sidebar-collapsed .side-icon{width:21px!important;height:21px!important;flex-basis:21px!important}
+      .side-icon svg{width:21px!important;height:21px!important}
+      .side-label,.sidebar-collapsed .side-label{font-size:10px!important;font-weight:700!important;line-height:1.12!important}
+      .app-main,.sidebar-collapsed .app-main{padding:13px 12px calc(90px + env(safe-area-inset-bottom,0px))!important;max-width:100vw!important;margin-left:0!important}
+      .card{padding:16px;border-radius:18px}
+      .reader-output-card{min-height:calc(62dvh - 30px);padding:17px}
+      .reader-output-head{flex-wrap:wrap;gap:10px;padding-bottom:11px}
+      .reader-output-head>div:first-child{flex:1 1 100%}
+      .reader-quick-actions{width:100%;justify-content:flex-start;gap:7px}
+      .reader-quick-actions button{flex:1;min-height:41px;padding:7px 8px;font-size:12px;white-space:nowrap}
+      .reader-instruction{font-size:11px}
+      .reader-view{font-size:26px;line-height:1.93;min-height:200px;padding-top:6px}
+      .reader-match-stats{margin-top:5px;font-size:11px}
+      .reader-editor-card{min-height:0}
+      #inputText{font-size:18px;min-height:180px}
+      .reader-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+      .reader-actions button{min-height:45px!important;height:45px!important;font-size:14px!important}
+      .reader-controls-card .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+      .reader-controls-card .toggle{font-size:13px;min-height:44px;gap:6px;padding:8px 9px}
+      .reader-controls-card{padding:17px}
+      .flashcard{min-height:300px;padding:15px 35px}
+      .flash-front{font-size:58px}
+      .flash-nav-arrow.left{left:3px}.flash-nav-arrow.right{right:3px}
+      .quiz-main-card{padding:16px}
+      #quizOptions .quiz-option{min-height:51px}
+      .scroll tbody tr{background:var(--card)}
+      .word-actions{gap:8px}
+      dialog{width:min(560px,calc(100vw - 22px))!important;max-width:calc(100vw - 22px)!important}
+      .dialog-arrow{position:fixed;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:none!important;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.15);width:45px;height:43px}
+      .dialog-arrow.left{left:14px}.dialog-arrow.right{right:14px}
+      .modal-body{max-height:calc(100dvh - 25px);padding:16px 13px calc(54px + env(safe-area-inset-bottom,0px))}
+      .modal-close{width:38px;height:38px;top:8px;right:8px}
+      .word-top{margin-right:30px;gap:10px}
+      .word-char{font-size:48px}
+      .word-english{font-size:16px}
+      .stroke-panel{padding:10px}
+      .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,208px)!important;gap:10px}
+      .stroke-panel.trace-mode .stroke-box{width:208px!important}
+      .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:208px!important;height:208px!important}
+      .stroke-panel.trace-mode .stroke-grid.single-trace{display:flex!important;flex-direction:column;align-items:center;justify-content:center}
+      .stroke-device-tip{font-size:11px}
+      .stroke-controls{gap:7px}.stroke-controls button{min-height:42px;padding:9px}
+    }
+    @media (max-width:375px){
+      .app-main,.sidebar-collapsed .app-main{padding-left:9px!important;padding-right:9px!important}
+      header .wrap,.sidebar-collapsed header .wrap{padding-left:10px!important;padding-right:10px!important}
+      .sidebar,.sidebar-collapsed .sidebar{padding-left:4px!important;padding-right:4px!important}
+      .side-label,.sidebar-collapsed .side-label{font-size:9px!important}
+      .reader-quick-actions button{font-size:11px;min-height:40px}
+      .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,188px)!important}
+      .stroke-panel.trace-mode .stroke-box{width:188px!important}
+      .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:188px!important;height:188px!important}
+      .flash-front{font-size:49px}
+    }
+    /* Compact, distraction-free handwriting on small iPhones. */
+    @media (max-width:520px){
+      #wordDialog.trace-active .word-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-right:32px;margin-bottom:2px}
+      #wordDialog.trace-active .word-char{font-size:33px}
+      #wordDialog.trace-active .word-pin{font-size:11px}
+      #wordDialog.trace-active .word-hero{flex-wrap:nowrap;gap:5px}
+      #wordDialog.trace-active .word-info-side{gap:1px;text-align:right;justify-items:end}
+      #wordDialog.trace-active .word-english{font-size:13px;line-height:1.25}
+      #wordDialog.trace-active .word-level{font-size:11px}
+      #wordDialog.trace-active .status-chip{display:none}
+      #wordDialog.trace-active .word-actions{display:none}
+      #wordDialog.trace-active .stroke-panel{margin-top:8px}
+      #wordDialog.trace-active .stroke-head{margin-bottom:8px}
+      #wordDialog.trace-active .stroke-controls{margin-top:8px;gap:6px}
+      #wordDialog.trace-active .stroke-controls button{min-height:37px;font-size:12px;padding:6px 9px}
+      #wordDialog.trace-active .stroke-device-tip{margin-top:5px}
+      #wordDialog.trace-active .modal-body{padding-bottom:15px}
+      #wordDialog.trace-active .dialog-arrow{display:none!important}
+      #exitTraceBtn{background:var(--card);border-color:var(--accent);color:var(--accent)}
+    }
+    @media (hover:none){button:hover{box-shadow:none} .tok:hover{transform:none}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
       <div class="topbar">
-        <div class="brand"><h1>HSK 2/3 Local Chinese Reader</h1><span class="version-badge">V0.31 Quality of Life</span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
-        <button id="darkToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+        <div class="header-identity">
+          <div class="header-kicker">HSK READER <span aria-hidden="true">/</span> <span id="pageKicker">YOUR READING DESK</span></div>
+          <div class="header-title-row"><h1 id="pageTitle">Reader</h1><span class="version-badge">v0.32</span></div>
+        </div>
+        <div class="header-actions">
+          <div class="header-progress-wrap" title="Known vocabulary out of 600 unique words"><span class="progress-orbit" id="headerProgressOrbit" aria-hidden="true"></span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
+          <button id="darkToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+        </div>
       </div>
     </div>
   </header>
@@ -221,9 +470,10 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
-        <span class="sidebar-title">HSK Reader</span>
+        <div class="sidebar-brand"><span class="brand-glyph" aria-hidden="true">文</span><span class="sidebar-title">HSK Reader<small>READ · LEARN · RETAIN</small></span></div>
         <button id="sidebarToggle" class="sidebar-toggle" title="Expand or collapse sidebar" aria-label="Expand or collapse sidebar">☰</button>
       </div>
+      <div class="nav-caption" aria-hidden="true">WORKSPACE</div>
       <nav class="sidebar-nav" id="tabs">
         <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 6.5c0-1.1.9-2 2-2H19.5v14H6.5c-1.1 0-2-.9-2-2z"></path><path d="M8 4.5v14"></path><path d="M8 6.5h8"></path></svg></span><span class="side-label">Reader</span></button>
         <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6.5h14"></path><path d="M5 12h14"></path><path d="M5 17.5h14"></path><path d="M5 4.5v15"></path></svg></span><span class="side-label">Vocab</span></button>
@@ -232,14 +482,17 @@
         <button class="side-tab" data-tab="quiz" title="Quiz"><span class="side-icon text" aria-hidden="true">?</span><span class="side-label">Quiz</span></button>
         <button class="side-tab" data-tab="settings" title="Settings"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7z"></path><path d="M19 12a7.7 7.7 0 0 0-.1-1.2l2-1.5l-2-3.4l-2.4 1a7.8 7.8 0 0 0-2.1-1.2L14 3h-4l-.4 2.7a7.8 7.8 0 0 0-2.1 1.2l-2.4-1l-2 3.4l2 1.5A7.7 7.7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5l2 3.4l2.4-1a7.8 7.8 0 0 0 2.1 1.2L10 21h4l.4-2.7a7.8 7.8 0 0 0 2.1-1.2l2.4 1l2-3.4l-2-1.5c.1-.4.1-.8.1-1.2z"></path></svg></span><span class="side-label">Settings</span></button>
       </nav>
+      <div class="sidebar-footnote"><span class="privacy-dot" aria-hidden="true"></span> Local-first study space<br><span>Your progress stays in this browser</span></div>
     </aside>
 
     <main class="app-main">
     <section id="reader" class="panel active">
       <div class="grid reader">
         <div class="left-stack">
-          <div class="card">
-            <label for="inputText">Paste Chinese text</label>
+          <div class="card reader-editor-card" id="readerEditorCard">
+            <div class="row between editor-card-heading"><div><div class="card-eyebrow">YOUR SOURCE</div><strong>Passage editor</strong></div><button type="button" id="finishEditingBtn">Done editing</button></div>
+            <div class="reader-editor-content">
+            <label for="inputText" class="sr-only">Paste Chinese text</label>
             <div class="input-wrap">
               <textarea id="inputText" placeholder="Paste Chinese text here...">今天我去学校上课。老师让我们读一个新句子。下课以后，我和同学一起去饭馆吃米饭和鸡蛋。</textarea>
               <button id="clearTextBtn" class="clear-x" title="Clear input" aria-label="Clear input">✕</button>
@@ -253,11 +506,12 @@
             <div class="reader-mini-actions">
               <button id="sampleTextBtn" type="button">Example text</button>
               <button id="undoClearBtn" type="button" hidden>Undo clear</button>
-              <span id="draftNotice" class="small" aria-live="polite">Text stays in this browser</span>
+              <span id="draftNotice" class="small" aria-live="polite">Saved in this browser</span>
+            </div>
             </div>
           </div>
           <div class="card reader-controls-card">
-            <div class="row between"><strong>Reader controls</strong></div>
+            <div class="row between"><div><div class="card-eyebrow">CUSTOMIZE</div><strong>Reading preferences</strong></div></div>
             <div class="control-grid">
               <label class="toggle"><input type="checkbox" id="filter2" checked> HSK 2</label>
               <label class="toggle"><input type="checkbox" id="filter3" checked> HSK 3</label>
@@ -272,8 +526,12 @@
             <p class="small reader-help">Tap a highlighted word for its meaning, status, pronunciation and writing practice.</p>
           </div>
         </div>
-        <div class="card">
-          <div class="row between"><strong>Reader view</strong><span id="matchStats" class="small"></span></div>
+        <div class="card reader-output-card" id="readerOutputCard">
+          <div class="reader-output-head">
+            <div><div class="card-eyebrow">IMMERSIVE READER</div><strong>Reading passage</strong><div id="matchStats" class="small reader-match-stats"></div></div>
+            <div class="reader-quick-actions"><button type="button" id="editPassageBtn" class="primary" aria-expanded="false" aria-controls="readerEditorCard">✎ Edit</button><button type="button" id="readerQuickSpeakBtn" title="Read aloud">▶ Listen</button><button type="button" id="readerQuickTranslateBtn" title="Translate the passage">Translate</button></div>
+          </div>
+          <div class="reader-instruction">Tap a highlighted word to hear it, learn its meaning, or practice writing.</div>
           <div id="readerView" class="reader-view" role="region" aria-label="Chinese reading text"></div>
           <div id="translationBox" class="translation-box" hidden>
             <div class="row between"><strong>Translation</strong><span id="translationModeLabel" class="small"></span></div>
@@ -350,6 +608,7 @@
           <div class="flashcard" id="flashcardBox" tabindex="0" role="button" aria-label="Flashcard, tap to reveal or hide both pinyin and English"><div><div class="flash-front" id="flashFront">词</div><div class="flash-back" id="flashBack" hidden></div><span class="flash-tap-hint small">Tap card to flip</span></div></div>
           <button id="flashNextArrowBtn" class="flash-nav-arrow right" title="Next flashcard" aria-label="Next flashcard"><span class="flash-nav-glyph">›</span></button>
         </div>
+        <div class="flash-deck-progress" aria-hidden="true"><span id="flashDeckProgressFill"></span></div>
         <div class="flash-meta-row">
           <p class="small flash-progress" id="flashProgress"></p>
           <div class="flash-control-row">
@@ -365,7 +624,7 @@
           <div class="stroke-panel">
             <div class="stroke-head row between"><strong>Stroke order</strong><span id="flashStrokeStatus" class="small"></span></div>
             <div id="flashStrokePanel" class="stroke-grid"></div>
-            <div class="stroke-controls"><button id="flashReplayBtn">Replay animation</button><button id="flashTraceBtn">Trace practice</button><button id="flashRetryTraceBtn" hidden>Try again</button><button id="flashGuideBtn" hidden>Hide guide</button></div>
+            <div class="stroke-controls"><button id="flashReplayBtn">Replay animation</button><button id="flashTraceBtn">Trace practice</button><button id="flashRetryTraceBtn" hidden>Try again</button><button id="flashGuideBtn" hidden>Hide guide</button><button id="flashExitTraceBtn" type="button" hidden>Done tracing</button></div>
             <p class="stroke-device-tip small">Trace directly on a character using a finger or Apple Pencil. Drawing works inside the pad; scroll outside it.</p>
           </div>
         </div>
@@ -412,9 +671,17 @@
         <div class="card">
           <h2>Progress backup</h2>
           <p class="small">Known/learning status, lesson metadata, and settings are saved in this browser's localStorage.</p>
-          <div class="row"><button id="exportBtn">Copy to box</button><button id="downloadBackupBtn" class="primary">Download backup</button><button id="importBtn">Import from box</button><button id="uploadBackupBtn">Choose backup file</button><button class="danger destructive" id="resetBtn">Reset progress</button></div>
+          <div class="row"><button id="exportBtn">Copy to box</button><button id="downloadBackupBtn" class="primary">Download backup</button><button id="importBtn">Import from box</button><button id="uploadBackupBtn">Choose backup file</button></div>
           <input id="backupFileInput" type="file" accept="application/json,.json" hidden>
           <label style="margin-top:10px">Import/export box</label><textarea id="jsonBox" style="min-height:170px"></textarea>
+          <div class="danger-zone"><div><strong>Start fresh</strong><p class="small">Permanently clear study history and saved text on this device.</p></div><button class="danger destructive" id="resetBtn">Reset progress</button></div>
+        </div>
+        <div class="card settings-device-card">
+          <h2>Device &amp; stylus check</h2>
+          <p class="small">Open this page in Safari on your iPhone or iPad, then use <strong>Trace practice</strong> with your finger or Apple Pencil. The last input type seen by this page appears below.</p>
+          <div id="deviceProbeResults" class="device-probe-results" aria-live="polite">Checking browser capabilities…</div>
+          <button type="button" id="checkDeviceBtn">Run browser check</button>
+          <p class="small">A detected pen or touch event confirms input reaches this page, not that all strokes are correctly graded or palm rejection works.</p>
         </div>
         <div class="card settings-help-card">
           <h2>Your progress</h2>
@@ -599,7 +866,7 @@
       const v = s.v;
       const navIdx = currentReaderAllWords.findIndex((w, i) => i > lastNavIdx && w === v.word);
       if (navIdx >= 0) lastNavIdx = navIdx;
-      return `<span class="tok hsk${v.level}" data-word="${escapeHtml(v.word)}" data-token-index="${navIdx}" role="button" tabindex="0" aria-label="${escapeHtml(v.word)}: ${escapeHtml(v.english)}"><span class="zh">${escapeHtml(v.word)}</span>${settings.showPinyin?`<span class="pin">${escapeHtml(v.pinyin)}</span>`:''}${settings.showEnglish?`<span class="eng">${escapeHtml(v.english)}</span>`:''}</span>`;
+      return `<span class="tok hsk${v.level} word-${statusOf(v.word)}" data-word="${escapeHtml(v.word)}" data-token-index="${navIdx}" role="button" tabindex="0" aria-label="${escapeHtml(v.word)}: ${escapeHtml(v.english)}"><span class="zh">${escapeHtml(v.word)}</span>${settings.showPinyin?`<span class="pin">${escapeHtml(v.pinyin)}</span>`:''}${settings.showEnglish?`<span class="eng">${escapeHtml(v.english)}</span>`:''}</span>`;
     }).join('');
     $('readerView').innerHTML = html || '<span class="small">Paste text and click Read.</span>';
     const distinct=uniq(segs.filter(x=>x.type==='word').map(x=>x.v.word));
@@ -722,7 +989,7 @@
       <div class="stroke-panel">
         <div class="stroke-head row between"><strong>Stroke order</strong><span id="strokeStatus" class="small"></span></div>
         <div id="strokePanel" class="stroke-grid"><span class="small">Loading...</span></div>
-        <div class="stroke-controls row"><button id="animateStrokeBtn">Replay animation</button><button id="traceStrokeBtn">Trace practice</button><button id="retryTraceBtn" hidden>Try again</button><button id="traceGuideBtn" hidden>Hide guide</button></div>
+        <div class="stroke-controls row"><button id="animateStrokeBtn">Replay animation</button><button id="traceStrokeBtn">Trace practice</button><button id="retryTraceBtn" hidden>Try again</button><button id="traceGuideBtn" hidden>Hide guide</button><button id="exitTraceBtn" type="button" hidden>Done tracing</button></div>
         <p class="stroke-device-tip small">Write inside a pad with your finger or Apple Pencil. Scroll outside the pad.</p>
       </div>`;
   }
@@ -731,6 +998,7 @@
     $('traceStrokeBtn').onclick = traceStrokes;
     $('retryTraceBtn').onclick = traceStrokes;
     $('traceGuideBtn').onclick = () => toggleTraceGuide('popup');
+    $('exitTraceBtn').onclick=()=>{currentStrokeTraceMode=false;animateStrokes();};
   }
   function clearWordMotionClasses(body){
     body.classList.remove('word-changing','word-exit-next','word-enter-next','word-exit-prev','word-enter-prev');
@@ -780,6 +1048,7 @@
     dialog.classList.remove('showing');
     if(dialog.open) dialog.close();
     currentDialogWord=null;
+    dialog.classList.remove('trace-active');
   }
 
   let hanziWriterPromise = null;
@@ -811,7 +1080,7 @@
   }
   let popupStrokeGeneration=0, flashStrokeGeneration=0;
   let currentStrokeGuide=true, flashStrokeGuide=true;
-  function getTracePadSize(){return window.matchMedia('(max-width: 520px)').matches ? 188 : 220;}
+  function getTracePadSize(){return window.matchMedia('(max-width: 375px)').matches ? 188 : window.matchMedia('(max-width: 520px)').matches ? 208 : 240;}
   function syncTraceButtons(area, traceMode, guideVisible){
     const popup = area==='popup';
     const btn=popup?$('traceStrokeBtn'):$('flashTraceBtn');
@@ -820,6 +1089,7 @@
     if(btn) btn.classList.toggle('is-set', traceMode);
     if(retry) retry.hidden=!traceMode;
     if(guide){guide.hidden=!traceMode;guide.textContent=guideVisible?'Hide guide':'Show guide';}
+    const done=popup?$('exitTraceBtn'):$('flashExitTraceBtn');if(done)done.hidden=!traceMode;
   }
   function toggleTraceGuide(area){
     const popup=area==='popup';
@@ -892,6 +1162,7 @@
     if(!panel||!status||!currentDialogWord)return;
     const wrap=panel.closest('.stroke-panel');
     const traceMode=opts.traceMode??currentStrokeTraceMode;
+    $('wordDialog').classList.toggle('trace-active',traceMode);
     const startQuiz=!!opts.startQuiz;
     const generation=++popupStrokeGeneration;
     const valid=()=>generation===popupStrokeGeneration && currentDialogWord===word && $('wordDialog').open && $('strokePanel')===panel;
@@ -1216,13 +1487,14 @@
     const v=currentCard();
     $('flashTogglePinyinBtn')?.classList.toggle('active', flashRevealPinyin);
     $('flashToggleEnglishBtn')?.classList.toggle('active', flashRevealEnglish);
-    if(!v){ $('flashFront').textContent='No matching words'; $('flashFront').classList.add('flash-card-empty'); $('flashBack').hidden=true; $('flashBack').textContent=''; $('flashProgress').textContent='Choose another deck, change filters, or mark some words Learning.'; if (!flashStrokeOpen) {$('flashStrokePanel').innerHTML=''; $('flashStrokeStatus').textContent='';} return; }
+    if(!v){ $('flashDeckProgressFill').style.width='0%'; $('flashFront').textContent='No matching words'; $('flashFront').classList.add('flash-card-empty'); $('flashBack').hidden=true; $('flashBack').textContent=''; $('flashProgress').textContent='Choose another deck, change filters, or mark some words Learning.'; if (!flashStrokeOpen) {$('flashStrokePanel').innerHTML=''; $('flashStrokeStatus').textContent='';} return; }
     $('flashFront').classList.remove('flash-card-empty');
     $('flashFront').textContent=v.word;
     const backText = flashBackText(v);
     $('flashBack').textContent = backText;
     $('flashBack').hidden = !backText;
     $('flashProgress').textContent = `${deckIndex+1} / ${deck.length} · HSK ${v.level} · ${statusOf(v.word)}${deckLabel?' · '+deckLabel:''}`;
+    $('flashDeckProgressFill').style.width=`${(deckIndex+1)/deck.length*100}%`;
     if (flashStrokeOpen && flashStrokeRenderedWord !== v.word) renderFlashStroke({traceMode:flashStrokeTraceMode, startQuiz:flashStrokeTraceMode, force:true});
   }
   function nextFlash(){ if(!deck.length) return; deckIndex=(deckIndex+1)%deck.length; flashRevealPinyin=false; flashRevealEnglish=false; flashStrokeTraceMode=false; flashStrokeRenderedWord=''; renderFlash(); }
@@ -1346,18 +1618,22 @@
     const learning=VOCAB.filter(v=>statusOf(v.word)==='learning').length;
     const fresh=VOCAB.length-known-learning;
     $('headerProgress').textContent=`${known} known · ${learning} learning`;
+    const orbit=$('headerProgressOrbit');if(orbit){orbit.style.setProperty('--completion',`${Math.min(100,known/VOCAB.length*100).toFixed(2)}%`);orbit.setAttribute('aria-label',`${known} of ${VOCAB.length} vocabulary words known`);}
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
   const APP_TAB_NAMES=['reader','vocab','lessons','flashcards','quiz','settings'];
+  const APP_TAB_DETAILS={reader:['Reader','YOUR READING DESK'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
     document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
     document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===name));
+    $('pageTitle').textContent=APP_TAB_DETAILS[name][0];$('pageKicker').textContent=APP_TAB_DETAILS[name][1];
+    document.title=`${APP_TAB_DETAILS[name][0]} · HSK Reader`;
     writeJSON(STORE.lastTab,name);
     window.scrollTo({top:0,behavior:'instant'});
   }
-  function getBackup(){return {version:'V0.31 Quality of Life',exportedAt:new Date().toISOString(),settings,statuses,lessons,readerText:$('inputText').value};}
+  function getBackup(){return {version:'V0.32 Studio Refresh',exportedAt:new Date().toISOString(),settings,statuses,lessons,readerText:$('inputText').value};}
   function importBackup(raw){
     try{
       const data=JSON.parse(raw);
@@ -1415,7 +1691,19 @@
     readerInputTimer=setTimeout(()=>{saveReaderDraft();renderReader();},300);
   }
   $('inputText').addEventListener('input',()=>{undoneReaderText=null;$('undoClearBtn').hidden=true;onReaderChanged();});
-  $('renderBtn').onclick=()=>{clearTimeout(readerInputTimer);saveReaderDraft();renderReader();};
+  const compactEditor=()=>window.matchMedia('(max-width:900px)').matches;
+  function showPassageEditor(open,{focus=false,scroll=false}={}){
+    document.body.classList.toggle('editor-open',Boolean(open));
+    $('editPassageBtn').setAttribute('aria-expanded',String(Boolean(open)));
+    $('editPassageBtn').textContent=open?'✕ Close':'✎ Edit';
+    if(open&&scroll){$('readerEditorCard').scrollIntoView({behavior:'smooth',block:'start'});}
+    if(open&&focus){setTimeout(()=>$('inputText').focus({preventScroll:true}),280);}
+  }
+  $('editPassageBtn').onclick=()=>showPassageEditor(!document.body.classList.contains('editor-open'),{scroll:true,focus:true});
+  $('finishEditingBtn').onclick=()=>{clearTimeout(readerInputTimer);saveReaderDraft();renderReader();showPassageEditor(false);$('readerOutputCard').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('readerQuickSpeakBtn').onclick=()=>speakChinese($('inputText').value);
+  $('readerQuickTranslateBtn').onclick=translateInput;
+  $('renderBtn').onclick=()=>{clearTimeout(readerInputTimer);saveReaderDraft();renderReader();if(compactEditor()){showPassageEditor(false);$('readerOutputCard').scrollIntoView({behavior:'smooth',block:'start'});}};
   $('clearTextBtn').onclick=()=>{
     const old=$('inputText').value;if(!old)return;
     undoneReaderText=old;$('undoClearBtn').hidden=false;$('inputText').value='';onReaderChanged();
@@ -1461,6 +1749,7 @@
   $('flashSpeakBtn').onclick=()=>{const v=currentCard();if(v)speakChinese(v.word);};
   $('flashReplayBtn').onclick=replayFlashStrokes;$('flashTraceBtn').onclick=traceFlashStrokes;
   $('flashRetryTraceBtn').onclick=traceFlashStrokes;$('flashGuideBtn').onclick=()=>toggleTraceGuide('flash');
+  $('flashExitTraceBtn').onclick=()=>{flashStrokeTraceMode=false;replayFlashStrokes();};
   $('startQuizBtn').onclick=()=>startQuiz();$('quizCount').onchange=quizCountLimit;
   $('quizNextBtn').onclick=nextQuiz;
   $('quizRetryMissedBtn').onclick=()=>startQuiz(quiz.missed.slice());
@@ -1469,6 +1758,20 @@
   $('onlineTranslate').onchange = () => { settings.onlineTranslate=$('onlineTranslate').checked; saveSettings(); };
   $('autoStroke').onchange = () => { settings.autoStroke=$('autoStroke').checked; saveSettings(); };
   $('preloadStrokeBtn').onclick = preloadStrokeData;
+  let lastWritingInput='Not observed';
+  function refreshDeviceProbe(){
+    const pointerSupport='PointerEvent' in window;
+    const touch=Number(navigator.maxTouchPoints)||0;
+    const storage=(()=>{try{const k='hskReaderProbe.temp';localStorage.setItem(k,'1');localStorage.removeItem(k);return 'available';}catch{return 'blocked';}})();
+    const probe=$('deviceProbeResults');if(!probe)return;
+    probe.innerHTML=`<div><span>Touch points</span><strong>${touch}</strong></div><div><span>Pointer input</span><strong>${pointerSupport?'Supported':'Unavailable'}</strong></div><div><span>Local saving</span><strong>${storage}</strong></div><div class="probe-input"><span>Last trace input</span><strong>${escapeHtml(lastWritingInput)}</strong></div>`;
+  }
+  $('checkDeviceBtn').onclick=()=>{refreshDeviceProbe();toast('Browser capabilities refreshed.');};
+  document.addEventListener('pointerdown',event=>{
+    if(!event.target.closest('.stroke-panel.trace-mode .stroke-char'))return;
+    lastWritingInput=event.pointerType==='pen'?'Pen / stylus':event.pointerType==='touch'?'Finger / touch':event.pointerType==='mouse'?'Mouse / trackpad':event.pointerType||'Unknown';
+    refreshDeviceProbe();
+  },true);
   $('exportBtn').onclick=()=>{$('jsonBox').value=JSON.stringify(getBackup(),null,2);toast('Backup JSON copied into the box.');};
   $('downloadBackupBtn').onclick=downloadBackup;
   $('importBtn').onclick=()=>importBackup($('jsonBox').value);
@@ -1517,7 +1820,7 @@
   $('readerView').addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' '){const w=e.target.closest('[data-word]');if(w){e.preventDefault();showWord(w.dataset.word,w.dataset.tokenIndex);}}
   });
-  syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();newDeck();renderAll();syncVocabSearchClear();
+  syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();newDeck();renderAll();syncVocabSearchClear();refreshDeviceProbe();
   const restoredTab=readJSON(STORE.lastTab,'reader');if(restoredTab!=='reader')switchTab(APP_TAB_NAMES.includes(restoredTab)?restoredTab:'reader');
   </script>
 </body>
