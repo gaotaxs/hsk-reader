@@ -450,6 +450,12 @@
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 
   </style>
+  
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-title" content="HSK Reader">
+
 </head>
 <body>
   <header>
@@ -1823,5 +1829,18 @@
   syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();newDeck();renderAll();syncVocabSearchClear();refreshDeviceProbe();
   const restoredTab=readJSON(STORE.lastTab,'reader');if(restoredTab!=='reader')switchTab(APP_TAB_NAMES.includes(restoredTab)?restoredTab:'reader');
   </script>
+  
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('./sw.js', { scope: './' })
+        .catch(error =>
+          console.warn('PWA setup failed:', error)
+        );
+    });
+  }
+</script>
+
 </body>
 </html>
