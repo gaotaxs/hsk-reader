@@ -1,4 +1,6 @@
-# HSK Reader 1.0
+# HSK Reader 1.6
+
+The Reader now opens a sentence-first study space with 40 original bilingual practice sentences (20 per HSK 2/3 study track), pasted-text reading, remembered word-level pinyin choices, translation reveal/pinning, sentence and word favourites, and progress saved in backups. Read ten sentences to get a review prompt, then study recent vocabulary and take an integrated quiz every five or ten cards. Quiz types include meaning/pinyin recognition and sentence reconstruction. The supplemental 5,131-entry CC-CEDICT reading dictionary is separately licensed CC BY-SA 4.0; see vendor/READING-DICTIONARY-NOTICE.txt. Pasted text uses dictionary segmentation and default pronunciations, which can be wrong for ambiguous words. Preset translations are authored; full-sentence translations for arbitrary pasted text are not bundled.
 
 A static, local-first Chinese reading and study app. No build step, account, backend, paid hosting or API key is required. All six original areas remain: Reader, Vocabulary, Lessons, Flashcards, Quiz and Settings.
 

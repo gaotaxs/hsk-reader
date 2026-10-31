@@ -41,18 +41,27 @@
       </div>
       <div class="nav-caption" aria-hidden="true">YOUR PRACTICE</div>
       <nav class="sidebar-nav" id="tabs" aria-label="Study areas">
-        <button class="side-tab" data-tab="lessons" title="Lessons"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/1f4da.svg"><img src="./vendor/noto/1f4da.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Lessons</span></button>
-        <button class="side-tab" data-tab="flashcards" title="Flashcards"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/1f9e0.svg"><img src="./vendor/noto/1f9e0.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Flashcards</span></button>
-        <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/1f440.svg"><img src="./vendor/noto/1f440.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Reader</span></button>
-        <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/1f4ac.svg"><img src="./vendor/noto/1f4ac.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Vocab</span></button>
-        <button class="side-tab" data-tab="quiz" title="Quiz"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/1f4a1.svg"><img src="./vendor/noto/1f4a1.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Quiz</span></button>
-        <button class="side-tab" data-tab="settings" title="Settings"><span class="side-icon" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="./vendor/noto/2699_fe0f.svg"><img src="./vendor/noto/2699_fe0f.webp" alt="" width="28" height="28"></picture></span><span class="side-label">Settings</span></button>
+        <button class="side-tab" data-tab="lessons" title="Lessons"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v18m3-12h6m-6 4h6"/></svg></span><span class="side-label">Lessons</span></button>
+        <button class="side-tab" data-tab="flashcards" title="Flashcards"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="6" width="14" height="15" rx="2"/><path d="M17 3H5a2 2 0 0 0-2 2v12m8-5h6m-6 4h4"/></svg></span><span class="side-label">Flashcards</span></button>
+        <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v16m0-16C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-3-1-6-2-10 1Z"/></svg></span><span class="side-label">Reader</span></button>
+        <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4Zm0 12h16M8 8h8m-8 4h5"/></svg></span><span class="side-label">Vocab</span></button>
+        <button class="side-tab" data-tab="quiz" title="Quiz"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="16" height="18" rx="2"/><path d="M9 4V2H3v17m6-10 1 1 2-2m2 1h3m-8 6 1 1 2-2m2 1h3"/></svg></span><span class="side-label">Quiz</span></button>
+        <button class="side-tab" data-tab="settings" title="Settings"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></svg></span><span class="side-label">Settings</span></button>
       </nav>
       <div class="sidebar-footnote"><span class="privacy-dot" aria-hidden="true"></span> Local-first study space<br><span>Your progress stays in this browser</span></div>
     </aside>
 
     <main class="app-main" id="mainContent" tabindex="-1">
     <section id="reader" class="panel active" aria-label="Reader">
+      <div id="readingStudio" class="reading-studio">
+        <div class="reading-intro"><div><span class="card-eyebrow">LEARN BY READING</span><h2>One sentence. A little more understanding.</h2><p class="small">Read, uncover just the hints you need, then practise what you’ve met.</p></div><button id="readingResumePractice">Resume practice</button></div>
+        <div class="card reading-controls"><div><label for="readingSource">Reading track</label><select id="readingSource"><option value="2">HSK 2 practice · 20 sentences</option><option value="3">HSK 3 practice · 20 sentences</option><option value="custom">My pasted text</option><option value="starred">Saved sentences</option></select></div><div><label for="readingPinyinMode">Pinyin</label><select id="readingPinyinMode"><option value="adaptive">Adaptive · remember my choices</option><option value="always">Always show</option><option value="never">Hide all</option></select></div><div><label for="readingPracticeEvery">Quiz after</label><select id="readingPracticeEvery"><option value="5">5 flashcards</option><option value="10">10 flashcards</option></select></div><button id="readingMode">Full passage</button></div>
+        <article class="card sentence-card"><div class="row between"><span id="readingPosition" class="small"></span><button id="readingStarSentence">☆ Save sentence</button></div><div class="progressbar"><span id="readingBar"></span></div><div id="sentenceCanvas" class="sentence-canvas" lang="zh-Hans"></div><p id="readingPinyinNote" class="small"></p><div id="sentenceTranslation" class="sentence-translation"><div class="row between"><button id="readingTranslateToggle">Reveal translation</button><button id="readingPinTranslation">Pin translation</button></div><p id="readingTranslationText" hidden></p></div><div class="reading-navigation"><button id="readingPrev" aria-label="Previous sentence">←</button><button id="readingListen">Listen</button><button class="primary" id="readingMarkNext">Read &amp; next →</button><button id="readingNext" aria-label="Next sentence without marking read">→</button></div></article>
+        <div id="readingCheckpoint" class="card reading-checkpoint" hidden><div><h2 id="readingCheckpointTitle"></h2><p class="small">Review the words from this block, then answer a few questions.</p></div><div class="row"><button class="primary" id="readingCheckpointStart">Review &amp; quiz</button><button id="readingCheckpointDismiss">Keep reading</button></div></div>
+        <div class="card reading-vocabulary"><div class="row between"><div><h2>Words in this sentence</h2><span id="readingWordCount" class="small"></span></div><button id="readingReviewWords">Study recent words →</button></div><div id="readingSelectedWord" hidden></div><div id="readingVocab"></div></div>
+        <p class="reading-credit small">Original practice sentences · 5,131-entry reading dictionary from <a href="https://cc-cedict.org/" target="_blank" rel="noopener">CC-CEDICT</a> (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>). Pasted text uses dictionary readings; context can change pronunciation.</p>
+      </div>
+      <details class="reading-text-tools"><summary>Paste your own text &amp; manage passages</summary><div class="row reading-text-tools-heading"><button id="readingUseCustom" class="primary">Read my text in sentence view →</button><span class="small">Paste or load text below, then open it in the sentence reader.</span></div>
       <div class="study-brief"><div><div class="card-eyebrow">MAKE A LITTLE PROGRESS</div><h2 id="dailyHeadline">Your daily practice</h2><p id="dailySummary" class="small"></p></div><button class="primary" id="reviewDueBtn">Review words</button></div>
       <div class="grid reader">
         <div class="left-stack">
@@ -115,6 +124,7 @@
           </div>
         </div>
       </div>
+      </details>
     </section>
 
     <section id="vocab" class="panel">
@@ -263,10 +273,17 @@
     <div class="modal-body" id="wordDetails"></div><div class="dialog-footer"><span class="small">Unfamiliar words in this passage</span></div>
   </dialog>
 
+  <dialog id="readingPracticeDialog" class="reading-practice-dialog" aria-label="Reading flashcards and quick quiz"><button id="readingPracticeClose" class="reading-practice-close" aria-label="Close practice">×</button><div id="readingPracticeBody"></div></dialog>
   <div id="appToast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 
   <script src="./assets/vocabulary.js" defer></script>
+  <script src="./assets/reading-dictionary-0.js" defer></script>
+  <script src="./assets/reading-dictionary-1.js" defer></script>
+  <script src="./assets/reading-dictionary-2.js" defer></script>
+  <script src="./assets/reading-dictionary-3.js" defer></script>
+  <script src="./assets/sentences.js" defer></script>
   <script src="./assets/app.js" defer></script>
+  <script src="./assets/reading-studio.js" defer></script>
   <script src="./assets/pwa.js" defer></script>
 </body>
 </html>

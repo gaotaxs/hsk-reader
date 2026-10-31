@@ -1,3 +1,11 @@
+## 1.6.0
+
+- Static line navigation replaces distracting animated emoji.
+- Sentence-first reader with 40 original bilingual sentences, adaptive pinyin visibility saved per word, pinned translations, favourites, sentence and passage modes, and pasted-text support.
+- Supplemental 5,131-entry CC-CEDICT dictionary, separately licensed CC BY-SA 4.0 with attribution.
+- Reading checkpoints every ten sentences; vocabulary flashcards feed into integrated meaning/pinyin and sentence-order quizzes every five or ten cards.
+- Reading progress and practice sessions included in validated backups.
+
 ## 1.3.0
 
 - Stroke-order modal with focus containment and close via X, Escape or backdrop.

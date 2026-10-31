@@ -68,3 +68,6 @@ See README deployment smoke checks and LIMITATIONS.md before describing this as 
 
 ## 1.3 checks
 36 application and 16 service-worker checks pass. Browser verified modal rendering, tracing controls and backdrop dismissal. Physical touch-device testing remains outstanding.
+
+## 1.6 sentence reader
+37 existing application checks, 16 service-worker checks, and 12 new reading workflow checks pass. Reading tests cover original sentence/pinyin alignment, persistent per-word hints, translation pinning, the ten-sentence checkpoint, automatic quizzes after five reviewed cards, sentence reconstruction, backup round trips and pasted-text segmentation. Browser visually checked the new reader and practice entry. Physical touch-device checks remain outstanding.

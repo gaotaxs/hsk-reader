@@ -1,0 +1,6 @@
+Reading dictionary: CC-CEDICT, by the CC-CEDICT editors and contributors (MDBG), building on CEDICT by Paul Andrew Denisowski.
+Source project: https://cc-cedict.org/ and https://www.mdbg.net/chinese/dictionary?page=cedict
+Input: CC-CEDICT dictionary snapshot distributed in the user-provided DuShu APK.
+Adaptations: selected HSK vocabulary and sentence-bank words; simplified forms; a non-surname/non-variant reading when available; numbered tones converted to diacritics; shortened definitions and removed classifier markup. Not a context-aware pronunciation engine.
+The derived reading-dictionary-*.js data files are licensed CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+This data license applies to the dictionary files, not automatically to the application code or original sentence bank.

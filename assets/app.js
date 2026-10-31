@@ -1044,7 +1044,7 @@
     const orbit=$('headerProgressOrbit');if(orbit){orbit.style.setProperty('--completion',`${Math.min(100,known/VOCAB.length*100).toFixed(2)}%`);orbit.setAttribute('aria-label',`${known} of ${VOCAB.length} vocabulary words known`);}
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
-  function renderAll(){renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
+  function renderAll(){window.refreshReadingStudio?.();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
   const APP_TAB_NAMES=['lessons','flashcards','reader','vocab','quiz','settings'];
   const APP_TAB_DETAILS={reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
@@ -1288,6 +1288,7 @@
   };
   if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;}
   document.addEventListener('keydown',e=>{
+    if($('readingPracticeDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
     if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-6]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
@@ -1352,6 +1353,19 @@
     if(out.session&&lesson&&[2,3].includes(lesson.level)&&Number.isInteger(lesson.start)&&lesson.start>=0&&Number.isInteger(lesson.day)&&lesson.day>0){
       out.session.lesson={level:lesson.level,start:lesson.start,day:lesson.day,reviewed:uniq((Array.isArray(lesson.reviewed)?lesson.reviewed:[]).filter(k=>out.session.ids.includes(k))),complete:!!lesson.complete};
       out.session.lesson.complete=out.session.lesson.complete&&out.session.lesson.reviewed.length===out.session.ids.length;
+    }
+    if(raw.reading&&typeof raw.reading==='object')out.reading=sanitizeReading(raw.reading);
+    return out;
+  }
+  function sanitizeReading(raw){
+    const strings=(v,n=10000)=>Array.isArray(v)?uniq(v.filter(s=>typeof s==='string'&&s.length<=100).slice(0,n)):[];
+    const map=(v,check)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).filter(([k,x])=>k.length<=100&&check(x)).slice(0,10000)):{};
+    const out={source:['2','3','custom','starred'].includes(raw.source)?raw.source:'2',positions:map(raw.positions,x=>Number.isInteger(x)&&x>=0&&x<10000),hiddenPinyin:map(raw.hiddenPinyin,x=>typeof x==='boolean'),starWords:strings(raw.starWords),starSentences:strings(raw.starSentences),labels:map(raw.labels,x=>['new','learning','known'].includes(x)),read:strings(raw.read,5000),mode:raw.mode==='passage'?'passage':'sentence',pinyin:['always','never'].includes(raw.pinyin)?raw.pinyin:'adaptive',pin:!!raw.pin,every:raw.every===10?10:5,custom:typeof raw.custom==='string'?raw.custom.slice(0,200000):'',dismissedCheckpoint:strings(raw.dismissedCheckpoint,1000),practice:null};
+    const p=raw.practice;
+    if(p&&Array.isArray(p.words)){
+      const words=strings(p.words,30).filter(w=>/^[\u3400-\u9fff]{1,20}$/.test(w));
+      const questions=(Array.isArray(p.questions)?p.questions:[]).slice(0,11).filter(q=>q&&['meaning','pinyin','order'].includes(q.kind)&&typeof q.prompt==='string'&&Array.isArray(q.options)).map(q=>({kind:q.kind,prompt:q.prompt.slice(0,1000),word:typeof q.word==='string'?q.word.slice(0,20):'',answer:Array.isArray(q.answer)?q.answer.filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,40)):[],options:q.kind==='order'?q.options.slice(0,20).filter(o=>o&&typeof o.text==='string'&&Number.isInteger(o.id)).map(o=>({text:o.text.slice(0,40),id:o.id})):strings(q.options,4)}));
+      if(words.length){const cursor=Math.min(words.length,Math.max(0,Math.floor(Number(p.cursor)||0)));out.practice={words,cursor,reveal:!!p.reveal,phase:['cards','quiz','summary'].includes(p.phase)?p.phase:'cards',questions,q:Math.min(Math.max(0,Math.floor(Number(p.q)||0)),Math.max(0,questions.length-1)),score:Math.max(0,Math.floor(Number(p.score)||0)),total:Math.max(0,Math.floor(Number(p.total)||0)),answered:!!p.answered,order:Array.isArray(p.order)?p.order.filter(x=>Number.isInteger(x)&&x>=0&&x<20).slice(0,20):[],feedback:typeof p.feedback==='string'?p.feedback.slice(0,1000):''};if(out.practice.phase==='quiz'&&!questions.length)out.practice.phase='summary';if(out.practice.phase==='cards'&&cursor===words.length)out.practice.phase='summary';}
     }
     return out;
   }

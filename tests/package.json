@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "description": "Optional developer regression tests; not required for deployment",
+  "scripts": {
+    "test": "node regression.cjs && node sw-regression.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.3"
+  }
+}
