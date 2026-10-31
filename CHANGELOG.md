@@ -1,3 +1,10 @@
+## 1.7.0
+
+- Collapsed navigation retains the top-left logo and hides floating labels.
+- Separate pinyin hint buttons with theme-aware shaded placeholders; Chinese word buttons open definition and direct writing practice.
+- Expanded practice bank to 340 HSK 2 and 1,070 HSK 3 sentences, preserving original IDs. Added reproducible controlled-pattern generator and audit samples.
+- Passage view renders ten sentences at a time to keep the larger bank responsive.
+
 ## 1.6.0
 
 - Static line navigation replaces distracting animated emoji.

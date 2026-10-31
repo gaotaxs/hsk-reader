@@ -1,14 +1,27 @@
 const {JSDOM}=require('jsdom'),fs=require('fs'),path=require('path'),assert=require('node:assert/strict');process.chdir(path.resolve(__dirname,'..'));
 const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'https://example.test/hsk-reader/',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
 w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};w.confirm=()=>true;w.CSS={escape:x=>x};w.TextEncoder=TextEncoder;
-w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+'\nwindow.readerTest={eval:s=>eval(s)};');
+w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/sentences-hsk2.js','assets/sentences-hsk3-0.js','assets/sentences-hsk3-1.js','assets/sentences-hsk3-2.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+'\nwindow.readerTest={eval:s=>eval(s)};');
 const $=id=>w.document.getElementById(id),run=s=>w.readerTest.eval(s);let count=0;
 function test(name,fn){fn();console.log('PASS '+name);count++;}
 const click=sel=>{const b=w.document.querySelector(sel);assert.ok(b,sel);b.click();};
-test('40 original sentences have exactly one pinyin syllable per Chinese character',()=>{for(const s of run('READING_SENTENCES'))assert.equal([...s.zh].filter(c=>/[\u3400-\u9fff]/.test(c)).length,s.py.split(/\s+/).length,s.zh)});
+test('All 1,410 sentences have one pinyin syllable per Chinese character',()=>{for(const s of run('READING_SENTENCES'))assert.equal([...s.zh].filter(c=>/[\u3400-\u9fff]/.test(c)).length,s.py.split(/\s+/).length,s.zh)});
 test('Static navigation has no animated image or picture elements',()=>assert.equal(w.document.querySelectorAll('.sidebar-nav img,.sidebar-nav picture').length,0));
 test('Dictionary segments multi-character words beyond the original HSK deck',()=>assert.ok(run("ReadingStudio.segments('为了明天的比赛').some(x=>x.text==='比赛'&&x.v)")));
 test('Word hint toggles globally without marking the word known',()=>{const word=w.document.querySelector('[data-r-word]').dataset.rWord,st=run(`statusOf(${JSON.stringify(word)})`);click('[data-r-word]');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false);assert.equal(run(`statusOf(${JSON.stringify(word)})`),st);run('ReadingStudio.render()');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false)});
+test('Pinyin and Chinese use separate buttons; a word opens definition and writing',()=>{
+ click('[data-r-definition="每天"]');assert.equal($('readingWordDialog').open,true);
+ assert.equal($('readingWordHeading').textContent,'每天');assert.ok($('readingWordMeaning').textContent.includes('every day'));
+ $('readingWordClose').click();assert.equal($('readingWordDialog').open,false);
+});
+test('Each study track has the requested sentence depth with no duplicate sentences',()=>{
+ const rows=run('READING_SENTENCES');assert.equal(rows.filter(x=>x.level===2).length,340);assert.equal(rows.filter(x=>x.level===3).length,1070);
+ assert.equal(new Set(rows.map(x=>x.zh)).size,rows.length);assert.equal(new Set(rows.map(x=>x.id)).size,rows.length);
+});
+test('Collapsed rail keeps the top-left brand and has no floating label tooltip rule',()=>{
+ const css=fs.readFileSync('assets/app.css','utf8');assert.ok(css.includes('.sidebar-collapsed .sidebar-brand{display:flex'));
+ assert.ok(css.includes('.sidebar-collapsed .side-tab .side-label'));
+});
 test('Pinyin hint choices survive backup sanitization',()=>{const r=run('sanitizeExtras(extras).reading');assert.ok(Object.keys(r.hiddenPinyin).length);assert.equal(r.source,'2')});
 test('Sentence translation is initially hidden, reveals and can be pinned',()=>{assert.equal($('readingTranslationText').hidden,true);$('readingTranslateToggle').click();assert.equal($('readingTranslationText').hidden,false);$('readingPinTranslation').click();$('readingMarkNext').click();assert.equal($('readingTranslationText').hidden,false)});
 test('Reading 10 sentences triggers the review prompt without repeating progress',()=>{for(let i=1;i<10;i++)$('readingMarkNext').click();assert.equal(run('extras.reading.read.length'),10);assert.equal($('readingCheckpoint').hidden,false);assert.match($('readingPosition').textContent,/10 read/)});

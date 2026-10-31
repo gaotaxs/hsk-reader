@@ -71,3 +71,6 @@ See README deployment smoke checks and LIMITATIONS.md before describing this as 
 
 ## 1.6 sentence reader
 37 existing application checks, 16 service-worker checks, and 12 new reading workflow checks pass. Reading tests cover original sentence/pinyin alignment, persistent per-word hints, translation pinning, the ten-sentence checkpoint, automatic quizzes after five reviewed cards, sentence reconstruction, backup round trips and pasted-text segmentation. Browser visually checked the new reader and practice entry. Physical touch-device checks remain outstanding.
+
+## 1.7 reader polish and expanded bank
+37 application, 16 service-worker and 15 reading workflow checks pass. Checks cover all 1,410 unique IDs and Chinese sentences, pinyin/character alignment, separate hint/definition actions, existing progress and backup behaviour, and all newly cached chunks. Representative examples from all 55 generated sentence patterns were reviewed and corrected. This does not establish native-speaker certification or strict official HSK vocabulary compliance. Desktop browser checks cover the collapsed logo, masked hints and word/writing popup; physical touch devices remain unverified.

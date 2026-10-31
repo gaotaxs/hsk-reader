@@ -1288,7 +1288,7 @@
   };
   if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;}
   document.addEventListener('keydown',e=>{
-    if($('readingPracticeDialog')?.open)return;
+    if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
     if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-6]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
