@@ -395,7 +395,11 @@
   }
   async function playStrokeAnimationsSequentially(writers, baseGap=0, valid=()=>true){
     if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    for(const writer of writers){if(!valid())return;try{await writer.animateCharacter();}catch{}}
+    while(valid()){
+      for(const writer of writers){if(!valid())return;await writer.hideCharacter({duration:0});}
+      for(const writer of writers){if(!valid())return;try{await writer.animateCharacter();}catch{return;}}
+      await new Promise(resolve=>setTimeout(resolve,900));
+    }
   }
 
   let popupStrokeGeneration=0, flashStrokeGeneration=0;
@@ -407,6 +411,7 @@
     const retry=popup?$('retryTraceBtn'):$('flashRetryTraceBtn');
     const guide=popup?$('traceGuideBtn'):$('flashGuideBtn');
     if(btn) btn.classList.toggle('is-set', traceMode);
+    if(!popup)$('flashReplayBtn').hidden=!traceMode;
     if(retry) retry.hidden=!traceMode;
     if(guide){guide.hidden=!traceMode;guide.textContent=guideVisible?'Hide guide':'Show guide';}
     const done=popup?$('exitTraceBtn'):$('flashExitTraceBtn');if(done)done.hidden=popup?!traceMode:false;
@@ -437,8 +442,9 @@
       const text=panel.querySelector('.trace-step-count');
       if(text)text.textContent=`${visibleIndex+1} / ${chars.length} · ${chars[visibleIndex]}`;
       panel.querySelector('[data-trace-prev]').disabled=visibleIndex===0;
-      panel.querySelector('[data-trace-next]').disabled=visibleIndex>=chars.length-1;
+      panel.querySelector('[data-trace-next]').disabled=visibleIndex>=chars.length-1||!done.has(visibleIndex);
     };
+    const quizStarters=[];
     const writers=[], done=new Set(), errors=new Array(chars.length).fill(0);
     const updateSummary=()=>{
       if(!valid()) return;
@@ -462,7 +468,7 @@
       });
       writers.push(writer);
       if(startQuiz){
-        writer.quiz({showHintAfterMisses:2,leniency:1.2,highlightOnComplete:true,
+        quizStarters[i]=()=>writer.quiz({showHintAfterMisses:2,leniency:1.2,highlightOnComplete:true,
           onCorrectStroke:d=>{if(!valid() || !label())return;label().textContent=`${d.strokesRemaining} strokes remaining${errors[i]?' · '+errors[i]+' mistakes':''}`;},
           onMistake:d=>{if(!valid() || !label())return;errors[i]=d.totalMistakes;label().textContent=`Try that stroke again · ${d.totalMistakes} mistake${d.totalMistakes===1?'':'s'}`;updateSummary();},
           onComplete:d=>{
@@ -470,11 +476,12 @@
             if(!done.has(i)){const stat=extras.writing[ch]||{count:0,mistakes:0};extras.writing[ch]={count:stat.count+1,mistakes:stat.mistakes+d.totalMistakes,last:todayISO()};saveExtras();renderDaily();}
             errors[i]=d.totalMistakes;done.add(i);label().classList.add('completed');
             label().textContent=`Completed${errors[i]?' · '+errors[i]+' mistakes':''}`;updateSummary();
-            if(single&&visibleIndex===i&&i<chars.length-1)setTimeout(()=>showStep(i+1),380);
+            if(i<chars.length-1)setTimeout(()=>{if(valid()){showStep(i+1);quizStarters[i+1]();}},380);
           }
         });
       }
     });
+    if(startQuiz)quizStarters[0]?.();
     if(single){
       panel.querySelector('[data-trace-prev]').onclick=()=>showStep(visibleIndex-1);
       panel.querySelector('[data-trace-next]').onclick=()=>showStep(visibleIndex+1);
@@ -717,6 +724,7 @@
   // ===========================
   // Flashcards
   // ===========================
+  let deckReviewed=[],deckFinished=false;
   let lessonSession=null;
   let deck=[], deckIndex=0, flashRevealPinyin=false, flashRevealEnglish=false, flashStrokeWriters=[], flashStrokeTraceMode=false, flashStrokeOpen=false, flashStrokeRenderedWord='', deckLabel='';
   function getDeck(sel){
@@ -726,7 +734,7 @@
       sel==='new'?VOCAB.filter(v=>statusOf(entryKey(v))==='new'):VOCAB.slice();
   }
   function createCustomDeck(words,label){
-    lessonSession=null;
+    lessonSession=null;deckReviewed=[];deckFinished=false;
     deck=words.map(v=>resolveEntry(entryKey(v))).filter(Boolean);
     deckLabel=label;deckIndex=0;flashRevealPinyin=false;flashRevealEnglish=false;
     flashStrokeTraceMode=false;toggleFlashStrokePanel(false);renderFlash();
@@ -800,7 +808,7 @@
     renderFlashStroke({traceMode:false, startQuiz:false, force:true});
   }
   function newDeck(){
-    lessonSession=null;
+    lessonSession=null;deckReviewed=[];deckFinished=false;
     let candidates=getDeck($('flashLevel').value);
     if($('flashSkipKnown').checked)candidates=candidates.filter(v=>statusOf(entryKey(v))!=='known');
     if($('flashShuffle').checked)shuffle(candidates);
@@ -809,7 +817,7 @@
     flashStrokeTraceMode=false;toggleFlashStrokePanel(false);renderFlash();
     if(!deck.length)toast('No words match this deck. Try another deck or disable Skip known.');
   }
-  function currentCard(){ return lessonSession?.complete?null:deck[deckIndex] || null; }
+  function currentCard(){ return (deckFinished||lessonSession?.complete)?null:deck[deckIndex] || null; }
   async function renderFlashStroke(opts={}){
     const panel=$('flashStrokePanel'),status=$('flashStrokeStatus'),v=currentCard();
     if(!panel||!status||!flashStrokeOpen)return;
@@ -870,7 +878,9 @@
     const v=currentCard();
     saveFlashSession();
     $('reviewRating').hidden=true;
-    const finished=!!lessonSession?.complete;
+    const finished=deckFinished||!!lessonSession?.complete;
+    $('lessonFinished').querySelector('h2').textContent='Congrats, you’re done!';
+    $('backToLessonsBtn').textContent='Back to Lessons';
     $('lessonFinished').hidden=!finished;
     document.querySelector('.flash-stage').hidden=finished;
     document.querySelector('.swipe-actions').hidden=finished;
@@ -880,7 +890,7 @@
     $('flashPrevBtn').disabled=!!lessonSession&&deckIndex===0;
     $('flashNextArrowBtn').disabled=!!lessonSession&&deckIndex===deck.length-1;
     if(finished){
-      $('lessonFinishedText').textContent=`HSK ${lessonSession.level} · Day ${lessonSession.day} · ${deck.length} words reviewed. Your progress is saved.`;
+      $('lessonFinishedText').textContent=lessonSession?`HSK ${lessonSession.level} · Day ${lessonSession.day} · ${deck.length} words reviewed. Your progress is saved.`:`${deck.length} words reviewed${deckLabel?' · '+deckLabel:''}. Your progress is saved.`;
       $('flashProgress').textContent=`${deck.length} / ${deck.length} reviewed · Lesson complete`;
       $('flashDeckProgressFill').style.width='100%';
       $('sessionProgressText').textContent=`${deck.length} / ${deck.length} reviewed`;
@@ -899,10 +909,10 @@
     $('flashBack').hidden=false;
     $('flashBack').classList.toggle('show-meaning',flashRevealEnglish);
     $('flashBack').setAttribute('aria-hidden',String(!flashRevealEnglish));
-    const reviewed=lessonSession?lessonSession.reviewed.length:deckIndex;
-    $('sessionProgressText').textContent=lessonSession?`${reviewed} / ${deck.length} reviewed · Day ${lessonSession.day}`:`Card ${deckIndex+1} / ${deck.length}`;
-    $('flashProgress').textContent = `${lessonSession?reviewed:deckIndex+1} / ${deck.length}${lessonSession?' reviewed':''} · HSK ${v.level} · ${statusOf(entryKey(v))}${deckLabel?' · '+deckLabel:''}`;
-    $('flashDeckProgressFill').style.width=`${(lessonSession?reviewed:deckIndex+1)/deck.length*100}%`;
+    const reviewed=lessonSession?lessonSession.reviewed.length:deckReviewed.length;
+    $('sessionProgressText').textContent=lessonSession?`${reviewed} / ${deck.length} reviewed · Day ${lessonSession.day}`:`${reviewed} / ${deck.length} reviewed`;
+    $('flashProgress').textContent = `${reviewed} / ${deck.length} reviewed · HSK ${v.level} · ${statusOf(entryKey(v))}${deckLabel?' · '+deckLabel:''}`;
+    $('flashDeckProgressFill').style.width=`${reviewed/deck.length*100}%`;
     if (flashStrokeOpen && flashStrokeRenderedWord !== v.word) renderFlashStroke({traceMode:flashStrokeTraceMode, startQuiz:flashStrokeTraceMode, force:true});
   }
   function nextFlash(){ if(!deck.length) return; deckIndex=lessonSession?Math.min(deckIndex+1,deck.length-1):(deckIndex+1)%deck.length; flashRevealPinyin=false; flashRevealEnglish=false; flashStrokeTraceMode=false; flashStrokeRenderedWord=''; renderFlash(); }
@@ -1035,7 +1045,7 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','vocab','lessons','flashcards','quiz','settings'];
+  const APP_TAB_NAMES=['lessons','flashcards','reader','vocab','quiz','settings'];
   const APP_TAB_DETAILS={reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
@@ -1187,7 +1197,12 @@
         if(!lessonSession.reviewed.includes(entryKey(deck[next]))){deckIndex=next;break;}
       }
       flashRevealPinyin=false;flashRevealEnglish=false;flashStrokeRenderedWord='';renderFlash();
-    }else nextFlash();
+    }else{
+      if(!deckReviewed.includes(entryKey(v)))deckReviewed.push(entryKey(v));
+      if(deckReviewed.length===deck.length){deckFinished=true;toggleFlashStrokePanel(false);$('swipeStatus').textContent='';renderAll();$('lessonFinished').focus();return;}
+      for(let n=1;n<=deck.length;n++){const next=(deckIndex+n)%deck.length;if(!deckReviewed.includes(entryKey(deck[next]))){deckIndex=next;break;}}
+      flashRevealPinyin=false;flashRevealEnglish=false;flashStrokeRenderedWord='';renderFlash();
+    }
     $('swipeStatus').textContent=`${v.word}: ${status==='new'?'not known — revisit in the New words deck':status}.`;
   }
   function resetSwipe(){swipeDrag=null;swipeBox.style.transform='';swipeBox.classList.remove('dragging');delete swipeBox.dataset.swipe;}
@@ -1332,6 +1347,7 @@
     for(const [k,v] of Object.entries(raw.daily||{}).slice(-90))if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&Array.isArray(v))out.daily[k]=uniq(v.filter(validKey));
     for(const [k,v] of Object.entries(raw.writing||{}))if(Array.from(k).length===1&&isChineseChar(k)&&v)out.writing[k]={count:Math.max(0,Math.floor(Number(v.count)||0)),mistakes:Math.max(0,Math.floor(Number(v.mistakes)||0)),last:typeof v.last==='string'?v.last:''};
     if(raw.session&&Array.isArray(raw.session.ids))out.session={ids:raw.session.ids.filter(validKey).slice(0,601),index:Math.max(0,Math.floor(Number(raw.session.index)||0)),label:String(raw.session.label||'').slice(0,80),pinyin:!!raw.session.pinyin,english:!!raw.session.english};
+    if(out.session){out.session.reviewed=uniq((Array.isArray(raw.session.reviewed)?raw.session.reviewed:[]).filter(k=>out.session.ids.includes(k)));out.session.complete=!!raw.session.complete&&out.session.reviewed.length===out.session.ids.length;}
     const lesson=raw.session?.lesson;
     if(out.session&&lesson&&[2,3].includes(lesson.level)&&Number.isInteger(lesson.start)&&lesson.start>=0&&Number.isInteger(lesson.day)&&lesson.day>0){
       out.session.lesson={level:lesson.level,start:lesson.start,day:lesson.day,reviewed:uniq((Array.isArray(lesson.reviewed)?lesson.reviewed:[]).filter(k=>out.session.ids.includes(k))),complete:!!lesson.complete};
@@ -1374,11 +1390,11 @@
     toast(remembered?'Next review scheduled.':'Scheduled again in 10 minutes.');
   }
   function saveFlashSession(){
-    extras.session={ids:deck.map(entryKey),index:deckIndex,label:deckLabel,pinyin:flashRevealPinyin,english:flashRevealEnglish,lesson:lessonSession};saveExtras();
+    extras.session={ids:deck.map(entryKey),index:deckIndex,label:deckLabel,pinyin:flashRevealPinyin,english:flashRevealEnglish,reviewed:deckReviewed,complete:deckFinished,lesson:lessonSession};saveExtras();
   }
   function restoreFlashSession(){
     const session=extras.session;
-    if(session?.ids.length){deck=session.ids.map(k=>BY_ID.get(k)).filter(Boolean);deckIndex=Math.min(session.index,deck.length-1);deckLabel=session.label;lessonSession=session.lesson||null;flashRevealPinyin=session.pinyin;flashRevealEnglish=session.english;renderFlash();}
+    if(session?.ids.length){deck=session.ids.map(k=>BY_ID.get(k)).filter(Boolean);deckIndex=Math.min(session.index,deck.length-1);deckLabel=session.label;lessonSession=session.lesson||null;deckReviewed=session.reviewed||[];deckFinished=!!session.complete;flashRevealPinyin=session.pinyin;flashRevealEnglish=session.english;renderFlash();}
     else newDeck();
   }
   function renderPassages(){
@@ -1433,5 +1449,5 @@
   settings=normalizeSettings(settings);
   syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();restoreFlashSession();renderAll();renderPassages();syncVocabSearchClear();refreshDeviceProbe();
   bindStudioControls();
-  const restoredTab=readJSON(STORE.lastTab,'reader');if(restoredTab!=='reader')switchTab(APP_TAB_NAMES.includes(restoredTab)?restoredTab:'reader');
+  switchTab('lessons');
   

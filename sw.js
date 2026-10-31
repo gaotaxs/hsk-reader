@@ -1,6 +1,6 @@
 /* Increment VERSION for every release that changes any cached file.
    Install the complete release atomically; activate only after user accepts an update. */
-const VERSION='1.3.0';
+const VERSION='1.4.0';
 const CACHE_PREFIX='hsk-reader-studio-'+encodeURIComponent(new URL(self.registration.scope).pathname)+'-';
 const CACHE_NAME=CACHE_PREFIX+VERSION;
 const APP_SHELL=['./index.html','./manifest.json','./assets/app.css','./assets/vocabulary.js','./assets/app.js','./assets/pwa.js','./vendor/hanzi-writer-3.7.3.min.js','./vendor/characters.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];

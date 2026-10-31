@@ -11,7 +11,7 @@
       status.textContent=ready?'Offline copy ready, including all 622 writing characters. Your browser may remove site data under storage pressure.':'Preparing the offline copy. Keep this page open until it is ready.';
     }catch{status.textContent='Offline caching is unavailable in this browser. Study progress can still be exported.';}
   }
-  function waiting(){if(registration?.waiting){update.hidden=false;status.textContent='A new version is ready. Choose Update ready when you are ready to reload.';}}
+  function waiting(){if(registration?.waiting){update.hidden=false;status.textContent='A new version is ready. Choose Reload to update when you are ready to reload.';}}
   if(!('serviceWorker' in navigator)||!window.isSecureContext){
     status.textContent='Offline installation requires HTTPS (or localhost). Open the deployed GitHub Pages address.';
     document.getElementById('checkUpdateBtn').disabled=true;document.getElementById('repairCacheBtn').disabled=true;return;
@@ -22,7 +22,7 @@
   update.onclick=()=>{if(!registration?.waiting)return;if(!saveReaderDraft()){toast('Export your backup before updating; local saving is unavailable.');return;}saveExtras();reloading=true;registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});};
   document.getElementById('checkUpdateBtn').onclick=async()=>{
     if(!navigator.onLine){toast('Reconnect to check for updates.');return;}
-    try{await registration?.update();waiting();toast(registration?.waiting?'Update ready.':'Update check requested. A button appears when a new version is ready.');}catch{toast('Could not check for updates. Try again when connected.');}
+    try{await registration?.update();waiting();toast(registration?.waiting?'Reload to install the downloaded update.':'Update check requested. A button appears when a new version is ready.');}catch{toast('Could not check for updates. Try again when connected.');}
   };
   document.getElementById('repairCacheBtn').onclick=async()=>{
     if(!navigator.onLine){toast('Reconnect before repairing the offline copy.');return;}
