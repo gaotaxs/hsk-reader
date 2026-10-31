@@ -411,9 +411,9 @@
     const retry=popup?$('retryTraceBtn'):$('flashRetryTraceBtn');
     const guide=popup?$('traceGuideBtn'):$('flashGuideBtn');
     if(btn) btn.classList.toggle('is-set', traceMode);
-    if(!popup)$('flashReplayBtn').hidden=!traceMode;
+    if(!popup){$('flashReplayBtn').hidden=true;$('flashTraceBtn').hidden=true;}
     if(retry) retry.hidden=!traceMode;
-    if(guide){guide.hidden=!traceMode;guide.textContent=guideVisible?'Hide guide':'Show guide';}
+    if(guide){guide.hidden=!traceMode;guide.innerHTML=guideVisible?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9 5.3c1-.2 2-.3 3-.3 6 0 10 7 10 7a22 22 0 0 1-3 3.5M6 6.5A23 23 0 0 0 2 12s4 7 10 7c2 0 4-.7 5.5-1.7"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';guide.setAttribute('aria-label',guideVisible?'Hide guide':'Show guide');guide.title=guideVisible?'Hide guide':'Show guide';guide.setAttribute('aria-pressed',String(!guideVisible));}
     const done=popup?$('exitTraceBtn'):$('flashExitTraceBtn');if(done)done.hidden=popup?!traceMode:false;
   }
   function toggleTraceGuide(area){
@@ -803,9 +803,9 @@
       syncTraceButtons('flash',false,true);
       return;
     }
-    flashStrokeTraceMode = false;
+    flashStrokeTraceMode = true;flashStrokeGuide=true;
     flashStrokeRenderedWord = '';
-    renderFlashStroke({traceMode:false, startQuiz:false, force:true});
+    renderFlashStroke({traceMode:true, startQuiz:true, force:true});
   }
   function newDeck(){
     lessonSession=null;deckReviewed=[];deckFinished=false;

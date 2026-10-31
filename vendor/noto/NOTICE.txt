@@ -1,0 +1,5 @@
+Noto animated emoji by Google. Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+Source: https://googlefonts.github.io/noto-emoji-animation/
+Assets: https://fonts.gstatic.com/s/e/notoemoji/latest/
+License: https://creativecommons.org/licenses/by/4.0/
+Used as menu icons. Animated assets resized to 40–64 pixels for menu display, with fewer animation frames.
