@@ -77,30 +77,30 @@ const ReadingStudio=(()=>{
   function setupQuiz(){
     const block=recentBlock();localPracticeOptions=vocabWords(block);
     quizSetup={source:data().source,ids:block.map(s=>s.id)};
-    const chosen=localPracticeOptions.filter(w=>status(w)!=='known'||data().starWords.includes(w));
-    const initial=new Set(chosen.length?chosen:localPracticeOptions),dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();
-    $('readingPracticeBody').innerHTML=`<h2 class="reading-quiz-heading">Quick quiz</h2><p class="small reading-quiz-subtitle">Choose vocabulary from ${block.length} sentence${block.length===1?'':'s'} you’ve covered. Start answering straight away. Questions are sampled from your selection.</p><div class="reading-quiz-settings"><div><label for="readingSetupCount">Maximum questions</label><select id="readingSetupCount">${[5,10,15,20,30].map(n=>`<option value="${n}" ${n===(data().quizCount||10)?'selected':''}>${n}</option>`).join('')}</select></div><div><label for="readingSetupType">Quiz type</label><select id="readingSetupType"><option value="mixed">Meaning + pinyin</option><option value="meaning">Meaning → Chinese</option><option value="pinyin">Pinyin → Chinese</option></select></div></div><div class="reading-quiz-toolbar"><strong>Select words</strong><div><button data-quiz-select="all">Select all</button> <button data-quiz-select="none">Clear</button></div></div><div class="reading-quiz-words">${localPracticeOptions.map((word,i)=>{const v=definition(word);return `<label class="reading-quiz-word"><input type="checkbox" data-quiz-word="${i}" ${initial.has(word)?'checked':''}><span><strong lang="zh-Hans">${escapeHtml(word)}</strong><small>${escapeHtml(v.pinyin)} · ${escapeHtml(v.english)}</small></span></label>`;}).join('')}</div><label class="reading-order-setting"><input id="readingSetupOrder" type="checkbox" checked> Include a sentence-order question</label><div class="reading-quiz-footer"><p id="readingQuizSelection" class="small" role="status"></p><button class="primary" id="readingQuizStart">Start quiz →</button></div>`;
-    $('readingSetupType').value=data().quizType||'mixed';updateQuizSelection();
+    const dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();
+    $('readingPracticeBody').innerHTML=`<h2 class="reading-quiz-heading">Quick quiz</h2><p class="small reading-quiz-subtitle">All ${localPracticeOptions.length} words from this ${block.length}-sentence block are included. Questions are sampled from the full vocabulary.</p><div class="reading-quiz-settings"><div><label for="readingSetupCount">Maximum questions</label><select id="readingSetupCount">${[5,10,15,20,30].map(n=>`<option value="${n}" ${n===(data().quizCount||10)?'selected':''}>${n}</option>`).join('')}</select></div><div><label for="readingSetupType">Quiz type</label><select id="readingSetupType"><option value="mixed">Mixed · all question types</option><option value="meaning">English → Chinese</option><option value="pinyin">Pinyin → Chinese</option><option value="zh-meaning">Chinese → English</option><option value="py-meaning">Pinyin → English</option></select></div></div><label class="reading-order-setting"><input id="readingSetupOrder" type="checkbox" checked> Include sentence order</label><div class="reading-quiz-footer"><p class="small">All covered words included</p><button class="primary" id="readingQuizStart" ${localPracticeOptions.length?'':'disabled'}>Start quiz →</button></div>`;
+    $('readingSetupType').value=data().quizType||'mixed';
   }
-  function updateQuizSelection(){const n=$('readingPracticeBody').querySelectorAll('[data-quiz-word]:checked').length;$('readingQuizSelection').textContent=`${n} word${n===1?'':'s'} selected`;$('readingQuizStart').disabled=!n;}
   function launchQuiz(){
     if(!quizSetup)return;
-    const selected=Array.from($('readingPracticeBody').querySelectorAll('[data-quiz-word]:checked')).map(el=>localPracticeOptions[Number(el.dataset.quizWord)]);if(!selected.length)return;
+    const selected=localPracticeOptions;if(!selected.length)return;
     const r=data();r.quizCount=Number($('readingSetupCount').value);r.quizType=$('readingSetupType').value;
     const words=shuffle(selected).slice(0,r.quizCount),p={mode:'direct',source:quizSetup.source,sentenceIds:quizSetup.ids,words,cursor:words.length,reveal:false,phase:'quiz',questions:[],q:0,score:0,total:0,answered:false,order:[],feedback:''};
     makeQuiz(p,words,READING_SENTENCES.concat(customSentences()).find(s=>s.id===quizSetup.ids.at(-1)),r.quizType,$('readingSetupOrder').checked,r.quizCount);
-    p.words=p.questions.filter(q=>q.kind!=='order').map(q=>q.word);p.cursor=p.words.length;r.practice=p;quizSetup=null;save();renderPractice();
+    p.words=p.questions.filter(q=>q.kind!=='order').map(q=>q.target||q.word);p.cursor=p.words.length;r.practice=p;quizSetup=null;save();renderPractice();
   }
   function finishQuiz(p){if(p.mode!=='direct')return;const r=data();r.quizCovered ||= {};r.quizCovered[p.source]=uniq([...(r.quizCovered[p.source]||[]),...p.sentenceIds]);render();}
   function openPractice(){const dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();renderPractice();}
   function makeQuiz(p,block=p.words.slice(Math.max(0,p.cursor-data().every),p.cursor),sentence=current(),type='mixed',includeOrder=true,limit=31){
     const covered=uniq([...vocabWords(recentBlock()),...p.words]);
+    const modes=['meaning','zh-meaning','pinyin','py-meaning'];
     p.questions=block.map((word,i)=>{
-      const v=definition(word),kind=type==='mixed'?(i%2?'pinyin':'meaning'):type;
-      const usable=w=>{const d=definition(w);return w!==word&&d&&(kind==='pinyin'?d.pinyin!==v.pinyin:d.english!==v.english);};
+      const v=definition(word),kind=type==='mixed'?modes[i%modes.length]:type,englishAnswer=kind.endsWith('-meaning');
+      const correct=englishAnswer?v.english:word;
+      const usable=w=>{const d=definition(w);return w!==word&&d&&(kind.includes('pinyin')||kind==='py-meaning'?d.pinyin!==v.pinyin:true)&&d.english!==v.english;};
       const familiar=shuffle(covered.filter(usable)),fallback=shuffle(uniq(VOCAB.map(v=>v.word)).filter(w=>usable(w)&&!familiar.includes(w)));
-      const values=[word,...familiar.concat(fallback).slice(0,3)];
-      return {kind,word,prompt:kind==='meaning'?v.english:v.pinyin,options:shuffle(values)};
+      const distractors=uniq(familiar.concat(fallback).map(w=>englishAnswer?definition(w).english:w)).slice(0,3);
+      return {kind,target:word,word:correct,prompt:kind==='meaning'?v.english:kind==='zh-meaning'?word:v.pinyin,options:shuffle([correct,...distractors])};
     });
     const parts=sentence?segments(sentence.zh,sentence.py).filter(s=>s.v).map(s=>s.text):[];
     if(includeOrder&&parts.length>=3&&parts.length<=14){p.questions=p.questions.slice(0,Math.max(0,limit-1));p.questions.push({kind:'order',prompt:sentence.en||'Rebuild the sentence you just read.',answer:parts,options:shuffle(parts.map((text,i)=>({text,id:i})))});}
@@ -112,12 +112,12 @@ const ReadingStudio=(()=>{
       const v=definition(p.words[p.cursor]);if(!v){p.phase='summary';return renderPractice();}
       shell.innerHTML=`<span class="card-eyebrow">READING VOCABULARY</span><p class="small">${p.cursor} / ${total} words reviewed</p><button class="reading-study-card" id="readingCardReveal" aria-label="Reveal or hide this word"><span lang="zh-Hans">${escapeHtml(v.word)}</span><strong class="${p.reveal?'':'hint-hidden'}">${escapeHtml(v.pinyin)}</strong><p class="${p.reveal?'':'hint-hidden'}">${escapeHtml(v.english)}</p><small>Tap to reveal</small></button><div class="reading-rating"><button data-reading-rate="new">Revisit</button><button data-reading-rate="learning">Learning</button><button data-reading-rate="known" class="primary">Known</button></div>`;
     }else if(p.phase==='quiz'){
-      const q=p.questions[p.q];shell.innerHTML=`<span class="card-eyebrow">QUICK CHECK</span><p class="small">Question ${p.q+1} / ${p.questions.length} · ${p.mode==='direct'?`${p.words.length} selected words`:`${p.cursor} words reviewed`}</p><div class="progressbar reading-quiz-progress"><span style="width:${p.q/p.questions.length*100}%"></span></div><h2 class="reading-question">${escapeHtml(q.prompt)}</h2>${q.kind==='order'?`<p class="small">Tap the words in sentence order. Tap your answer to undo the last word.</p><button id="readingOrderAnswer" class="reading-order-answer" aria-label="Undo last word">${p.order.map(i=>escapeHtml(q.options[i].text)).join(' ')||'Build your sentence here'}</button><div class="reading-order-options">${q.options.map((o,i)=>`<button data-reading-order="${i}" ${p.order.includes(i)||p.answered?'disabled':''}>${escapeHtml(o.text)}</button>`).join('')}</div><button id="readingOrderCheck" ${p.answered||p.order.length!==q.options.length?'disabled':''}>Check sentence</button>`:`<div class="reading-quiz-options">${q.options.map((w,i)=>`<button data-reading-answer="${i}" class="${p.answered&&w===q.word?'correct':''}" ${p.answered?'disabled':''}>${escapeHtml(w)}</button>`).join('')}</div>`}<p class="reading-feedback" role="status">${escapeHtml(p.feedback||'')}</p><button class="primary" id="readingQuestionNext" ${p.answered?'':'hidden'}>${p.q+1===p.questions.length?'See results':'Next question'}</button>`;
+      const q=p.questions[p.q];shell.innerHTML=`<span class="card-eyebrow">QUICK CHECK</span><p class="small">Question ${p.q+1} / ${p.questions.length} · ${p.mode==='direct'?`${p.words.length} words in this quiz`:`${p.cursor} words reviewed`}</p><div class="progressbar reading-quiz-progress"><span style="width:${p.q/p.questions.length*100}%"></span></div><h2 class="reading-question">${escapeHtml(q.prompt)}</h2>${q.kind==='order'?`<p class="small">Tap the words in sentence order. Tap your answer to undo the last word.</p><button id="readingOrderAnswer" class="reading-order-answer" aria-label="Undo last word">${p.order.map(i=>escapeHtml(q.options[i].text)).join(' ')||'Build your sentence here'}</button><div class="reading-order-options">${q.options.map((o,i)=>`<button data-reading-order="${i}" ${p.order.includes(i)||p.answered?'disabled':''}>${escapeHtml(o.text)}</button>`).join('')}</div><button id="readingOrderCheck" ${p.answered||p.order.length!==q.options.length?'disabled':''}>Check sentence</button>`:`<div class="reading-quiz-options ${q.kind.endsWith('-meaning')?'latin-options':''}">${q.options.map((w,i)=>`<button data-reading-answer="${i}" class="${p.answered&&w===q.word?'correct':''}" ${p.answered?'disabled':''}>${escapeHtml(w)}</button>`).join('')}</div>`}<p class="reading-feedback" role="status">${escapeHtml(p.feedback||'')}</p><button class="primary" id="readingQuestionNext" ${p.answered?'':'hidden'}>${p.q+1===p.questions.length?'See results':'Next question'}</button>`;
     }else{
       shell.innerHTML=`<span class="card-eyebrow">PRACTICE COMPLETE</span><h2>${p.mode==='direct'?'Quiz complete!':p.cursor===total?'Nice work. You’re done!':'A little stronger, one block at a time.'}</h2><p>${p.mode==='direct'?`${p.words.length} words practised`:`${p.cursor} / ${total} words reviewed`} · ${p.score} / ${p.total} quiz answers correct</p><button class="primary" id="readingPracticeContinue">${p.cursor<total?'Continue flashcards':'Back to reading'}</button>`;
     }
   }
-  function answer(correct,feedback){const p=data().practice;if(p.answered)return;p.answered=true;p.total++;if(correct)p.score++;else{const word=p.questions[p.q].word;if(word)rstatus(word,'learning');}p.feedback=feedback;save();renderPractice();}
+  function answer(correct,feedback){const p=data().practice;if(p.answered)return;p.answered=true;p.total++;if(correct)p.score++;else{const word=p.questions[p.q].target||p.questions[p.q].word;if(word)rstatus(word,'learning');}p.feedback=feedback;save();renderPractice();}
   let detailWriters=[],detailGeneration=0,detailWord='',detailGuide=true;
   async function renderDetailsWriting(){
     cancelWriters(detailWriters);detailWriters=[];
@@ -151,7 +151,10 @@ const ReadingStudio=(()=>{
     });
     $('readingSource').onchange=e=>{data().source=e.target.value;selectedWord='';translationOpen=false;save();render();};
     $('readingPinyinMode').onchange=e=>{data().pinyin=e.target.value;save();render();};
-    $('readingOptionsToggle').onclick=()=>{const pane=$('readingOptions');pane.hidden=!pane.hidden;$('readingOptionsToggle').setAttribute('aria-expanded',String(!pane.hidden));};
+    const settingsDialog=$('readingOptions');
+    $('readingOptionsToggle').onclick=()=>settingsDialog.showModal();$('readingSettingsClose').onclick=()=>settingsDialog.close();
+    let settingsBackdrop=false;const settingsOutside=e=>{const b=settingsDialog.getBoundingClientRect();return e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom;};
+    settingsDialog.onpointerdown=e=>{settingsBackdrop=e.target===settingsDialog&&settingsOutside(e);};settingsDialog.onclick=e=>{if(settingsBackdrop&&e.target===settingsDialog&&settingsOutside(e))settingsDialog.close();settingsBackdrop=false;};
     $('readingSentenceInterval').onchange=e=>{data().sentenceInterval=Math.min(30,Math.max(10,Math.round(Number(e.target.value)||10)));save();render();};
     $('readingQuizCount').onchange=e=>{data().quizCount=Number(e.target.value);save();};
     $('readingQuizType').onchange=e=>{data().quizType=e.target.value;save();};
@@ -177,9 +180,8 @@ const ReadingStudio=(()=>{
     const dialog=$('readingPracticeDialog');$('readingPracticeClose').onclick=()=>dialog.close();
     let backdrop=false;const outside=e=>{const b=dialog.getBoundingClientRect();return e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom;};
     dialog.onpointerdown=e=>{backdrop=e.target===dialog&&outside(e);};dialog.addEventListener('click',e=>{if(backdrop&&e.target===dialog&&outside(e))dialog.close();backdrop=false;});
-    $('readingPracticeBody').onchange=e=>{if(e.target.matches('[data-quiz-word]'))updateQuizSelection();};
+    
     $('readingPracticeBody').onclick=e=>{
-      const select=e.target.closest('[data-quiz-select]');if(select){$('readingPracticeBody').querySelectorAll('[data-quiz-word]').forEach(el=>el.checked=select.dataset.quizSelect==='all');updateQuizSelection();return;}
       if(e.target.closest('#readingQuizStart')){launchQuiz();return;}
       if(quizSetup)return;
       const p=data().practice;if(!p)return;
@@ -188,7 +190,7 @@ const ReadingStudio=(()=>{
         rstatus(p.words[p.cursor],rate.dataset.readingRate);p.cursor++;p.reveal=false;
         if(p.cursor===p.words.length)p.phase='summary';save();renderPractice();return;
       }
-      const choice=e.target.closest('[data-reading-answer]');if(choice&&p.phase==='quiz'){const q=p.questions[p.q];answer(q.options[Number(choice.dataset.readingAnswer)]===q.word,`Answer: ${q.word} · ${definition(q.word).pinyin} · ${definition(q.word).english}`);return;}
+      const choice=e.target.closest('[data-reading-answer]');if(choice&&p.phase==='quiz'){const q=p.questions[p.q];answer(q.options[Number(choice.dataset.readingAnswer)]===q.word,`Answer: ${q.target||q.word} · ${definition(q.target||q.word).pinyin} · ${definition(q.target||q.word).english}`);return;}
       const order=e.target.closest('[data-reading-order]');if(order&&!p.answered){p.order.push(Number(order.dataset.readingOrder));save();renderPractice();return;}
       if(e.target.closest('#readingOrderAnswer')&&!p.answered){p.order.pop();save();renderPractice();return;}
       if(e.target.closest('#readingOrderCheck')&&!p.answered){const q=p.questions[p.q];answer(p.order.map(i=>q.options[i].text).join('')===q.answer.join(''),'Sentence: '+q.answer.join(''));return;}

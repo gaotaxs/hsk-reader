@@ -1,3 +1,11 @@
+## 1.9.0
+
+- Bottom-anchored sidebar collapse control; removed footer flavour text to avoid collapse reflow.
+- Reader track, pinyin, display mode and quiz preferences moved to the top-right settings gear and dialog.
+- Sentence vocabulary is a collapsed disclosure card; text tools retain dictionary attribution.
+- Quick quiz includes all covered words automatically. Mixed combines four Chinese/English/pinyin directions plus optional sentence order; removed word-selection UI.
+- Mobile viewport frame anchors the header and navigation, limits scrolling to overflowing content, compacts reading/lesson/card layouts and hides flashcard deck controls behind Deck options. Long text, vocabulary and settings remain scrollable.
+
 ## 1.8.0
 
 - Fixed sidebar row heights and removed the navigation eyebrow in both states; collapsing keeps the logo, header and navigation at the same vertical positions.
