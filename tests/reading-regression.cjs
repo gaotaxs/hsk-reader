@@ -77,5 +77,10 @@ test('Flashcard review stays separate and completes without silently becoming a 
  const n=run('extras.reading.practice.words.length');for(let i=0;i<n;i++)click('[data-reading-rate="learning"]');
  assert.equal(run('extras.reading.practice.phase'),'summary');assert.equal(run('extras.reading.practice.cursor'),n);
 });
-test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
+test('Workspace is separate from Reader and keeps text tools and credits together',()=>{
+ assert.equal($('inputText').closest('.panel').id,'workspace');assert.equal($('readingUseCustom').closest('.panel').id,'workspace');
+ assert.equal(w.document.querySelector('.reading-credit').closest('.panel').id,'workspace');assert.equal($('reader').querySelector('textarea'),null);
+ click('[data-tab="workspace"]');assert.equal($('workspace').classList.contains('active'),true);assert.equal($('pageTitle').textContent,'Workspace');
+});
+test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('reader').classList.contains('active'),true);assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
 console.log(count+' reading workflow checks passed');dom.window.close();

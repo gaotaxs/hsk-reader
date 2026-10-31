@@ -45,7 +45,7 @@ const ReadingStudio=(()=>{
     $('readingMarkNext').disabled=!sentence;$('readingListen').disabled=!sentence;
     $('readingStarSentence').disabled=!sentence;$('readingStarSentence').textContent=r.starSentences.includes(sentence?.id)?'★ Saved':'☆ Save sentence';
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
-    $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${segments(s.zh,s.py).map(wordHTML).join('')}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or paste your own text below and choose “Read my text”.</p>';
+    $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${segments(s.zh,s.py).map(wordHTML).join('')}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
     const trans=$('sentenceTranslation');trans.hidden=!sentence;
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
@@ -164,7 +164,7 @@ const ReadingStudio=(()=>{
     $('readingStarSentence').onclick=()=>{if(current())toggleStar('starSentences',current().id);};
     $('readingTranslateToggle').onclick=()=>{translationOpen=!(translationOpen||data().pin);if(!translationOpen)data().pin=false;save();render();};
     $('readingPinTranslation').onclick=()=>{data().pin=!data().pin;save();render();};
-    $('readingUseCustom').onclick=()=>{data().custom=$('inputText').value.slice(0,200000);data().source='custom';data().positions.custom=0;selectedWord='';save();render();root.scrollIntoView({behavior:'smooth',block:'start'});};
+    $('readingUseCustom').onclick=()=>{data().custom=$('inputText').value.slice(0,200000);data().source='custom';data().positions.custom=0;selectedWord='';save();render();switchTab('reader');root.scrollIntoView({behavior:'smooth',block:'start'});};
     $('readingReviewWords').onclick=startPractice;$('readingCheckpointStart').onclick=setupQuiz;
     $('readingCheckpointDismiss').onclick=()=>{const r=data(),n=sentences().filter(x=>r.read.includes(x.id)).length;r.dismissedCheckpoint=uniq([...(r.dismissedCheckpoint||[]),r.source+':'+n]);save();render();};
     $('readingResumePractice').onclick=()=>{quizSetup=null;if(data().practice?.mode==='direct'&&data().practice.phase==='quiz')openPractice();else setupQuiz();};

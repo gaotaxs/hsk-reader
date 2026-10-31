@@ -1045,8 +1045,8 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){window.refreshReadingStudio?.();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['lessons','flashcards','reader','vocab','quiz','settings'];
-  const APP_TAB_DETAILS={reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
+  const APP_TAB_NAMES=['lessons','flashcards','reader','workspace','vocab','quiz','settings'];
+  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
     document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
@@ -1055,6 +1055,7 @@
     document.title=`${APP_TAB_DETAILS[name][0]} · HSK Reader`;
     document.body.classList.remove('focus-reading');$('focusReaderBtn').setAttribute('aria-pressed','false');$('focusReaderBtn').textContent='Focus';
     stopVoice();
+    if(name==='workspace'&&compactEditor())showPassageEditor(true);
     if(name!=='flashcards'&&flashStrokeOpen)toggleFlashStrokePanel(false);
     writeJSON(STORE.lastTab,name);
     $('mainContent').scrollTop=0;window.scrollTo({top:0,behavior:'instant'});
@@ -1291,7 +1292,7 @@
   document.addEventListener('keydown',e=>{
     if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
-    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-6]$/.test(e.key)){
+    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-7]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
     }
     const tag=document.activeElement?.tagName;

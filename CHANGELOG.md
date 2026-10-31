@@ -1,3 +1,9 @@
+## 1.10.0
+
+- Logo, navigation icons and collapse button share the same fixed horizontal centre in expanded and collapsed desktop navigation.
+- Moved passage editing, saved texts, translation tools and dictionary attribution to a separate Workspace tab; Reader contains only the sentence study experience.
+- Workspace opens the editor on compact screens, and “Read my text” switches to sentence Reader. Mobile navigation now has seven destinations.
+
 ## 1.9.0
 
 - Bottom-anchored sidebar collapse control; removed footer flavour text to avoid collapse reflow.
