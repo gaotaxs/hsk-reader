@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Complete atomic install at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Update does not skip waiting at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Offline navigation serves cached document at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Offline shell contains relative JS paths at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Translation requests excluded at /",
+    "result": "PASS"
+  },
+  {
+    "name": "All 622 characters available offline at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Explicit update activates worker at /",
+    "result": "PASS"
+  },
+  {
+    "name": "Complete atomic install at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Update does not skip waiting at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Offline navigation serves cached document at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Offline shell contains relative JS paths at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Translation requests excluded at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "All 622 characters available offline at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Explicit update activates worker at /hsk-reader/",
+    "result": "PASS"
+  },
+  {
+    "name": "Activation removes only obsolete releases within its own scope",
+    "result": "PASS"
+  },
+  {
+    "name": "Failed install removes incomplete new cache and retains old version",
+    "result": "PASS"
+  }
+]

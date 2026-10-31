@@ -1,0 +1,35 @@
+## 1.3.0
+
+- Stroke-order modal with focus containment and close via X, Escape or backdrop.
+- Replay/retry icon controls; underlying card shortcuts disabled while the modal is open.
+- Slightly larger Chinese characters centred with navigation arrows.
+
+## 1.2.0
+
+- Compact fixed-height cards with fading bold pinyin per character and bold meaning below.
+- Removed the secondary recall rating prompt from the study interface.
+- Lessons count classified words, resume partial sessions, stop on a congratulations screen, and save the completed day once.
+- Lessons button reflects today’s completion and offers the next day explicitly.
+
+## 1.1.0
+
+- Calming blue dark theme.
+- Lessons landing: known-word progress for HSK 2 and 3, one-click study, collapsible planning and word details.
+- Flashcards: swipe/drag left to reset as not known, up for learning, right for known; matching accessible buttons. Revisit words are available in the New words deck.
+- Gesture cancellation, minimum travel, and click suppression prevent accidental flips.
+
+# Changelog — 1.0
+
+- Replaced stacked legacy CSS with a coherent ivory/green light theme and dark theme, consistent controls and responsive layouts. Phone tabs retain labels; tablet uses a compact labelled rail; desktop uses a reading workspace.
+- Reduced phone clutter, improved reading typography, attached punctuation to the preceding highlighted word, and added spacing controls and Focus mode.
+- Added named saved passages, passage familiarity counts and one-action unfamiliar-word decks.
+- Preserved all 601 vocabulary records exactly. Fixed HSK 3 长 disappearing from vocabulary/decks and custom lesson decks silently substituting its HSK 2 reading. Each sense now supports independent status and scheduling.
+- Fixed known-word highlighting filters breaking compound segmentation; added an explicit passage-wide selector for 长's reading.
+- Added resumable flashcards, optional spaced review, a daily review goal and completion summaries. Kept existing manual status controls and all quiz directions.
+- Added text feedback for correct/incorrect quiz answers and retained missed-question retries. Prevented duplicate keyboard handling on native buttons.
+- Enlarged handwriting surfaces without CSS coordinate distortion, added sequential character navigation on tablet and phone, dark-mode ink, persistent completion counts, cancellation of obsolete writing sessions, and reduced-motion handling.
+- Bundled Hanzi Writer 3.7.3 and the exact needed 622-character subset of hanzi-writer-data 2.0.1. Included upstream licences and provenance.
+- Fixed nonexistent PWA icon paths. Added atomic, scoped offline caches, opt-in update activation, cache repair and installation status.
+- Preserved legacy storage keys and captured a pre-upgrade snapshot. Extended JSON backups while retaining legacy fields. Added input validation, bounded settings, import rollback and truthful storage-failure messages.
+- Kept translation opt-in for fresh installs, preserved prior settings, added request timeout/size checks and excluded translation from caching.
+- Split HTML, CSS, data, app behaviour and PWA lifecycle into maintainable files. No framework, build or backend added.

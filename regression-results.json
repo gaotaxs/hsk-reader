@@ -1,0 +1,146 @@
+[
+  {
+    "name": "All 601 original records unchanged, in original order",
+    "result": "PASS"
+  },
+  {
+    "name": "303 HSK2 / 298 HSK3 / 600 written words",
+    "result": "PASS"
+  },
+  {
+    "name": "Legacy settings and lesson history survive startup",
+    "result": "PASS"
+  },
+  {
+    "name": "Legacy snapshot captured before migration",
+    "result": "PASS"
+  },
+  {
+    "name": "Legacy 长 status migrates to both senses",
+    "result": "PASS"
+  },
+  {
+    "name": "Reset one pronunciation without erasing the other",
+    "result": "PASS"
+  },
+  {
+    "name": "HSK3 and custom decks retain zhǎng",
+    "result": "PASS"
+  },
+  {
+    "name": "Vocabulary search exposes both 长 records",
+    "result": "PASS"
+  },
+  {
+    "name": "Hide known does not split 我们 into 我",
+    "result": "PASS"
+  },
+  {
+    "name": "Reader preserves punctuation and safely renders hostile markup",
+    "result": "PASS"
+  },
+  {
+    "name": "HSK3-only reader uses explicit zhǎng selection",
+    "result": "PASS"
+  },
+  {
+    "name": "Lesson word count changes retain completed coverage",
+    "result": "PASS"
+  },
+  {
+    "name": "Quiz includes four distinct options and locks duplicate answers",
+    "result": "PASS"
+  },
+  {
+    "name": "Polyphonic quiz prompts disambiguate meaning/pronunciation",
+    "result": "PASS"
+  },
+  {
+    "name": "Remembered schedules 1 day and counts unique daily review",
+    "result": "PASS"
+  },
+  {
+    "name": "Again schedules 10 minutes and resets interval step",
+    "result": "PASS"
+  },
+  {
+    "name": "Future reviews excluded; unscheduled Learning words included",
+    "result": "PASS"
+  },
+  {
+    "name": "Flashcard session restores exact pronunciation and reveal state",
+    "result": "PASS"
+  },
+  {
+    "name": "Save and reload a named passage",
+    "result": "PASS"
+  },
+  {
+    "name": "New backup round trip preserves statuses, SRS, writing and passages",
+    "result": "PASS"
+  },
+  {
+    "name": "Old backups accepted; new passage collection retained",
+    "result": "PASS"
+  },
+  {
+    "name": "Invalid JSON, wrong field types and newer schemas leave state untouched",
+    "result": "PASS"
+  },
+  {
+    "name": "Import quota failure rolls back all persisted keys and in-memory state",
+    "result": "PASS"
+  },
+  {
+    "name": "Blocked draft storage does not claim saved",
+    "result": "PASS"
+  },
+  {
+    "name": "Imported settings are bounded and type checked",
+    "result": "PASS"
+  },
+  {
+    "name": "Complete bundled writing dataset covers every vocabulary character",
+    "result": "PASS"
+  },
+  {
+    "name": "Hidden flash writing panel becomes interactive when opened",
+    "result": "PASS"
+  },
+  {
+    "name": "Writing pad records a completion once and exposes navigation",
+    "result": "PASS"
+  },
+  {
+    "name": "Static document IDs are unique and local assets exist",
+    "result": "PASS"
+  },
+  {
+    "name": "Swipe left/up/right persist distinct statuses and advance once",
+    "result": "PASS"
+  },
+  {
+    "name": "Short, downward and cancelled swipes do not change the card",
+    "result": "PASS"
+  },
+  {
+    "name": "Lesson progress is derived from known words and study opens correct level",
+    "result": "PASS"
+  },
+  {
+    "name": "Lesson completes once at 10/10, persists after reload, and updates next day",
+    "result": "PASS"
+  },
+  {
+    "name": "Pinyin aligns one syllable per character for all vocabulary entries",
+    "result": "PASS"
+  },
+  {
+    "name": "Stroke popup closes cleanly and blocks underlying flashcard shortcuts",
+    "result": "PASS"
+  },
+  {
+    "name": "Over-limit online translation sends no request",
+    "result": "PASS"
+  }
+]

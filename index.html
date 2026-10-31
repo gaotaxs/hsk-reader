@@ -3,470 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f4f7fc" />
+  <meta name="theme-color" content="#f5f5f0" />
   <meta name="description" content="An elegant, private Chinese reading and handwriting practice tool for HSK 2 and HSK 3." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="HSK Reader" />
   <title>HSK Reader · Read, Learn, Practice</title>
-  <style>
-    :root{
-      --bg:#f7f4ef;--card:#fffaf3;--text:#1f2937;--muted:#6b7280;--line:#e5ded4;
-      --accent:#2563eb;--accent-strong:#1d4ed8;--accent2:#7c3aed;--ok:#047857;--learn:#bd3c3c;--danger:#b91c1c;
-      --hsk2-bg:#dbeafe;--hsk2-border:#60a5fa;--hsk3-bg:#ede9fe;--hsk3-border:#a78bfa;
-      --shadow:0 10px 25px rgba(31,41,55,.08);--radius:18px;
-    }
-    [data-theme="dark"]{
-      --bg:#0f172a;--card:#111827;--text:#f8fafc;--muted:#94a3b8;--line:#334155;
-      --accent:#60a5fa;--accent-strong:#3b82f6;--accent2:#c4b5fd;--ok:#34d399;--learn:#bd3c3c;--danger:#f87171;
-      --hsk2-bg:rgba(37,99,235,.22);--hsk2-border:#60a5fa;--hsk3-bg:rgba(124,58,237,.25);--hsk3-border:#c4b5fd;
-      --shadow:0 10px 25px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow-y:scroll}
-    button,input,select,textarea{font:inherit;color:inherit}
-    button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 12px;cursor:pointer;transition:transform .05s ease,background .05s ease,border-color .05s ease}
-    button:hover{transform:translateY(-1px);border-color:var(--accent)}
-    button:disabled{cursor:not-allowed;opacity:.55;transform:none}
-    .primary{background:var(--accent);border-color:var(--accent);color:#fff}.primary:hover{background:var(--accent-strong)}
-    .good{border-color:color-mix(in srgb,var(--ok) 45%,var(--line));color:var(--ok)}
-    .learn{border-color:color-mix(in srgb,var(--learn) 45%,var(--line));color:var(--learn)}
-    .danger{border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}
-    .destructive{background:var(--danger);border-color:var(--danger);color:#fff}.destructive:hover{background:color-mix(in srgb,var(--danger) 86%,#000);border-color:var(--danger)}
-    [data-theme="light"] .good{background:var(--ok);border-color:var(--ok);color:#fff}
-    [data-theme="light"] .learn{background:var(--learn);border-color:var(--learn);color:#fff}
-    [data-theme="light"] .good:hover{background:color-mix(in srgb,var(--ok) 88%,#000);border-color:var(--ok)}
-    [data-theme="light"] .learn:hover{background:color-mix(in srgb,var(--learn) 88%,#000);border-color:var(--learn)}
-    header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}header .wrap{margin-left:260px;max-width:none;padding:12px 16px;transition:margin-left .25s ease,opacity .25s ease}.sidebar-collapsed header .wrap{margin-left:72px}
-    .wrap{max-width:none;margin:0;padding:12px}main{max-width:none;margin:0;padding:0}
-    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap}
-    h1{font-size:20px;margin:0;line-height:1.15}.version-badge,.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--card) 85%,transparent)}
-    h2{font-size:18px;margin:0 0 10px}.tabs{display:flex;gap:6px;overflow:auto;padding:10px 0 2px}.tab{border-radius:999px;white-space:nowrap}.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.app-shell{max-width:none;margin:0;padding:0}.app-main{min-width:0;margin-left:280px;padding:16px 16px 24px;max-width:calc(100vw - 280px);transition:margin-left .25s ease,max-width .25s ease,opacity .25s ease}.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:color-mix(in srgb,var(--card) 96%,transparent);border-right:1px solid var(--line);border-top:0;border-left:0;border-bottom:0;border-radius:0;box-shadow:var(--shadow);padding:12px 10px;display:grid;gap:12px;align-content:start;z-index:30;overflow:hidden;transition:width .25s ease,padding .25s ease,background .25s ease,box-shadow .25s ease}.sidebar-top{display:flex;justify-content:space-between;align-items:center;min-width:0}.sidebar-title{font-weight:750;font-size:16px;white-space:nowrap;padding-left:4px;opacity:1;max-width:140px;overflow:hidden;transition:opacity .2s ease,max-width .25s ease,padding .25s ease}.sidebar-toggle{width:40px;height:40px;padding:0;display:grid;place-items:center;border-radius:12px;font-size:18px}.sidebar-nav{display:grid;gap:8px}.side-tab{width:100%;height:52px;min-height:52px;display:flex;align-items:center;gap:12px;justify-content:flex-start;padding:12px 14px;border-radius:14px;background:transparent;border:1px solid transparent;font-weight:600;overflow:hidden;transition:background .15s ease,border-color .15s ease}.side-tab:hover{background:color-mix(in srgb,var(--bg) 88%,transparent)}.side-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.side-icon{width:22px;height:22px;display:inline-flex;justify-content:center;align-items:center;flex:0 0 22px;transform:none;transition:none}.side-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.side-icon.text{font-size:20px;line-height:1}.side-label{white-space:nowrap;opacity:1;max-width:120px;overflow:hidden;transform:translateX(0);transition:opacity .18s ease,max-width .25s ease,transform .25s ease}.sidebar-collapsed .app-main{margin-left:92px;max-width:calc(100vw - 92px)}.sidebar-collapsed .sidebar{width:72px;padding:12px 10px}.sidebar-collapsed .sidebar-title{opacity:0;max-width:0;padding-left:0}.sidebar-collapsed .side-label{opacity:0;max-width:0;transform:translateX(-4px)}.sidebar-collapsed .side-tab{justify-content:flex-start;padding:12px 14px;gap:12px}.sidebar-collapsed .sidebar-top{justify-content:center}.sidebar-collapsed .sidebar-toggle{margin:0 auto}
-    .panel{display:none}.panel.active{display:block}.grid{display:grid;gap:12px}.grid.reader{grid-template-columns:minmax(320px,420px) 1fr}.left-stack{display:grid;gap:12px;align-content:start}.grid.two{grid-template-columns:1fr 1fr}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.small{font-size:13px;color:var(--muted)}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px}.vocab-toolbar-grid label{font-size:14px;font-weight:600;letter-spacing:.01em}.vocab-toolbar-grid select{font-size:15px;padding:9px 12px}textarea{min-height:220px;resize:vertical;line-height:1.55}.input-wrap{position:relative}.clear-x{position:absolute;top:8px;right:8px;width:32px;height:32px;border:0;background:transparent;border-radius:0;padding:0;display:grid;place-items:center;z-index:2;color:var(--muted);box-shadow:none}.clear-x:hover{transform:none;background:transparent;border-color:transparent;color:var(--text)}.input-wrap textarea{padding-right:50px}
-    .reader-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.reader-actions button{width:100%;height:38px;min-height:0;padding:6px 8px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;line-height:1.1;font-size:14px;font-weight:600}.control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.reader-controls-card .control-grid{margin-top:10px}.toggle{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--text);background:var(--bg);margin:0}.toggle input{width:auto}
-    .reader-view{min-height:320px;margin-top:10px;padding:2px;font-size:26px;line-height:1.75;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;word-break:break-word}.tok{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;vertical-align:baseline;margin:1px 1px 3px;padding:0 4px;border-radius:8px;border-bottom:3px solid;line-height:1.15;cursor:pointer;transition:transform .05s ease,filter .05s ease}.tok:hover{transform:translateY(-1px);filter:brightness(1.05)}.tok.hsk2{background:var(--hsk2-bg);border-color:var(--hsk2-border)}.tok.hsk3{background:var(--hsk3-bg);border-color:var(--hsk3-border)}.tok .pin{font-size:12px;color:var(--muted);margin-top:3px}.tok .eng{font-size:11px;color:var(--muted);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .translation-box{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}.translation-output{white-space:pre-wrap;line-height:1.6;font-size:16px}.translation-output .local-gloss{font-size:13px;color:var(--muted);margin-top:10px}.status-chip{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:12px;color:var(--muted)}.status-known{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}.status-learning{color:var(--learn);border-color:color-mix(in srgb,var(--learn) 45%,var(--line))}
-    .scroll{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:14px}.scroll table{width:100%;border-collapse:separate;border-spacing:0}.scroll th,.scroll td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:middle}.scroll thead th{position:sticky;top:0;z-index:3;background:var(--card);box-shadow:0 1px 0 var(--line)}.scroll td:first-child{font-size:26px;font-family:"PingFang SC","Microsoft YaHei",sans-serif}.actions-cell{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-start}.actions-cell button{padding:5px 9px;font-size:13px;border-radius:10px;line-height:1.2}.scroll td.actions-td{vertical-align:middle}.scroll td.actions-td .actions-cell{min-height:30px}.scroll tbody tr{height:68px}.scroll th,.scroll td{vertical-align:middle}.scroll td.actions-td{padding-top:9px;padding-bottom:9px}.vocab-toolbar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.vocab-browser-card{padding:18px 18px 16px}.vocab-browser-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,360px);gap:16px;align-items:center}.vocab-browser-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.vocab-browser-title strong{font-size:18px}.vocab-count-inline{font-size:13px;color:var(--muted)}.vocab-scroll-wrap{margin-top:18px}.search-wrap{position:relative}.search-wrap input{padding-left:40px;padding-right:38px}.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:17px;pointer-events:none}.search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;padding:0;border:0;background:transparent;color:var(--muted);display:grid;place-items:center}.search-clear:hover{transform:translateY(-50%);background:transparent;border-color:transparent;color:var(--text)}
-    .lesson-list{display:grid;gap:8px}.lesson-word{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--bg)}.lesson-word .zh{font-size:26px;font-family:"PingFang SC","Microsoft YaHei",sans-serif}.progressbar{height:10px;background:var(--bg);border:1px solid var(--line);border-radius:999px;overflow:hidden}.progressbar>span{display:block;height:100%;background:var(--accent);width:0%}.flash-toolbar{display:grid;grid-template-columns:minmax(280px,1fr) 140px auto auto;gap:12px;align-items:end}.flash-size-field{min-width:120px}.flash-shuffle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);height:42px;margin:0;white-space:nowrap;justify-self:start}.flash-shuffle input{width:auto}.shuffle-mark{font-size:18px;line-height:1;color:var(--muted)}.flash-stage{position:relative}.flashcard{min-height:250px;display:grid;place-items:center;text-align:center;border:1px solid var(--line);border-radius:18px;background:var(--bg);padding:18px}.flash-front{font-size:60px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.08}.flash-back{font-size:21px;margin-top:12px;color:var(--muted);line-height:1.35}.flash-nav-arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-size:24px;line-height:1;padding:0;z-index:2;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,color .15s ease}.flash-nav-arrow.left{left:14px}.flash-nav-arrow.right{right:14px}.flash-nav-arrow:hover{transform:translateY(-50%);border-color:var(--line)}.flash-nav-glyph{display:block;transform:translateY(-2px)}.flash-meta-row{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}.flash-progress{margin:0;color:var(--muted);flex:0 0 auto}.flash-control-row{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap;flex:1 1 auto}.flash-control-row button.active{background:var(--accent);border-color:var(--accent);color:#fff}.flash-stroke-shell{max-height:0;overflow:hidden;opacity:0;margin-top:0;transition:max-height .25s ease,opacity .2s ease,margin-top .25s ease}.flash-stroke-shell.open{max-height:540px;opacity:1;margin-top:14px}.flash-stroke-shell .stroke-panel{margin-top:0}.flash-top-card,.quiz-top-card{margin-bottom:18px}.quiz-toolbar{display:grid;grid-template-columns:minmax(240px,1fr) minmax(240px,1fr) 120px auto;gap:12px;align-items:end}.quiz-count-field{min-width:100px}.quiz-main-card{padding-bottom:10px}.quiz-main-head{display:flex;justify-content:space-between;align-items:center;gap:12px}#quizPrompt{font-size:29px!important;color:var(--text);margin:12px 0 12px!important;line-height:1.12;text-align:center}.quiz-prompt-latin{font-size:29px!important}.quiz-prompt-han{font-size:44px!important}#quizPrompt.quiz-idle{color:color-mix(in srgb,var(--muted) 72%,var(--bg))}#quizOptions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:2px}.quiz-next-row{display:flex;justify-content:center;margin-top:10px}.quiz-option{display:flex;width:100%;text-align:left;margin:0;align-items:center;min-height:44px;padding:7px 10px;font-size:19px}.quiz-option.quiz-option-han{font-size:23px}.quiz-option.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}.quiz-option.wrong{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 15%,transparent)}
-    dialog{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:18px;padding:0;box-shadow:var(--shadow);width:min(560px,calc(100vw - 132px));max-width:calc(100vw - 132px);overflow:visible;opacity:1;transform:none;transition:none}dialog[open].showing{opacity:1;transform:none}dialog::backdrop{background:rgba(0,0,0,.50);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:none}[data-theme="dark"] dialog::backdrop{background:rgba(0,0,0,.50);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.modal-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;background:transparent;padding:0;color:var(--muted);z-index:4}.modal-close:hover{transform:none;color:var(--text);background:transparent;border-color:transparent}.dialog-arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);z-index:5;font-size:0;line-height:1;padding:0}.dialog-arrow:hover{transform:translateY(-50%) scale(1.03)}.dialog-arrow[hidden]{display:none}.dialog-arrow::before{font-size:25px;line-height:1;transform:translateY(-2px);display:block}.dialog-arrow.left::before{content:'‹'}.dialog-arrow.right::before{content:'›'}.dialog-arrow.left{left:-62px}.dialog-arrow.right{right:-62px}.modal-body{padding:18px 14px 14px;max-height:calc(100dvh - 40px);overflow:auto;overflow-x:hidden;border-radius:18px;opacity:1;transform:none;transform-origin:50% 55%;will-change:auto;transition:none}.modal-body.word-changing{opacity:1;transform:none}.word-top{display:grid;grid-template-columns:1fr 180px;gap:12px;align-items:start;margin-right:34px}.word-hero{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;font-family:"PingFang SC","Microsoft YaHei",sans-serif}.char-stack{display:inline-flex;flex-direction:column;align-items:center;line-height:1;gap:4px}.word-char{font-size:52px;line-height:1}.word-pin{font-size:14px;color:var(--muted);margin-top:0}.word-info-side{text-align:right;display:grid;gap:6px;justify-items:end}.word-english{font-size:18px;line-height:1.35}.word-level{font-size:13px;color:var(--muted)}.word-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:420px;margin:14px auto 0}.word-actions button{padding:8px 10px}.stroke-panel{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg);transition:none}.stroke-head{margin-bottom:14px}.stroke-panel.trace-mode .stroke-head{margin-bottom:14px}.stroke-grid{display:grid;grid-template-columns:repeat(auto-fit,128px);gap:14px;justify-content:center;align-items:start;transition:none}.stroke-box{width:128px;text-align:center;display:grid;place-items:center;transition:none}.stroke-label{display:none}.stroke-char{width:128px;height:128px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 auto;display:grid;place-items:center;transition:none}.stroke-char svg{width:128px!important;height:128px!important;transition:none}.stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,128px);gap:14px;justify-content:center}.stroke-panel.trace-mode .stroke-box{width:128px}.stroke-panel.trace-mode .stroke-char{width:128px;height:128px;border-radius:14px}.stroke-panel.trace-mode .stroke-char svg{width:128px!important;height:128px!important}.stroke-controls{display:flex;width:100%;margin-top:14px;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap}.voice-setting-block{display:grid;gap:8px}.voice-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}.voice-slider-cell{display:flex;align-items:center;min-height:32px}.voice-slider-cell input{margin:0}.voice-rate-badge{display:flex;align-items:center;justify-content:center;align-self:center;padding-top:0;min-height:32px}.voice-rate-badge .pill{min-width:58px;display:inline-flex;align-items:center;justify-content:center;line-height:1.1}.footer-note{font-size:12px;color:var(--muted)}pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);padding:10px;border-radius:12px;overflow:auto}
-    .modal-body.word-exit-next,.modal-body.word-enter-next,.modal-body.word-exit-prev,.modal-body.word-enter-prev{opacity:1;transform:none}
-    @media (max-width:980px){header .wrap{margin-left:72px}.sidebar{top:0;width:72px;padding:12px 10px}.app-main{margin-left:92px;max-width:calc(100vw - 92px)}.sidebar-title,.side-label{opacity:0;max-width:0;padding-left:0}.side-tab{justify-content:flex-start;padding:12px 14px;gap:12px}.sidebar-top{justify-content:center}.sidebar-collapsed .app-main{margin-left:92px;max-width:calc(100vw - 92px)}.sidebar-collapsed .sidebar{width:72px}.sidebar-collapsed .side-label,.sidebar-collapsed .sidebar-title{opacity:0;max-width:0}.sidebar-collapsed .side-tab{justify-content:flex-start;padding:12px 14px;gap:12px}.sidebar-collapsed .sidebar-top{justify-content:center}.sidebar-collapsed .sidebar-toggle{margin:0 auto}}@media (max-width:850px){.grid.reader,.grid.two{grid-template-columns:1fr}.reader-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.reader-view{font-size:24px}.control-grid{grid-template-columns:1fr}.vocab-toolbar-grid{grid-template-columns:1fr}.vocab-browser-head{grid-template-columns:1fr}.lesson-word{grid-template-columns:1fr}.voice-line{grid-template-columns:1fr}.flash-toolbar{grid-template-columns:1fr}.flash-shuffle{justify-content:flex-start}.flash-size-field{min-width:0}.flash-meta-row{align-items:flex-start}.flash-control-row{justify-content:flex-start}.quiz-toolbar{grid-template-columns:1fr}#quizOptions{grid-template-columns:repeat(2,minmax(0,1fr))}.quiz-count-field{min-width:0}.word-top{grid-template-columns:1fr;margin-right:34px}.word-info-side{text-align:left;justify-items:start}.word-actions{grid-template-columns:repeat(2,minmax(0,1fr))}dialog{width:min(560px,calc(100vw - 104px));max-width:calc(100vw - 104px)}.dialog-arrow.left{left:-50px}.dialog-arrow.right{right:-50px}.modal-body{padding-left:14px;padding-right:14px}.stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,128px)}.stroke-panel.trace-mode .stroke-box{width:128px}.stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:128px!important;height:128px!important}}@media (max-width:520px){dialog{width:calc(100vw - 76px);max-width:calc(100vw - 76px)}.dialog-arrow{width:38px;height:38px;font-size:22px}.dialog-arrow.left{left:-42px}.dialog-arrow.right{right:-42px}.word-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar-nav{grid-template-columns:1fr 1fr}#quizOptions{grid-template-columns:1fr}}
-
-    /* Sidebar icon anchor fix: icons stay in the same x-position while only labels reveal/retract. */
-    .side-tab,.sidebar-collapsed .side-tab{justify-content:flex-start}
-    .sidebar-collapsed .side-icon{transform:none}
-
-    /* Settings tab/content alignment: keep the gear and active bubble visually centered. */
-    .side-tab{position:relative;align-items:center}
-    .side-icon{align-self:center}
-    .side-icon svg{display:block;overflow:visible}
-    .settings-panel{padding-top:0}
-    .settings-grid{align-items:stretch;margin-top:0}.settings-grid>.card{height:100%}.settings-grid>#settingsSpeechCard,.settings-grid>#settingsStrokeCard{height:100%}.settings-grid #strokePreloadStatus{margin:10px 0 0}
-    @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-  
-
-    /* Mobile HTML-file layout: move sidebar to bottom nav and give content full width */
-    @media (max-width:720px){
-      html,body{width:100%;max-width:100%;overflow-x:hidden}
-      header{z-index:20}
-      header .wrap,.sidebar-collapsed header .wrap{margin-left:0!important;padding:12px 14px!important}
-      .topbar{align-items:flex-start;gap:10px}
-      .brand{display:grid;gap:6px;align-items:start;min-width:0;flex:1 1 auto}
-      h1{font-size:28px;line-height:1.08;letter-spacing:-.02em;max-width:270px}
-      .version-badge{font-size:13px;padding:4px 10px;width:max-content;max-width:100%}
-      #darkToggle{width:56px;height:56px;min-width:56px;border-radius:16px;padding:0;font-size:24px}
-      .app-main,.sidebar-collapsed .app-main{margin-left:0!important;max-width:100vw!important;width:100%!important;padding:14px 14px calc(92px + env(safe-area-inset-bottom,0px))!important}
-      .sidebar,.sidebar-collapsed .sidebar{left:0!important;right:0!important;top:auto!important;bottom:0!important;width:100%!important;height:74px!important;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))!important;border-right:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;display:block!important;box-shadow:0 -10px 24px rgba(31,41,55,.08)!important;background:color-mix(in srgb,var(--card) 96%,transparent)!important;backdrop-filter:blur(12px);overflow:hidden!important;z-index:60!important}
-      .sidebar-top{display:none!important}
-      .sidebar-nav{display:flex!important;gap:6px!important;width:100%;height:100%;align-items:center;justify-content:space-between}
-      .side-tab,.sidebar-collapsed .side-tab{height:52px!important;min-height:52px!important;width:auto!important;min-width:0!important;flex:1 1 0!important;padding:0!important;justify-content:center!important;align-items:center!important;gap:0!important;border-radius:16px!important}
-      .side-label,.sidebar-collapsed .side-label{display:none!important;opacity:0!important;max-width:0!important;transform:none!important}
-      .side-icon,.sidebar-collapsed .side-icon{width:24px!important;height:24px!important;flex:0 0 24px!important;transform:none!important;margin:0!important}
-      .side-icon svg{width:24px!important;height:24px!important}
-      .side-icon.text{font-size:22px!important;line-height:1!important}
-      .card{padding:14px;border-radius:18px}
-      .grid.reader,.grid.two{grid-template-columns:1fr!important;gap:14px}
-      textarea{min-height:210px;font-size:20px;line-height:1.55}
-      .reader-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
-      .reader-actions button{min-height:52px;font-size:18px;font-weight:650}
-      .reader-view{font-size:24px;line-height:1.8}
-      .control-grid,.vocab-toolbar-grid,.vocab-browser-head,.flash-toolbar,.quiz-toolbar{grid-template-columns:1fr!important}
-      .lesson-word{grid-template-columns:1fr!important}
-      #quizOptions{grid-template-columns:1fr!important}
-    }
-
-    @media (max-width:390px){
-      h1{font-size:25px;max-width:240px}
-      .app-main,.sidebar-collapsed .app-main{padding-left:10px!important;padding-right:10px!important}
-      header .wrap,.sidebar-collapsed header .wrap{padding-left:10px!important;padding-right:10px!important}
-      .card{padding:12px}
-      .side-tab,.sidebar-collapsed .side-tab{height:48px!important;min-height:48px!important;border-radius:14px!important}
-      .side-icon,.sidebar-collapsed .side-icon{width:22px!important;height:22px!important;flex-basis:22px!important}
-      .side-icon svg{width:22px!important;height:22px!important}
-      .side-icon.text{font-size:20px!important}
-    }
-
-    /* v0.31: typography, accessibility, reading comfort and input feedback */
-    :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-    button[hidden],input[hidden],#appToast[hidden]{display:none!important}
-    .header-progress{white-space:nowrap}
-    .reader-mini-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:9px}
-    .reader-mini-actions button{padding:6px 10px;font-size:13px}
-    #draftNotice{margin-left:auto}
-    .reader-font-control{margin-top:14px;display:grid;gap:2px}
-    .reader-font-control label{display:flex;justify-content:space-between;gap:10px;margin:0}
-    .reader-font-control input{accent-color:var(--accent);padding:0;height:26px}
-    .reader-help{margin:8px 0 0;line-height:1.5}
-    .reader-view{white-space:normal;overflow-wrap:anywhere}
-    .tok{cursor:pointer;touch-action:manipulation}
-    .tok:focus-visible{outline:3px solid var(--accent)}
-    .mini-primary{background:var(--accent);color:#fff;border-color:var(--accent);font-size:12px;padding:6px 10px}
-    .vocab-footer{margin-top:10px}
-    .vocab-browser-title button{flex:0 0 auto}
-    .lesson-word .lesson-word-actions{display:flex;gap:6px;flex-wrap:wrap}
-    .lesson-word .lesson-word-actions button{padding:7px 10px;font-size:13px}
-    .lesson-word .lesson-word-actions .is-set{box-shadow:inset 0 0 0 2px var(--accent)}
-    .flash-toolbar{grid-template-columns:minmax(220px,1fr) 125px auto auto auto}
-    .flash-skip-known{display:inline-flex;align-items:center;gap:6px;align-self:end;margin:0;height:42px;white-space:nowrap;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg);color:var(--text)}
-    .flash-skip-known input{width:auto;accent-color:var(--accent)}
-    .flashcard{position:relative;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-    .flash-tap-hint{position:absolute;bottom:9px;left:0;right:0;text-align:center;font-size:11px}
-    .flash-card-empty{font-size:15px}
-    .quiz-key-hint{margin:10px 0 0;text-align:center}
-    .quiz-next-row{gap:12px;flex-wrap:wrap}
-    .quiz-option{justify-content:center;text-align:center;white-space:normal;overflow-wrap:anywhere}
-    .quiz-option:disabled{opacity:1;cursor:default}
-    .quiz-option.correct{background:color-mix(in srgb,var(--ok) 28%,var(--bg));border-width:2px}
-    .quiz-option.wrong{background:color-mix(in srgb,var(--danger) 27%,var(--bg));border-width:2px}
-    .progress-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
-    .progress-stat{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:14px 8px;text-align:center}
-    .progress-stat strong{display:block;font-size:22px}
-    .progress-stat small{color:var(--muted)}
-    .shortcuts-help{border-top:1px solid var(--line);padding-top:10px}
-    .shortcuts-help summary{cursor:pointer;font-weight:600}
-    #appToast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;max-width:min(520px,calc(100vw - 28px));padding:11px 16px;border-radius:12px;background:var(--text);color:var(--bg);box-shadow:var(--shadow);font-weight:600;font-size:14px;pointer-events:none;text-align:center}
-    /* Keep normal scrolling outside the writing pad; disable it only on the drawing surface. */
-    .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,220px)!important;gap:12px}
-    .stroke-panel.trace-mode .stroke-box{width:220px!important}
-    .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:220px!important;height:220px!important}
-    .stroke-panel.trace-mode .stroke-char{border:2px solid var(--hsk2-border);box-shadow:0 2px 10px rgba(0,0,0,.05)}
-    .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char *{touch-action:none!important;overscroll-behavior:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-    .stroke-panel.trace-mode .stroke-char svg{display:block;max-width:100%}
-    .stroke-panel .stroke-device-tip{margin:10px 0 0;text-align:center;line-height:1.45}
-    .stroke-progress-label{font-size:12px;color:var(--muted);margin-top:5px;min-height:18px;max-width:100%;line-height:1.35}
-    .stroke-progress-label.completed{color:var(--ok);font-weight:650}
-    .stroke-box[hidden]{display:none!important}
-    .trace-step-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin:0 auto 3px;max-width:260px}
-    .trace-step-nav button{padding:7px 10px;min-height:38px}
-    .trace-step-count{font-size:12px;color:var(--muted);text-align:center}
-    .stroke-controls button.is-set{background:var(--accent);border-color:var(--accent);color:#fff}
-    .flash-stroke-shell.open{max-height:2400px}
-    .modal-body{overscroll-behavior:contain}
-    @media (max-width:980px){.flash-toolbar{grid-template-columns:1fr!important}}
-    @media (max-width:720px){
-      header h1{font-size:21px;max-width:none}
-      .brand{display:flex;align-items:center;gap:7px}
-      .version-badge{font-size:11px}
-      #darkToggle{width:44px;height:44px;min-width:44px;border-radius:13px;font-size:20px}
-      .sidebar,.sidebar-collapsed .sidebar{height:calc(76px + env(safe-area-inset-bottom,0px))!important}
-      .sidebar-nav{gap:2px!important}
-      .side-tab,.sidebar-collapsed .side-tab{flex-direction:column!important;gap:3px!important;padding:5px 0!important;height:60px!important;min-height:60px!important}
-      .side-label,.sidebar-collapsed .side-label{display:block!important;opacity:1!important;max-width:100%!important;transform:none!important;font-size:10px;line-height:1.15;overflow:visible!important;text-align:center}
-      .app-main,.sidebar-collapsed .app-main{padding-bottom:calc(114px + env(safe-area-inset-bottom,0px))!important}
-      #draftNotice{margin-left:0}
-      .scroll{max-height:none;overflow:visible;border:0}
-      .scroll table,.scroll tbody,.scroll tr,.scroll td{display:block;width:100%}
-      .scroll thead{display:none}
-      .scroll tbody{display:grid;gap:10px}
-      .scroll tbody tr{height:auto;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--bg)}
-      .scroll td,.scroll td.actions-td{display:grid;grid-template-columns:minmax(68px,29%) 1fr;gap:8px;align-items:center;border:0;padding:5px 2px;font-size:15px}
-      .scroll td::before{content:attr(data-label);color:var(--muted);font-size:12px;font-weight:600;align-self:center}
-      .scroll td:first-child{font-size:24px}
-      .scroll td.actions-td .actions-cell{display:flex;gap:6px}
-      .scroll td.actions-td .actions-cell button{min-height:38px}
-      .lesson-word{grid-template-columns:1fr!important}
-      .reader-controls-card .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
-      .reader-controls-card .toggle{padding:10px 8px}
-      .progress-summary{gap:6px}
-      .progress-stat strong{font-size:19px}
-      .quiz-key-hint{font-size:11px}
-    }
-    @media (max-width:520px){
-      .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,188px)!important}
-      .stroke-panel.trace-mode .stroke-grid.single-trace{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
-      .stroke-panel.trace-mode .stroke-box{width:188px!important}
-      .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:188px!important;height:188px!important}
-      .stroke-panel{padding:9px}
-      .word-actions button{min-height:43px}
-      .dialog-arrow{width:35px;height:42px}
-      .flash-front{font-size:54px}
-      .flash-control-row button{min-height:44px}
-      .quiz-option{min-height:53px}
-      .side-icon,.sidebar-collapsed .side-icon{width:22px!important;height:22px!important}
-    }
-    @media (max-width:390px){
-      .side-label,.sidebar-collapsed .side-label{font-size:9px}
-      .side-tab,.sidebar-collapsed .side-tab{min-height:56px!important;height:56px!important}
-    }
-
-    /* v0.32 Studio Refresh — cohesive, high-contrast, mobile-first visual system */
-    :root{
-      color-scheme:light;
-      --bg:#f3f6fb;--card:#ffffff;--text:#192a41;--muted:#687b91;--line:#dfe7f0;
-      --accent:#245de5;--accent-strong:#174ac2;--accent2:#8258d6;--ok:#0d886f;--learn:#bd3c3c;--danger:#be3643;
-      --hsk2-bg:#eaf1ff;--hsk2-border:#5f92fb;--hsk3-bg:#f1ebfd;--hsk3-border:#a48ce5;
-      --shadow:0 8px 30px rgba(27,58,103,.055);--radius:20px;
-    }
-    [data-theme="dark"]{
-      color-scheme:dark;
-      --bg:#101a2a;--card:#172539;--text:#eff5ff;--muted:#a1b3ca;--line:#30425b;
-      --accent:#74a2ff;--accent-strong:#4c82ef;--accent2:#c1a5ff;--ok:#57d8b4;--learn:#ffa19a;--danger:#ff8992;
-      --hsk2-bg:#223d64;--hsk2-border:#74a2ff;--hsk3-bg:#3a3054;--hsk3-border:#c1a5ff;
-      --shadow:0 14px 35px rgba(0,0,0,.17);
-    }
-    html{scroll-padding-top:96px;-webkit-text-size-adjust:100%}
-    body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;letter-spacing:-.008em;background:var(--bg);-webkit-tap-highlight-color:transparent}
-    body:not([data-no-decoration]){background-image:radial-gradient(ellipse 800px 560px at 100% -80px,rgba(75,133,249,.045),transparent 75%)}
-    button{min-height:40px;font-weight:600;letter-spacing:-.01em;border-radius:12px;transition:background .16s,border-color .16s,box-shadow .16s,transform .16s}
-    button:hover{transform:none;box-shadow:0 2px 8px rgba(40,67,105,.06)}
-    button:active{transform:scale(.985)}
-    .primary{background:#245de5;border-color:#245de5;color:#fff;box-shadow:0 3px 8px rgba(36,93,229,.12)}
-    .primary:hover{background:#174ac2;border-color:#174ac2;box-shadow:0 5px 14px rgba(36,93,229,.16)}
-    [data-theme="dark"] .primary{background:#366dce;border-color:#507deb;color:#fff}
-    .good,.learn{font-weight:650}
-    .card{padding:20px;border-radius:20px;box-shadow:var(--shadow);border-color:var(--line)}
-    .card h2{font-size:19px;font-weight:750;letter-spacing:-.025em}
-    header{border-color:var(--line);background:color-mix(in srgb,var(--card) 90%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-    header .wrap{padding:13px 28px}
-    .topbar{min-height:53px}
-    .header-identity{min-width:0;display:grid;gap:4px}
-    .header-kicker,.card-eyebrow,.nav-caption{font-weight:760;font-size:10px;letter-spacing:.125em;color:var(--muted)}
-    .header-kicker span:first-child{color:var(--line);padding:0 4px}
-    .header-title-row{display:flex;gap:11px;align-items:center;min-width:0}
-    header h1{font-size:24px;line-height:1.15;font-weight:800;letter-spacing:-.04em}
-    .version-badge{font-weight:700;font-size:10px;color:var(--accent);border-color:color-mix(in srgb,var(--accent) 14%,var(--line));background:color-mix(in srgb,var(--hsk2-bg) 75%,var(--card));padding:4px 8px}
-    .header-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
-    .header-progress-wrap{display:flex;align-items:center;gap:9px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--card);color:var(--muted);font-size:12px}
-    .progress-orbit{--completion:0%;display:block;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:conic-gradient(var(--accent) var(--completion),var(--line) 0);position:relative}
-    .progress-orbit::before{content:"";position:absolute;inset:5px;background:var(--card);border-radius:50%}
-    #darkToggle{min-width:42px;width:42px;height:42px;padding:0;display:grid;place-items:center;background:var(--card);font-size:19px;border-radius:13px}
-    .sidebar{background:var(--card);box-shadow:none;border-color:var(--line);padding:18px 12px;gap:0}
-    .sidebar-top{height:56px;gap:4px;margin-bottom:28px;justify-content:space-between}
-    .sidebar-brand{display:flex;align-items:center;gap:10px;min-width:0}
-    .brand-glyph{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#386eed,#2456c8);color:white;font-family:"PingFang SC","Noto Sans CJK SC",serif;font-size:25px;box-shadow:0 4px 12px rgba(33,87,204,.18)}
-    .sidebar-title{font-size:16px;font-weight:820;letter-spacing:-.035em;padding:0;line-height:1.1;max-width:135px}
-    .sidebar-title small{display:block;color:var(--muted);font-weight:750;font-size:9px;letter-spacing:.045em;padding-top:5px}
-    .sidebar-toggle{background:transparent;min-width:36px;width:36px;height:38px;color:var(--muted);border-color:transparent}
-    .nav-caption{margin:0 10px 9px}
-    .sidebar-nav{gap:5px}
-    .side-tab{min-height:49px;height:49px;border-radius:13px;font-size:14px;font-weight:650;color:var(--muted);transition:background .17s,border-color .17s,color .17s}
-    .side-tab:hover{background:var(--bg);color:var(--text)}
-    .side-tab.active{background:color-mix(in srgb,var(--accent) 11%,var(--card));color:var(--accent);border-color:transparent;box-shadow:inset 3px 0 0 var(--accent)}
-    .sidebar-footnote{position:absolute;bottom:24px;left:22px;right:12px;font-size:11px;color:var(--muted);line-height:1.6}
-    .sidebar-footnote span:not(.privacy-dot){opacity:.8}.privacy-dot{display:inline-block;width:7px;height:7px;background:#16a085;border-radius:50%;margin-right:6px}
-    .sidebar-collapsed .sidebar-brand,.sidebar-collapsed .nav-caption,.sidebar-collapsed .sidebar-footnote{display:none}
-    .sidebar-collapsed .sidebar-top{justify-content:center}
-    .sidebar-collapsed .sidebar-toggle{border-color:var(--line);background:var(--bg)}
-    .sidebar-collapsed .sidebar{padding:18px 12px}
-    .sidebar-collapsed .sidebar-nav{margin-top:9px}
-    .sidebar-collapsed .side-tab.active{box-shadow:none}
-    .app-main{padding:22px 28px 40px}
-    .grid{gap:16px}.grid.reader{gap:18px;grid-template-columns:minmax(315px,365px) minmax(0,1fr)}
-    .left-stack{gap:16px}
-    .reader-editor-card{scroll-margin-top:90px}
-    .editor-card-heading{margin-bottom:14px}
-    .card-eyebrow{color:var(--accent);font-size:10px;margin-bottom:5px}
-    .editor-card-heading strong,.reader-output-head strong,.reader-controls-card strong{font-size:16px;font-weight:780;letter-spacing:-.026em}
-    #finishEditingBtn,#editPassageBtn{display:none}
-    textarea{background:var(--bg);border-radius:14px;min-height:186px}
-    #inputText{font-size:17px;line-height:1.85;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;resize:vertical}
-    .reader-actions button{height:42px;min-height:42px;font-weight:700;font-size:13px}
-    .reader-mini-actions{gap:7px}.reader-mini-actions button{border-radius:10px}
-    #draftNotice{font-size:11px}
-    .reader-controls-card .control-grid{gap:8px;margin-top:16px}
-    .toggle{border-color:var(--line);background:var(--bg);cursor:pointer;min-height:43px;font-weight:590;font-size:13px}
-    .toggle:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--card))}
-    input[type="checkbox"]{accent-color:#245de5}
-    .reader-output-card{min-height:610px;scroll-margin-top:95px;display:flex;flex-direction:column}
-    .reader-output-head{display:flex;align-items:start;justify-content:space-between;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--line)}
-    .reader-quick-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
-    .reader-quick-actions button{min-height:36px;padding:7px 11px;font-size:12px}
-    .reader-match-stats{font-size:12px;margin-top:7px}
-    .reader-instruction{font-size:12px;color:var(--muted);line-height:1.45;margin-top:14px}
-    .reader-view{flex:1;font-size:28px;line-height:1.95;padding:8px 3px 3px;margin-top:8px;min-height:320px;overflow-wrap:anywhere}
-    .tok{line-height:1.17;border-bottom-width:2px;border-radius:7px;padding:2px 4px 3px;margin:2px 2px 4px;transition:background .18s ease}
-    .tok.word-known{background:color-mix(in srgb,var(--ok) 8%,var(--card));border-color:color-mix(in srgb,var(--ok) 70%,var(--line))}
-    .tok.word-learning{background:color-mix(in srgb,var(--learn) 10%,var(--card));border-color:color-mix(in srgb,var(--learn) 65%,var(--line))}
-    .tok:active{background:color-mix(in srgb,var(--accent) 22%,var(--card))}
-    .scroll tbody tr:hover td{background:color-mix(in srgb,var(--accent) 3%,transparent)}
-    .vocab-browser-card,.flash-top-card,.quiz-top-card{padding:20px}
-    .vocab-toolbar-grid,.flash-toolbar,.quiz-toolbar{gap:14px}
-    .vocab-browser-title strong{font-size:19px}
-    .flashcard{background:radial-gradient(ellipse at 50% 8%,color-mix(in srgb,var(--hsk2-bg) 75%,var(--card)),var(--card) 70%);border-color:var(--line);min-height:340px;position:relative}
-    .flash-front{font-size:74px;letter-spacing:.04em;font-weight:650}
-    .flash-tap-hint{bottom:17px;font-size:12px}
-    .flash-deck-progress{height:5px;border-radius:999px;overflow:hidden;background:var(--bg);margin:16px 0 0}
-    .flash-deck-progress>span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
-    .flash-nav-arrow{width:44px;height:44px;box-shadow:0 3px 15px rgba(0,0,0,.065)}
-    .quiz-main-card{padding:24px 24px 18px}
-    #quizOptions{counter-reset:answers}
-    #quizOptions .quiz-option{counter-increment:answers;gap:12px;min-height:58px;border-radius:14px}
-    #quizOptions .quiz-option::before{content:counter(answers);display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:12px;color:var(--muted);font-weight:750}
-    .progress-stat{background:color-mix(in srgb,var(--accent) 3%,var(--card));padding:18px 12px}
-    .progress-stat strong{font-size:25px;letter-spacing:-.04em}
-    .danger-zone{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
-    .danger-zone strong{font-size:14px}.danger-zone p{margin:4px 0 0;line-height:1.4}
-    .device-probe-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:16px 0}
-    .device-probe-results>div{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);display:grid;gap:6px;overflow-wrap:anywhere}
-    .device-probe-results span{font-size:12px;color:var(--muted)}.device-probe-results strong{font-size:14px}
-    .device-probe-results .probe-input{grid-column:1 / -1}
-    dialog{box-shadow:0 24px 90px rgba(5,22,52,.25);border-radius:22px}
-    .modal-body{border-radius:22px}
-    .word-top{gap:16px}.word-char{font-size:59px}
-    .word-english{font-size:19px;font-weight:650}
-    .word-actions{max-width:none}.word-actions button{min-height:43px}
-    .stroke-panel{background:var(--bg);border-radius:16px}
-    .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,240px)!important;gap:12px}
-    .stroke-panel.trace-mode .stroke-box{width:240px!important}
-    .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:240px!important;height:240px!important}
-    .stroke-panel.trace-mode .stroke-char{background-color:var(--card);background-image:linear-gradient(90deg,transparent calc(50% - .5px),color-mix(in srgb,var(--accent) 18%,transparent) 50%,transparent calc(50% + .5px)),linear-gradient(0deg,transparent calc(50% - .5px),color-mix(in srgb,var(--accent) 18%,transparent) 50%,transparent calc(50% + .5px));border-color:color-mix(in srgb,var(--accent) 32%,var(--line));border-radius:13px}
-    .stroke-controls button{min-height:43px}
-    [data-theme="dark"] .stroke-panel.trace-mode .stroke-char{background-color:#1d2d43}
-    input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:2px solid color-mix(in srgb,var(--accent) 20%,transparent);outline-offset:1px}
-    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-    @media (max-width:1170px) and (min-width:901px){
-      .grid.reader{grid-template-columns:minmax(270px,320px) minmax(0,1fr)}
-      .reader-quick-actions button{padding:7px 9px}
-    }
-    @media (max-width:980px) and (min-width:721px){
-      .sidebar{padding:18px 10px}.sidebar-brand,.nav-caption,.sidebar-footnote{display:none}
-      .sidebar-top{justify-content:center}.sidebar-toggle{border-color:var(--line);background:var(--bg)}
-      header .wrap{margin-left:72px}
-    }
-    @media (max-width:900px){
-      .grid.reader{grid-template-columns:minmax(0,1fr)!important;display:flex;flex-direction:column;gap:16px}
-      .reader-output-card{order:-1;min-height:390px}
-      .left-stack{order:0}
-      #editPassageBtn,#finishEditingBtn{display:inline-flex;align-items:center;justify-content:center}
-      body:not(.editor-open) .reader-editor-card{display:none}
-      .reader-editor-card{scroll-margin-top:88px}
-      .reader-instruction{margin-top:11px}
-      .reader-view{min-height:260px}
-      .reader-output-head{align-items:start}
-    }
-    @media (max-width:720px){
-      html{scroll-padding-top:84px}
-      header .wrap,.sidebar-collapsed header .wrap{padding:9px 16px!important;margin-left:0!important}
-      .topbar{align-items:center;min-height:45px}
-      .header-kicker{font-size:9px;line-height:1.3;letter-spacing:.095em}
-      .header-title-row{gap:8px}
-      header h1{font-size:22px;line-height:1.12;letter-spacing:-.04em;max-width:none}
-      .version-badge{padding:3px 7px;font-size:9px}
-      .header-actions{gap:8px}
-      .header-progress-wrap{display:none}
-      #darkToggle{min-width:38px;width:38px;height:38px;border-radius:11px;font-size:17px}
-      .sidebar,.sidebar-collapsed .sidebar{padding:6px 9px calc(6px + env(safe-area-inset-bottom,0px))!important;height:calc(66px + env(safe-area-inset-bottom,0px))!important;background:color-mix(in srgb,var(--card) 97%,transparent)!important;box-shadow:0 -8px 25px rgba(20,37,66,.065)!important}
-      .sidebar-top,.nav-caption,.sidebar-footnote{display:none!important}
-      .sidebar-nav{gap:2px!important}
-      .side-tab,.sidebar-collapsed .side-tab{height:54px!important;min-height:54px!important;gap:3px!important;padding:5px 1px!important;border-radius:12px!important;flex-direction:column!important}
-      .side-tab.active{background:color-mix(in srgb,var(--accent) 10%,var(--card));color:var(--accent);box-shadow:none}
-      .side-icon,.sidebar-collapsed .side-icon{width:21px!important;height:21px!important;flex-basis:21px!important}
-      .side-icon svg{width:21px!important;height:21px!important}
-      .side-label,.sidebar-collapsed .side-label{font-size:10px!important;font-weight:700!important;line-height:1.12!important}
-      .app-main,.sidebar-collapsed .app-main{padding:13px 12px calc(90px + env(safe-area-inset-bottom,0px))!important;max-width:100vw!important;margin-left:0!important}
-      .card{padding:16px;border-radius:18px}
-      .reader-output-card{min-height:calc(62dvh - 30px);padding:17px}
-      .reader-output-head{flex-wrap:wrap;gap:10px;padding-bottom:11px}
-      .reader-output-head>div:first-child{flex:1 1 100%}
-      .reader-quick-actions{width:100%;justify-content:flex-start;gap:7px}
-      .reader-quick-actions button{flex:1;min-height:41px;padding:7px 8px;font-size:12px;white-space:nowrap}
-      .reader-instruction{font-size:11px}
-      .reader-view{font-size:26px;line-height:1.93;min-height:200px;padding-top:6px}
-      .reader-match-stats{margin-top:5px;font-size:11px}
-      .reader-editor-card{min-height:0}
-      #inputText{font-size:18px;min-height:180px}
-      .reader-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
-      .reader-actions button{min-height:45px!important;height:45px!important;font-size:14px!important}
-      .reader-controls-card .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
-      .reader-controls-card .toggle{font-size:13px;min-height:44px;gap:6px;padding:8px 9px}
-      .reader-controls-card{padding:17px}
-      .flashcard{min-height:300px;padding:15px 35px}
-      .flash-front{font-size:58px}
-      .flash-nav-arrow.left{left:3px}.flash-nav-arrow.right{right:3px}
-      .quiz-main-card{padding:16px}
-      #quizOptions .quiz-option{min-height:51px}
-      .scroll tbody tr{background:var(--card)}
-      .word-actions{gap:8px}
-      dialog{width:min(560px,calc(100vw - 22px))!important;max-width:calc(100vw - 22px)!important}
-      .dialog-arrow{position:fixed;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:none!important;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.15);width:45px;height:43px}
-      .dialog-arrow.left{left:14px}.dialog-arrow.right{right:14px}
-      .modal-body{max-height:calc(100dvh - 25px);padding:16px 13px calc(54px + env(safe-area-inset-bottom,0px))}
-      .modal-close{width:38px;height:38px;top:8px;right:8px}
-      .word-top{margin-right:30px;gap:10px}
-      .word-char{font-size:48px}
-      .word-english{font-size:16px}
-      .stroke-panel{padding:10px}
-      .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,208px)!important;gap:10px}
-      .stroke-panel.trace-mode .stroke-box{width:208px!important}
-      .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:208px!important;height:208px!important}
-      .stroke-panel.trace-mode .stroke-grid.single-trace{display:flex!important;flex-direction:column;align-items:center;justify-content:center}
-      .stroke-device-tip{font-size:11px}
-      .stroke-controls{gap:7px}.stroke-controls button{min-height:42px;padding:9px}
-    }
-    @media (max-width:375px){
-      .app-main,.sidebar-collapsed .app-main{padding-left:9px!important;padding-right:9px!important}
-      header .wrap,.sidebar-collapsed header .wrap{padding-left:10px!important;padding-right:10px!important}
-      .sidebar,.sidebar-collapsed .sidebar{padding-left:4px!important;padding-right:4px!important}
-      .side-label,.sidebar-collapsed .side-label{font-size:9px!important}
-      .reader-quick-actions button{font-size:11px;min-height:40px}
-      .stroke-panel.trace-mode .stroke-grid{grid-template-columns:repeat(auto-fit,188px)!important}
-      .stroke-panel.trace-mode .stroke-box{width:188px!important}
-      .stroke-panel.trace-mode .stroke-char,.stroke-panel.trace-mode .stroke-char svg{width:188px!important;height:188px!important}
-      .flash-front{font-size:49px}
-    }
-    /* Compact, distraction-free handwriting on small iPhones. */
-    @media (max-width:520px){
-      #wordDialog.trace-active .word-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-right:32px;margin-bottom:2px}
-      #wordDialog.trace-active .word-char{font-size:33px}
-      #wordDialog.trace-active .word-pin{font-size:11px}
-      #wordDialog.trace-active .word-hero{flex-wrap:nowrap;gap:5px}
-      #wordDialog.trace-active .word-info-side{gap:1px;text-align:right;justify-items:end}
-      #wordDialog.trace-active .word-english{font-size:13px;line-height:1.25}
-      #wordDialog.trace-active .word-level{font-size:11px}
-      #wordDialog.trace-active .status-chip{display:none}
-      #wordDialog.trace-active .word-actions{display:none}
-      #wordDialog.trace-active .stroke-panel{margin-top:8px}
-      #wordDialog.trace-active .stroke-head{margin-bottom:8px}
-      #wordDialog.trace-active .stroke-controls{margin-top:8px;gap:6px}
-      #wordDialog.trace-active .stroke-controls button{min-height:37px;font-size:12px;padding:6px 9px}
-      #wordDialog.trace-active .stroke-device-tip{margin-top:5px}
-      #wordDialog.trace-active .modal-body{padding-bottom:15px}
-      #wordDialog.trace-active .dialog-arrow{display:none!important}
-      #exitTraceBtn{background:var(--card);border-color:var(--accent);color:var(--accent)}
-    }
-    @media (hover:none){button:hover{box-shadow:none} .tok:hover{transform:none}}
-    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
-
-  </style>
+  <link rel="stylesheet" href="./assets/app.css">
   
 <link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<meta name="theme-color" content="#2563eb">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+
 <meta name="apple-mobile-web-app-title" content="HSK Reader">
 
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Skip to content</a>
   <header>
     <div class="wrap">
       <div class="topbar">
         <div class="header-identity">
-          <div class="header-kicker">HSK READER <span aria-hidden="true">/</span> <span id="pageKicker">YOUR READING DESK</span></div>
-          <div class="header-title-row"><h1 id="pageTitle">Reader</h1><span class="version-badge">v0.32</span></div>
+          <div class="header-kicker">HSK READER <span aria-hidden="true">/</span> <span id="pageKicker">A LITTLE CHINESE, EVERY DAY</span></div>
+          <div class="header-title-row"><h1 id="pageTitle">Reader</h1></div>
         </div>
-        <div class="header-actions">
-          <div class="header-progress-wrap" title="Known vocabulary out of 600 unique words"><span class="progress-orbit" id="headerProgressOrbit" aria-hidden="true"></span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
+        <div class="header-actions"><span id="connectionStatus" class="connection-status" role="status" hidden>Offline</span><button id="updateAppBtn" class="primary" hidden>Update ready</button>
+          <div class="header-progress-wrap" title="Progress across 601 vocabulary entries"><span class="progress-orbit" id="headerProgressOrbit" aria-hidden="true"></span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
           <button id="darkToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
         </div>
       </div>
@@ -479,8 +39,8 @@
         <div class="sidebar-brand"><span class="brand-glyph" aria-hidden="true">文</span><span class="sidebar-title">HSK Reader<small>READ · LEARN · RETAIN</small></span></div>
         <button id="sidebarToggle" class="sidebar-toggle" title="Expand or collapse sidebar" aria-label="Expand or collapse sidebar">☰</button>
       </div>
-      <div class="nav-caption" aria-hidden="true">WORKSPACE</div>
-      <nav class="sidebar-nav" id="tabs">
+      <div class="nav-caption" aria-hidden="true">YOUR PRACTICE</div>
+      <nav class="sidebar-nav" id="tabs" aria-label="Study areas">
         <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 6.5c0-1.1.9-2 2-2H19.5v14H6.5c-1.1 0-2-.9-2-2z"></path><path d="M8 4.5v14"></path><path d="M8 6.5h8"></path></svg></span><span class="side-label">Reader</span></button>
         <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6.5h14"></path><path d="M5 12h14"></path><path d="M5 17.5h14"></path><path d="M5 4.5v15"></path></svg></span><span class="side-label">Vocab</span></button>
         <button class="side-tab" data-tab="lessons" title="Lessons"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4.5" y="5.5" width="15" height="14" rx="2"></rect><path d="M8 3.5v4"></path><path d="M16 3.5v4"></path><path d="M4.5 9.5h15"></path></svg></span><span class="side-label">Lessons</span></button>
@@ -491,8 +51,9 @@
       <div class="sidebar-footnote"><span class="privacy-dot" aria-hidden="true"></span> Local-first study space<br><span>Your progress stays in this browser</span></div>
     </aside>
 
-    <main class="app-main">
-    <section id="reader" class="panel active">
+    <main class="app-main" id="mainContent" tabindex="-1">
+    <section id="reader" class="panel active" aria-label="Reader">
+      <div class="study-brief"><div><div class="card-eyebrow">MAKE A LITTLE PROGRESS</div><h2 id="dailyHeadline">Your daily practice</h2><p id="dailySummary" class="small"></p></div><button class="primary" id="reviewDueBtn">Review words</button></div>
       <div class="grid reader">
         <div class="left-stack">
           <div class="card reader-editor-card" id="readerEditorCard">
@@ -500,7 +61,7 @@
             <div class="reader-editor-content">
             <label for="inputText" class="sr-only">Paste Chinese text</label>
             <div class="input-wrap">
-              <textarea id="inputText" placeholder="Paste Chinese text here...">今天我去学校上课。老师让我们读一个新句子。下课以后，我和同学一起去饭馆吃米饭和鸡蛋。</textarea>
+              <textarea id="inputText" maxlength="200000" placeholder="Paste Chinese text here...">今天我去学校上课。老师让我们读一个新句子。下课以后，我和同学一起去饭馆吃米饭和鸡蛋。</textarea>
               <button id="clearTextBtn" class="clear-x" title="Clear input" aria-label="Clear input">✕</button>
             </div>
             <div class="reader-actions">
@@ -516,12 +77,12 @@
             </div>
             </div>
           </div>
-          <div class="card reader-controls-card">
-            <div class="row between"><div><div class="card-eyebrow">CUSTOMIZE</div><strong>Reading preferences</strong></div></div>
+          <details class="card reader-controls-card"><summary>Reading preferences <span class="small">Text, hints &amp; spacing</span></summary><div class="details-content">
+            
             <div class="control-grid">
               <label class="toggle"><input type="checkbox" id="filter2" checked> HSK 2</label>
               <label class="toggle"><input type="checkbox" id="filter3" checked> HSK 3</label>
-              <label class="toggle"><input type="checkbox" id="hideKnown"> Hide known</label>
+              <label class="toggle"><input type="checkbox" id="hideKnown"> Hide known highlights</label>
               <label class="toggle"><input type="checkbox" id="showPinyin"> Pinyin</label>
               <label class="toggle"><input type="checkbox" id="showEnglish"> English</label>
             </div>
@@ -529,18 +90,27 @@
               <label for="readerFontSize">Reading size <span id="readerFontSizeLabel">26px</span></label>
               <input type="range" id="readerFontSize" min="18" max="38" step="2" value="26" aria-label="Reader text size">
             </div>
-            <p class="small reader-help">Tap a highlighted word for its meaning, status, pronunciation and writing practice.</p>
-          </div>
+            <div class="reader-font-control"><label for="readerLineHeight">Line spacing <span id="readerLineHeightLabel">2.1</span></label><input id="readerLineHeight" type="range" min="1.6" max="2.8" step="0.1" value="2.1"></div>
+            <p class="small reader-help">Highlights: green for HSK 2, violet for HSK 3. Known words are understated; learning words have a dotted underline. Unhighlighted text may be outside this dictionary.</p>
+            </div></details>
+          <details class="card passage-library" open><summary>Saved passages <span class="small" id="passageCount">On this device</span></summary><div class="details-content">
+            <label for="passageTitle">Passage title</label><input id="passageTitle" maxlength="80" placeholder="e.g. A day at school">
+            <button id="savePassageBtn" class="primary full-width">Save current passage</button>
+            <label for="savedPassages">Your collection</label><select id="savedPassages"><option value="">Choose a passage</option></select>
+            <div class="row"><button id="loadPassageBtn">Open</button><button id="deletePassageBtn" class="danger">Delete</button></div>
+            <p class="small">Save different passages without losing your current draft. Included in backups.</p>
+          </div></details>
         </div>
         <div class="card reader-output-card" id="readerOutputCard">
           <div class="reader-output-head">
-            <div><div class="card-eyebrow">IMMERSIVE READER</div><strong>Reading passage</strong><div id="matchStats" class="small reader-match-stats"></div></div>
-            <div class="reader-quick-actions"><button type="button" id="editPassageBtn" class="primary" aria-expanded="false" aria-controls="readerEditorCard">✎ Edit</button><button type="button" id="readerQuickSpeakBtn" title="Read aloud">▶ Listen</button><button type="button" id="readerQuickTranslateBtn" title="Translate the passage">Translate</button></div>
+            <div><div class="card-eyebrow">READ AT YOUR PACE</div><strong id="readingTitle">A day at school</strong><div id="matchStats" class="small reader-match-stats"></div></div>
+            <div class="reader-quick-actions"><button type="button" id="editPassageBtn" class="primary" aria-expanded="false" aria-controls="readerEditorCard">✎ Edit</button><button type="button" id="readerQuickSpeakBtn" title="Read aloud">▶ Listen</button><button type="button" id="readerQuickStopBtn" hidden>Stop</button><button type="button" id="readerQuickTranslateBtn" title="Translate the passage">Translate</button><button type="button" id="focusReaderBtn" aria-pressed="false">Focus</button></div>
           </div>
           <div class="reader-instruction">Tap a highlighted word to hear it, learn its meaning, or practice writing.</div>
-          <div id="readerView" class="reader-view" role="region" aria-label="Chinese reading text"></div>
+          <div id="readerView" lang="zh-Hans" class="reader-view" role="region" aria-label="Chinese reading text"></div>
+          <div class="reader-footer"><span class="small" id="passageFamiliarity"></span><button id="reviewPassageBtn">Review unfamiliar words</button></div>
           <div id="translationBox" class="translation-box" hidden>
-            <div class="row between"><strong>Translation</strong><span id="translationModeLabel" class="small"></span></div>
+            <div class="row between"><strong>Translation</strong><button id="closeTranslationBtn" aria-label="Close translation">✕</button><span id="translationModeLabel" class="small"></span></div>
             <div id="translationOutput" class="translation-output"></div>
           </div>
         </div>
@@ -550,9 +120,9 @@
     <section id="vocab" class="panel">
       <div class="card" style="margin-bottom:18px">
         <div class="vocab-toolbar-grid">
-          <div><label>HSK</label><select id="vocabLevel"><option value="all">All</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
-          <div><label>Status</label><select id="vocabStatus"><option value="all">All</option><option value="new">New</option><option value="learning">Learning</option><option value="known">Known</option></select></div>
-          <div><label>Sort</label><select id="vocabSort"><option value="level">HSK level</option><option value="pinyin">Pinyin</option><option value="word">Chinese</option></select></div>
+          <div><label for="vocabLevel">HSK</label><select id="vocabLevel"><option value="all">All</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
+          <div><label for="vocabStatus">Status</label><select id="vocabStatus"><option value="all">All</option><option value="new">New</option><option value="learning">Learning</option><option value="known">Known</option></select></div>
+          <div><label for="vocabSort">Sort</label><select id="vocabSort"><option value="level">HSK level</option><option value="pinyin">Pinyin</option><option value="word">Chinese</option></select></div>
         </div>
       </div>
       <div class="card vocab-browser-card">
@@ -560,7 +130,7 @@
           <div class="vocab-browser-title"><strong>Vocabulary browser</strong><span class="vocab-count-inline" id="vocabCount"></span><button type="button" id="vocabStudyResultsBtn" class="mini-primary">Study results</button></div>
           <div class="search-wrap">
             <span class="search-icon">⌕</span>
-            <input id="vocabSearch" placeholder="Chinese, pinyin, English">
+            <input id="vocabSearch" type="search" aria-label="Search vocabulary by Chinese, pinyin or English" placeholder="Chinese, pinyin, English">
             <button id="clearVocabSearchBtn" class="search-clear" title="Clear search" aria-label="Clear search">✕</button>
           </div>
         </div>
@@ -571,49 +141,32 @@
       </div>
     </section>
 
-    <section id="lessons" class="panel">
-      <div class="grid two">
-        <div class="card">
-          <h2>HSK 2 lesson plan</h2>
-          <div class="control-grid">
-            <div><label>Words per day</label><input id="lessonDaily2" type="number" min="1" max="100" step="1"></div>
-            <div><label>Current plan</label><div id="lessonMeta2" class="small" style="padding:10px 0"></div></div>
-          </div>
-          <div class="row" style="margin-top:10px"><button class="primary" data-lesson-save="2">Save plan</button><button data-lesson-load="2">Load today</button><button class="danger" data-lesson-reset="2">Reset HSK 2 plan</button></div>
-        </div>
-        <div class="card">
-          <h2>HSK 3 lesson plan</h2>
-          <div class="control-grid">
-            <div><label>Words per day</label><input id="lessonDaily3" type="number" min="1" max="100" step="1"></div>
-            <div><label>Current plan</label><div id="lessonMeta3" class="small" style="padding:10px 0"></div></div>
-          </div>
-          <div class="row" style="margin-top:10px"><button class="primary" data-lesson-save="3">Save plan</button><button data-lesson-load="3">Load today</button><button class="danger" data-lesson-reset="3">Reset HSK 3 plan</button></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px">
+    <section id="lessons" class="panel"><div class="lesson-intro"><h2>A little progress, every day.</h2><p class="small">Choose your level. Study one word at a time, at your own pace.</p></div><div class="grid two"><article class="card lesson-overview"><span class="card-eyebrow">YOUR LEARNING PATH</span><div class="row between"><h2>HSK 2</h2><span class="pill" id="lessonPercent2"></span></div><p class="small">Build your foundation</p><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 2 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter2"><span id="lessonLevelBar2"></span></div><p id="lessonStats2" class="small"></p><button class="primary lesson-start" data-start-lesson="2">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily2">Words per day</label><input id="lessonDaily2" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta2"></p><div class="row"><button data-lesson-save="2">Save plan</button><button class="danger" data-lesson-reset="2">Reset plan</button></div></details></article><article class="card lesson-overview"><span class="card-eyebrow">YOUR LEARNING PATH</span><div class="row between"><h2>HSK 3</h2><span class="pill" id="lessonPercent3"></span></div><p class="small">Take the next step</p><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 3 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter3"><span id="lessonLevelBar3"></span></div><p id="lessonStats3" class="small"></p><button class="primary lesson-start" data-start-lesson="3">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily3">Words per day</label><input id="lessonDaily3" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta3"></p><div class="row"><button data-lesson-save="3">Save plan</button><button class="danger" data-lesson-reset="3">Reset plan</button></div></details></article></div><p class="small lesson-swipe-tip">Your next lesson: swipe ← to revisit, ↑ for learning, or → for known.</p>      <details class="card lesson-details"><summary>Lesson words &amp; day progress</summary><div class="row lesson-level-switch"><button data-lesson-load="2">HSK 2</button><button data-lesson-load="3">HSK 3</button></div>
         <div class="row between"><strong id="lessonTitle">Today's lesson</strong><span id="lessonSummary" class="small"></span></div>
         <div class="progressbar" style="margin:10px 0"><span id="lessonProgressBar"></span></div>
         <div class="row" style="margin-bottom:10px"><button id="lessonMarkLearning" class="learn">Mark lesson as learning</button><button id="lessonMarkKnown" class="good">Mark lesson as known</button><button id="lessonStudyBtn">Study these words</button><button id="lessonComplete" class="primary">Complete day</button><button id="lessonUndoBtn" title="Return to previous study day">Undo last day</button></div>
         <div id="lessonWords" class="lesson-list"></div>
-      </div>
+      </details>
     </section>
 
     <section id="flashcards" class="panel">
       <div class="card flash-top-card">
         <div class="flash-toolbar">
-          <div><label>Deck</label><select id="flashLevel"><option value="all">HSK 2 + 3</option><option value="2">HSK 2 only</option><option value="3">HSK 3 only</option><option value="learning">Learning words</option><option value="new">New words</option></select></div>
-          <div class="flash-size-field"><label>Cards</label><input id="flashDeckCount" type="number" min="1" max="600" step="1" value="20"></div>
+          <div><label for="flashLevel">Deck</label><select id="flashLevel"><option value="all">HSK 2 + 3</option><option value="due">Due for review</option><option value="2">HSK 2 only</option><option value="3">HSK 3 only</option><option value="learning">Learning words</option><option value="new">New words</option></select></div>
+          <div class="flash-size-field"><label for="flashDeckCount">Cards</label><input id="flashDeckCount" type="number" min="1" max="601" step="1" value="20"></div>
           <label class="flash-shuffle" title="Shuffle deck"><input type="checkbox" id="flashShuffle" checked> Shuffle</label>
           <button class="primary" id="newDeckBtn">New deck</button>
           <label class="flash-skip-known"><input type="checkbox" id="flashSkipKnown"> Skip known</label>
         </div>
       </div>
       <div class="card flash-main-card">
-        <div class="flash-stage">
+        <div class="session-progress-label" id="sessionProgressText" role="status"></div><div id="lessonFinished" class="lesson-finished" tabindex="-1" hidden><span class="completion-check">✓</span><h2>Congrats, you’re done!</h2><p id="lessonFinishedText"></p><button class="primary" id="backToLessonsBtn">Back to Lessons</button></div><div class="flash-stage">
           <button id="flashPrevBtn" class="flash-nav-arrow left" title="Previous flashcard" aria-label="Previous flashcard"><span class="flash-nav-glyph">‹</span></button>
-          <div class="flashcard" id="flashcardBox" tabindex="0" role="button" aria-label="Flashcard, tap to reveal or hide both pinyin and English"><div><div class="flash-front" id="flashFront">词</div><div class="flash-back" id="flashBack" hidden></div><span class="flash-tap-hint small">Tap card to flip</span></div></div>
+          <div class="flashcard" aria-describedby="swipeInstructions" id="flashcardBox" tabindex="0" role="button" aria-label="Flashcard, tap to reveal or hide both pinyin and English"><span class="swipe-feedback" aria-hidden="true"></span><div><div class="flash-front" lang="zh-Hans" id="flashFront">词</div><div class="flash-back" id="flashBack" hidden></div><span class="flash-tap-hint small">Tap to reveal / hide</span></div></div>
           <button id="flashNextArrowBtn" class="flash-nav-arrow right" title="Next flashcard" aria-label="Next flashcard"><span class="flash-nav-glyph">›</span></button>
         </div>
+        <p class="small swipe-instructions" id="swipeInstructions">Swipe or drag: ← Revisit · ↑ Learning · → Known</p><div class="swipe-actions"><button id="flashRevisitBtn">← Not known / revisit</button><button class="learn" id="flashLearningBtn">↑ Learning</button><button class="good" id="flashKnownBtn">Known →</button></div><p id="swipeStatus" class="small" role="status" aria-live="polite"></p>
+        <div class="review-rating" id="reviewRating" hidden><p class="small" id="reviewRatingHint">How well did you recall this word?</p><div class="row"><button id="rateAgainBtn">Again <small>10 min</small></button><button id="rateGoodBtn" class="primary">Remembered <small id="nextReviewLabel">1 day</small></button></div></div>
         <div class="flash-deck-progress" aria-hidden="true"><span id="flashDeckProgressFill"></span></div>
         <div class="flash-meta-row">
           <p class="small flash-progress" id="flashProgress"></p>
@@ -622,27 +175,25 @@
             <button id="flashToggleEnglishBtn">Eng</button>
             <button id="flashStrokeToggleBtn">Stroke order</button>
             <button id="flashSpeakBtn">🔊 Speak</button>
-            <button class="good" id="flashKnownBtn">Known</button>
-            <button class="learn" id="flashLearningBtn">Learning</button>
           </div>
         </div>
-        <div class="flash-stroke-shell" id="flashStrokeShell" aria-hidden="true">
+        <dialog class="flash-stroke-shell" id="flashStrokeShell" aria-labelledby="flashStrokeTitle" aria-hidden="true" inert>
           <div class="stroke-panel">
-            <div class="stroke-head row between"><strong>Stroke order</strong><span id="flashStrokeStatus" class="small"></span></div>
+            <div class="stroke-head row between"><strong id="flashStrokeTitle">Stroke order</strong><button id="flashExitTraceBtn" class="stroke-close" type="button" aria-label="Close stroke order" title="Close stroke order">×</button><span id="flashStrokeStatus" class="small"></span></div>
             <div id="flashStrokePanel" class="stroke-grid"></div>
-            <div class="stroke-controls"><button id="flashReplayBtn">Replay animation</button><button id="flashTraceBtn">Trace practice</button><button id="flashRetryTraceBtn" hidden>Try again</button><button id="flashGuideBtn" hidden>Hide guide</button><button id="flashExitTraceBtn" type="button" hidden>Done tracing</button></div>
+            <div class="stroke-controls"><button id="flashReplayBtn" aria-label="Replay stroke animation" title="Replay stroke animation"><span aria-hidden="true">↻</span> Replay</button><button id="flashTraceBtn"><span aria-hidden="true">✎</span> Trace practice</button><button id="flashRetryTraceBtn" aria-label="Restart tracing" title="Restart tracing" hidden><span aria-hidden="true">⟳</span> Retry</button><button id="flashGuideBtn" hidden>Hide guide</button></div>
             <p class="stroke-device-tip small">Trace directly on a character using a finger or Apple Pencil. Drawing works inside the pad; scroll outside it.</p>
           </div>
-        </div>
+        </dialog>
       </div>
     </section>
 
     <section id="quiz" class="panel">
       <div class="card quiz-top-card">
         <div class="quiz-toolbar">
-          <div><label>Quiz deck</label><select id="quizLevel"><option value="all">HSK 2 + 3</option><option value="2">HSK 2 only</option><option value="3">HSK 3 only</option><option value="learning">Learning priority</option><option value="new">New words</option></select></div>
-          <div><label>Prompt direction</label><select id="quizDirection"><option value="zh-en">Chinese → English</option><option value="en-zh">English → Chinese</option><option value="py-zh">Pinyin → Chinese</option><option value="py-en">Pinyin → English</option><option value="mix-zh-en">Mixed: Chinese ↔ English</option><option value="mix-py-zh">Mixed: Pinyin ↔ Chinese</option><option value="mix-py-en">Mixed: Pinyin ↔ English</option><option value="supermix">SuperMix: all modes</option></select></div>
-          <div class="quiz-count-field"><label>Questions</label><input id="quizCount" type="number" min="1" max="600" step="1" value="20"></div>
+          <div><label for="quizLevel">Quiz deck</label><select id="quizLevel"><option value="all">HSK 2 + 3</option><option value="due">Due for review</option><option value="2">HSK 2 only</option><option value="3">HSK 3 only</option><option value="learning">Learning priority</option><option value="new">New words</option></select></div>
+          <div><label for="quizDirection">Prompt direction</label><select id="quizDirection"><option value="zh-en">Chinese → English</option><option value="en-zh">English → Chinese</option><option value="py-zh">Pinyin → Chinese</option><option value="py-en">Pinyin → English</option><option value="mix-zh-en">Mixed: Chinese ↔ English</option><option value="mix-py-zh">Mixed: Pinyin ↔ Chinese</option><option value="mix-py-en">Mixed: Pinyin ↔ English</option><option value="supermix">SuperMix: all modes</option></select></div>
+          <div class="quiz-count-field"><label for="quizCount">Questions</label><input id="quizCount" type="number" min="1" max="601" step="1" value="20"></div>
           <button class="primary" id="startQuizBtn">Start Quiz</button>
         </div>
       </div>
@@ -650,17 +201,19 @@
         <div class="quiz-main-head"><strong>Quiz</strong><span id="quizScore" class="small">Score: 0 / 0</span></div>
         <div id="quizPrompt" class="flash-front quiz-idle" style="font-size:42px;margin:20px 0">Press Start Quiz</div>
         <div id="quizOptions"></div>
-        <div id="quizFeedback" style="min-height:0;margin-top:0"></div>
+        <div id="quizFeedback" role="status" aria-live="polite" style="min-height:0;margin-top:0"></div>
         <div class="quiz-next-row"><button id="quizNextBtn" disabled>Next question</button><button id="quizRetryMissedBtn" hidden>Retry missed words</button></div>
-        <p class="small quiz-key-hint">Keyboard: 1–4 to answer, Enter for next. Answers show green/red after selection.</p>
+        <p class="small quiz-key-hint">Keyboard: 1–4 to answer · Enter for next. Missed words can be reviewed at the end.</p>
       </div>
     </section>
 
     <section id="settings" class="panel settings-panel">
       <div class="grid two settings-grid">
+        <div class="card"><h2>Daily review</h2><label for="dailyGoal">Words to review each day</label><input id="dailyGoal" type="number" min="1" max="100" value="10"><p class="small">Swipe or use the buttons to mark words as Not known, Learning or Known. Review Learning words from the deck selector. Existing scheduled reviews remain saved.</p><p class="small" id="writingSummary"></p></div>
+        <div class="card"><h2>Install &amp; offline</h2><p class="small">On iPhone or iPad, open this site in Safari, tap Share, then Add to Home Screen. On desktop, use your browser’s install option.</p><p id="offlineStatus" class="small" role="status">Checking offline availability…</p><div class="row"><button id="checkUpdateBtn">Check for updates</button><button id="repairCacheBtn">Repair offline copy</button></div><p class="small">Updates wait until you choose to reload. Repair refreshes this app’s cached files; it keeps study progress. Online translation still needs a connection. Voice availability depends on your device.</p></div>
         <div class="card" id="settingsSpeechCard">
           <h2>Speech and translation</h2>
-          <div class="voice-setting-block" style="margin-top:10px"><label>Speech rate</label><div class="voice-line"><div class="voice-slider-cell"><input id="ttsRate" type="range" min="0.5" max="1.25" step="0.05"></div><div class="voice-rate-badge"><span id="ttsRateLabel" class="pill"></span></div></div></div>
+          <div class="voice-setting-block" style="margin-top:10px"><label for="ttsRate">Speech rate</label><div class="voice-line"><div class="voice-slider-cell"><input id="ttsRate" type="range" min="0.5" max="1.25" step="0.05"></div><div class="voice-rate-badge"><span id="ttsRateLabel" class="pill"></span></div></div></div>
           <label class="toggle" style="margin-top:10px"><input type="checkbox" id="onlineTranslate"> Use online full-text translation when available</label>
           <p class="small">Online translation sends pasted text to MyMemory. Turn it off to use the built-in word glossary only.</p>
         </div>
@@ -668,18 +221,18 @@
           <h2>Stroke order</h2>
           <label class="toggle"><input type="checkbox" id="autoStroke"> Auto-load stroke order when opening a word</label>
           <div class="control-grid" style="margin-top:10px">
-            <div><label>Preload level</label><select id="preloadStrokeLevel"><option value="all">HSK 2 + 3</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
-            <div><label>&nbsp;</label><button id="preloadStrokeBtn">Load all stroke order data</button></div>
+            <div><label for="preloadStrokeLevel">Preload level</label><select id="preloadStrokeLevel"><option value="all">HSK 2 + 3</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
+            <div><button id="preloadStrokeBtn">Check bundled stroke data</button></div>
           </div>
           <p id="strokePreloadStatus" class="small"></p>
-          <p class="small">On iPad, select <strong>Trace practice</strong> in a word popup or flashcard, then write inside the enlarged pad with an Apple Pencil or finger. Stroke data needs internet access to load initially. True palm rejection depends on iPadOS and the browser.</p>
+          <p class="small">On iPad, select <strong>Trace practice</strong> in a word popup or flashcard, then write inside the enlarged pad with an Apple Pencil or finger. All 622 dictionary characters are bundled for offline use once the app is downloaded. Palm rejection depends on iPadOS and the browser; physical Apple Pencil testing is still required.</p>
         </div>
         <div class="card">
           <h2>Progress backup</h2>
           <p class="small">Known/learning status, lesson metadata, and settings are saved in this browser's localStorage.</p>
           <div class="row"><button id="exportBtn">Copy to box</button><button id="downloadBackupBtn" class="primary">Download backup</button><button id="importBtn">Import from box</button><button id="uploadBackupBtn">Choose backup file</button></div>
           <input id="backupFileInput" type="file" accept="application/json,.json" hidden>
-          <label style="margin-top:10px">Import/export box</label><textarea id="jsonBox" style="min-height:170px"></textarea>
+          <label for="jsonBox" style="margin-top:10px">Import/export box</label><textarea id="jsonBox" style="min-height:170px"></textarea>
           <div class="danger-zone"><div><strong>Start fresh</strong><p class="small">Permanently clear study history and saved text on this device.</p></div><button class="danger destructive" id="resetBtn">Reset progress</button></div>
         </div>
         <div class="card settings-device-card">
@@ -703,1144 +256,17 @@
     </main>
   </div>
 
-  <dialog id="wordDialog">
+  <dialog id="wordDialog" aria-label="Word details and writing practice">
     <button id="closeDialog" class="modal-close" title="Close" aria-label="Close">✕</button>
     <button id="prevUnknownBtn" class="dialog-arrow left" title="Previous unknown word" aria-label="Previous unknown word" hidden></button>
     <button id="nextUnknownBtn" class="dialog-arrow right" title="Next unknown word" aria-label="Next unknown word" hidden></button>
-    <div class="modal-body" id="wordDetails"></div>
+    <div class="modal-body" id="wordDetails"></div><div class="dialog-footer"><span class="small">Unfamiliar words in this passage</span></div>
   </dialog>
 
   <div id="appToast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 
-  <script>
-  // ===========================
-  // Embedded vocabulary data
-  // ===========================
-  const RAW_VOCAB = [{"word":"爱","pinyin":"ài","english":"to love; to like","level":2},{"word":"八","pinyin":"bā","english":"eight","level":2},{"word":"爸爸","pinyin":"bàba","english":"dad; father","level":2},{"word":"吧","pinyin":"ba","english":"modal particle; suggestion","level":2},{"word":"白","pinyin":"bái","english":"white; clear","level":2},{"word":"百","pinyin":"bǎi","english":"hundred","level":2},{"word":"帮助","pinyin":"bāngzhù","english":"help; assist","level":2},{"word":"报纸","pinyin":"bàozhǐ","english":"newspaper","level":2},{"word":"杯子","pinyin":"bēizi","english":"cup; glass","level":2},{"word":"北京","pinyin":"Běijīng","english":"Beijing","level":2},{"word":"本","pinyin":"běn","english":"book classifier; origin; this","level":2},{"word":"比","pinyin":"bǐ","english":"to compare; than","level":2},{"word":"别","pinyin":"bié","english":"do not; other","level":2},{"word":"不客气","pinyin":"búkèqi","english":"you are welcome","level":2},{"word":"不","pinyin":"bù","english":"not; no","level":2},{"word":"菜","pinyin":"cài","english":"dish; vegetable","level":2},{"word":"茶","pinyin":"chá","english":"tea","level":2},{"word":"长","pinyin":"cháng","english":"long; length","level":2},{"word":"唱歌","pinyin":"chànggē","english":"to sing","level":2},{"word":"吃","pinyin":"chī","english":"to eat","level":2},{"word":"出","pinyin":"chū","english":"to go out; come out","level":2},{"word":"出租车","pinyin":"chūzūchē","english":"taxi","level":2},{"word":"穿","pinyin":"chuān","english":"to wear; pass through","level":2},{"word":"船","pinyin":"chuán","english":"boat; ship","level":2},{"word":"次","pinyin":"cì","english":"time; occasion; next","level":2},{"word":"从","pinyin":"cóng","english":"from; since","level":2},{"word":"错","pinyin":"cuò","english":"mistake; wrong","level":2},{"word":"打电话","pinyin":"dǎ diànhuà","english":"to make a phone call","level":2},{"word":"打篮球","pinyin":"dǎ lánqiú","english":"to play basketball","level":2},{"word":"大","pinyin":"dà","english":"big; large","level":2},{"word":"大家","pinyin":"dàjiā","english":"everyone","level":2},{"word":"但是","pinyin":"dànshì","english":"but; however","level":2},{"word":"到","pinyin":"dào","english":"to arrive; to","level":2},{"word":"的","pinyin":"de","english":"possessive/attributive particle","level":2},{"word":"得","pinyin":"de","english":"degree/result particle","level":2},{"word":"等","pinyin":"děng","english":"to wait; etc.","level":2},{"word":"弟弟","pinyin":"dìdi","english":"younger brother","level":2},{"word":"第一","pinyin":"dìyī","english":"first","level":2},{"word":"点","pinyin":"diǎn","english":"point; o'clock; a little","level":2},{"word":"电脑","pinyin":"diànnǎo","english":"computer","level":2},{"word":"电视","pinyin":"diànshì","english":"television","level":2},{"word":"电影","pinyin":"diànyǐng","english":"movie","level":2},{"word":"东西","pinyin":"dōngxi","english":"thing; stuff","level":2},{"word":"懂","pinyin":"dǒng","english":"to understand","level":2},{"word":"都","pinyin":"dōu","english":"all; both","level":2},{"word":"读","pinyin":"dú","english":"to read; study","level":2},{"word":"对","pinyin":"duì","english":"correct; toward; to","level":2},{"word":"对不起","pinyin":"duìbuqǐ","english":"sorry; excuse me","level":2},{"word":"多","pinyin":"duō","english":"many; much","level":2},{"word":"多少","pinyin":"duōshǎo","english":"how many; how much","level":2},{"word":"儿子","pinyin":"érzi","english":"son","level":2},{"word":"二","pinyin":"èr","english":"two","level":2},{"word":"饭馆","pinyin":"fànguǎn","english":"restaurant","level":2},{"word":"房间","pinyin":"fángjiān","english":"room","level":2},{"word":"非常","pinyin":"fēicháng","english":"very; extremely","level":2},{"word":"飞机","pinyin":"fēijī","english":"airplane","level":2},{"word":"分钟","pinyin":"fēnzhōng","english":"minute","level":2},{"word":"服务员","pinyin":"fúwùyuán","english":"waiter; attendant","level":2},{"word":"高","pinyin":"gāo","english":"tall; high","level":2},{"word":"高兴","pinyin":"gāoxìng","english":"happy; glad","level":2},{"word":"告诉","pinyin":"gàosu","english":"to tell","level":2},{"word":"哥哥","pinyin":"gēge","english":"older brother","level":2},{"word":"个","pinyin":"gè","english":"general classifier","level":2},{"word":"给","pinyin":"gěi","english":"to give; for","level":2},{"word":"公共汽车","pinyin":"gōnggòng qìchē","english":"bus","level":2},{"word":"公斤","pinyin":"gōngjīn","english":"kilogram","level":2},{"word":"公司","pinyin":"gōngsī","english":"company","level":2},{"word":"工作","pinyin":"gōngzuò","english":"work; job","level":2},{"word":"狗","pinyin":"gǒu","english":"dog","level":2},{"word":"贵","pinyin":"guì","english":"expensive","level":2},{"word":"过","pinyin":"guò","english":"experienced action marker; to pass","level":2},{"word":"还","pinyin":"hái","english":"still; also","level":2},{"word":"孩子","pinyin":"háizi","english":"child","level":2},{"word":"汉语","pinyin":"Hànyǔ","english":"Chinese language","level":2},{"word":"好","pinyin":"hǎo","english":"good; well","level":2},{"word":"好吃","pinyin":"hǎochī","english":"delicious","level":2},{"word":"号","pinyin":"hào","english":"number; day of month","level":2},{"word":"喝","pinyin":"hē","english":"to drink","level":2},{"word":"和","pinyin":"hé","english":"and; with","level":2},{"word":"黑","pinyin":"hēi","english":"black","level":2},{"word":"很","pinyin":"hěn","english":"very","level":2},{"word":"红","pinyin":"hóng","english":"red","level":2},{"word":"后面","pinyin":"hòumian","english":"behind; back","level":2},{"word":"欢迎","pinyin":"huānyíng","english":"welcome","level":2},{"word":"回","pinyin":"huí","english":"to return; time","level":2},{"word":"回答","pinyin":"huídá","english":"to answer","level":2},{"word":"会","pinyin":"huì","english":"can; will; meeting","level":2},{"word":"火车站","pinyin":"huǒchēzhàn","english":"train station","level":2},{"word":"机场","pinyin":"jīchǎng","english":"airport","level":2},{"word":"鸡蛋","pinyin":"jīdàn","english":"egg","level":2},{"word":"几","pinyin":"jǐ","english":"how many; several","level":2},{"word":"家","pinyin":"jiā","english":"home; family; classifier","level":2},{"word":"件","pinyin":"jiàn","english":"item; classifier","level":2},{"word":"叫","pinyin":"jiào","english":"to be called; to call","level":2},{"word":"教室","pinyin":"jiàoshì","english":"classroom","level":2},{"word":"姐姐","pinyin":"jiějie","english":"older sister","level":2},{"word":"介绍","pinyin":"jièshào","english":"to introduce","level":2},{"word":"今天","pinyin":"jīntiān","english":"today","level":2},{"word":"进","pinyin":"jìn","english":"to enter","level":2},{"word":"近","pinyin":"jìn","english":"near","level":2},{"word":"九","pinyin":"jiǔ","english":"nine","level":2},{"word":"就","pinyin":"jiù","english":"then; just; at once","level":2},{"word":"觉得","pinyin":"juéde","english":"to think; feel","level":2},{"word":"咖啡","pinyin":"kāfēi","english":"coffee","level":2},{"word":"开","pinyin":"kāi","english":"to open; start","level":2},{"word":"开始","pinyin":"kāishǐ","english":"to begin","level":2},{"word":"看","pinyin":"kàn","english":"to look; watch; read","level":2},{"word":"看见","pinyin":"kànjiàn","english":"to see","level":2},{"word":"考试","pinyin":"kǎoshì","english":"exam","level":2},{"word":"可能","pinyin":"kěnéng","english":"possible; maybe","level":2},{"word":"可以","pinyin":"kěyǐ","english":"can; may","level":2},{"word":"课","pinyin":"kè","english":"class; lesson","level":2},{"word":"块","pinyin":"kuài","english":"piece; yuan classifier","level":2},{"word":"快","pinyin":"kuài","english":"fast; quick","level":2},{"word":"快乐","pinyin":"kuàilè","english":"happy","level":2},{"word":"来","pinyin":"lái","english":"to come","level":2},{"word":"老师","pinyin":"lǎoshī","english":"teacher","level":2},{"word":"了","pinyin":"le","english":"completed action particle","level":2},{"word":"累","pinyin":"lèi","english":"tired","level":2},{"word":"冷","pinyin":"lěng","english":"cold","level":2},{"word":"离","pinyin":"lí","english":"away from; to leave","level":2},{"word":"里","pinyin":"lǐ","english":"inside","level":2},{"word":"两","pinyin":"liǎng","english":"two; both","level":2},{"word":"零","pinyin":"líng","english":"zero","level":2},{"word":"六","pinyin":"liù","english":"six","level":2},{"word":"路","pinyin":"lù","english":"road; route","level":2},{"word":"旅游","pinyin":"lǚyóu","english":"travel; tourism","level":2},{"word":"妈妈","pinyin":"māma","english":"mom","level":2},{"word":"吗","pinyin":"ma","english":"question particle","level":2},{"word":"买","pinyin":"mǎi","english":"to buy","level":2},{"word":"卖","pinyin":"mài","english":"to sell","level":2},{"word":"慢","pinyin":"màn","english":"slow","level":2},{"word":"忙","pinyin":"máng","english":"busy","level":2},{"word":"猫","pinyin":"māo","english":"cat","level":2},{"word":"没","pinyin":"méi","english":"not have; have not","level":2},{"word":"没关系","pinyin":"méiguānxi","english":"it does not matter","level":2},{"word":"每","pinyin":"měi","english":"each; every","level":2},{"word":"妹妹","pinyin":"mèimei","english":"younger sister","level":2},{"word":"门","pinyin":"mén","english":"door; gate","level":2},{"word":"米饭","pinyin":"mǐfàn","english":"cooked rice","level":2},{"word":"明天","pinyin":"míngtiān","english":"tomorrow","level":2},{"word":"名字","pinyin":"míngzi","english":"name","level":2},{"word":"哪","pinyin":"nǎ","english":"which; how","level":2},{"word":"哪儿","pinyin":"nǎr","english":"where","level":2},{"word":"那","pinyin":"nà","english":"that","level":2},{"word":"那儿","pinyin":"nàr","english":"there","level":2},{"word":"男人","pinyin":"nánrén","english":"man","level":2},{"word":"呢","pinyin":"ne","english":"question particle","level":2},{"word":"能","pinyin":"néng","english":"can; able","level":2},{"word":"你","pinyin":"nǐ","english":"you","level":2},{"word":"年","pinyin":"nián","english":"year","level":2},{"word":"您","pinyin":"nín","english":"you (polite)","level":2},{"word":"牛奶","pinyin":"niúnǎi","english":"milk","level":2},{"word":"女儿","pinyin":"nǚ'ér","english":"daughter","level":2},{"word":"女人","pinyin":"nǚrén","english":"woman","level":2},{"word":"旁边","pinyin":"pángbiān","english":"beside; side","level":2},{"word":"跑步","pinyin":"pǎobù","english":"to run","level":2},{"word":"朋友","pinyin":"péngyou","english":"friend","level":2},{"word":"便宜","pinyin":"piányi","english":"cheap","level":2},{"word":"票","pinyin":"piào","english":"ticket","level":2},{"word":"漂亮","pinyin":"piàoliang","english":"beautiful","level":2},{"word":"苹果","pinyin":"píngguǒ","english":"apple","level":2},{"word":"七","pinyin":"qī","english":"seven","level":2},{"word":"妻子","pinyin":"qīzi","english":"wife","level":2},{"word":"起床","pinyin":"qǐchuáng","english":"get up","level":2},{"word":"千","pinyin":"qiān","english":"thousand","level":2},{"word":"钱","pinyin":"qián","english":"money","level":2},{"word":"前面","pinyin":"qiánmiàn","english":"front; ahead","level":2},{"word":"晴","pinyin":"qíng","english":"clear; sunny","level":2},{"word":"请","pinyin":"qǐng","english":"please; invite","level":2},{"word":"去","pinyin":"qù","english":"to go","level":2},{"word":"去年","pinyin":"qùnián","english":"last year","level":2},{"word":"让","pinyin":"ràng","english":"to let; allow","level":2},{"word":"热","pinyin":"rè","english":"hot","level":2},{"word":"人","pinyin":"rén","english":"person; people","level":2},{"word":"认识","pinyin":"rènshi","english":"to know; recognize","level":2},{"word":"日","pinyin":"rì","english":"day; sun","level":2},{"word":"三","pinyin":"sān","english":"three","level":2},{"word":"商店","pinyin":"shāngdiàn","english":"shop; store","level":2},{"word":"上","pinyin":"shàng","english":"on; above; previous","level":2},{"word":"上班","pinyin":"shàngbān","english":"go to work","level":2},{"word":"上午","pinyin":"shàngwǔ","english":"morning","level":2},{"word":"少","pinyin":"shǎo","english":"few; little","level":2},{"word":"谁","pinyin":"shéi","english":"who","level":2},{"word":"身体","pinyin":"shēntǐ","english":"body; health","level":2},{"word":"什么","pinyin":"shénme","english":"what","level":2},{"word":"生病","pinyin":"shēngbìng","english":"to get sick","level":2},{"word":"生日","pinyin":"shēngrì","english":"birthday","level":2},{"word":"十","pinyin":"shí","english":"ten","level":2},{"word":"时候","pinyin":"shíhou","english":"time; moment","level":2},{"word":"时间","pinyin":"shíjiān","english":"time; period","level":2},{"word":"是","pinyin":"shì","english":"to be; yes","level":2},{"word":"事情","pinyin":"shìqíng","english":"matter; thing","level":2},{"word":"手表","pinyin":"shǒubiǎo","english":"watch","level":2},{"word":"手机","pinyin":"shǒujī","english":"mobile phone","level":2},{"word":"书","pinyin":"shū","english":"book","level":2},{"word":"水","pinyin":"shuǐ","english":"water","level":2},{"word":"水果","pinyin":"shuǐguǒ","english":"fruit","level":2},{"word":"睡觉","pinyin":"shuìjiào","english":"to sleep","level":2},{"word":"说话","pinyin":"shuōhuà","english":"to speak","level":2},{"word":"四","pinyin":"sì","english":"four","level":2},{"word":"送","pinyin":"sòng","english":"to give; deliver","level":2},{"word":"岁","pinyin":"suì","english":"years old","level":2},{"word":"所以","pinyin":"suǒyǐ","english":"therefore; so","level":2},{"word":"他","pinyin":"tā","english":"he; him","level":2},{"word":"她","pinyin":"tā","english":"she; her","level":2},{"word":"它","pinyin":"tā","english":"it","level":2},{"word":"太","pinyin":"tài","english":"too; very","level":2},{"word":"踢足球","pinyin":"tī zúqiú","english":"to play soccer","level":2},{"word":"题","pinyin":"tí","english":"topic; question","level":2},{"word":"天气","pinyin":"tiānqì","english":"weather","level":2},{"word":"跳舞","pinyin":"tiàowǔ","english":"to dance","level":2},{"word":"听","pinyin":"tīng","english":"to listen; hear","level":2},{"word":"同学","pinyin":"tóngxué","english":"classmate","level":2},{"word":"外","pinyin":"wài","english":"outside; foreign","level":2},{"word":"完","pinyin":"wán","english":"to finish","level":2},{"word":"玩","pinyin":"wán","english":"to play","level":2},{"word":"晚上","pinyin":"wǎnshang","english":"evening","level":2},{"word":"喂","pinyin":"wèi","english":"hello (phone); hey","level":2},{"word":"为什么","pinyin":"wèishénme","english":"why","level":2},{"word":"问","pinyin":"wèn","english":"to ask","level":2},{"word":"问题","pinyin":"wèntí","english":"question; problem","level":2},{"word":"我","pinyin":"wǒ","english":"I; me","level":2},{"word":"我们","pinyin":"wǒmen","english":"we; us","level":2},{"word":"五","pinyin":"wǔ","english":"five","level":2},{"word":"西瓜","pinyin":"xīguā","english":"watermelon","level":2},{"word":"希望","pinyin":"xīwàng","english":"to hope; wish","level":2},{"word":"洗","pinyin":"xǐ","english":"to wash","level":2},{"word":"喜欢","pinyin":"xǐhuan","english":"to like","level":2},{"word":"下","pinyin":"xià","english":"down; next","level":2},{"word":"下午","pinyin":"xiàwǔ","english":"afternoon","level":2},{"word":"下雨","pinyin":"xiàyǔ","english":"to rain","level":2},{"word":"先生","pinyin":"xiānsheng","english":"Mr.; husband; teacher","level":2},{"word":"现在","pinyin":"xiànzài","english":"now","level":2},{"word":"想","pinyin":"xiǎng","english":"to want; think; miss","level":2},{"word":"向","pinyin":"xiàng","english":"toward; direction","level":2},{"word":"小","pinyin":"xiǎo","english":"small","level":2},{"word":"小姐","pinyin":"xiǎojie","english":"Miss; young lady","level":2},{"word":"小时","pinyin":"xiǎoshí","english":"hour","level":2},{"word":"笑","pinyin":"xiào","english":"to laugh; smile","level":2},{"word":"些","pinyin":"xiē","english":"some","level":2},{"word":"写","pinyin":"xiě","english":"to write","level":2},{"word":"谢谢","pinyin":"xièxie","english":"thanks","level":2},{"word":"新","pinyin":"xīn","english":"new","level":2},{"word":"星期","pinyin":"xīngqī","english":"week","level":2},{"word":"姓","pinyin":"xìng","english":"surname","level":2},{"word":"休息","pinyin":"xiūxi","english":"to rest","level":2},{"word":"学生","pinyin":"xuésheng","english":"student","level":2},{"word":"学习","pinyin":"xuéxí","english":"to study","level":2},{"word":"学校","pinyin":"xuéxiào","english":"school","level":2},{"word":"雪","pinyin":"xuě","english":"snow","level":2},{"word":"颜色","pinyin":"yánsè","english":"color","level":2},{"word":"眼睛","pinyin":"yǎnjing","english":"eye","level":2},{"word":"羊肉","pinyin":"yángròu","english":"mutton","level":2},{"word":"药","pinyin":"yào","english":"medicine","level":2},{"word":"要","pinyin":"yào","english":"to want; need; will","level":2},{"word":"也","pinyin":"yě","english":"also","level":2},{"word":"一","pinyin":"yī","english":"one","level":2},{"word":"衣服","pinyin":"yīfu","english":"clothes","level":2},{"word":"医生","pinyin":"yīshēng","english":"doctor","level":2},{"word":"医院","pinyin":"yīyuàn","english":"hospital","level":2},{"word":"已经","pinyin":"yǐjīng","english":"already","level":2},{"word":"椅子","pinyin":"yǐzi","english":"chair","level":2},{"word":"一起","pinyin":"yìqǐ","english":"together","level":2},{"word":"意思","pinyin":"yìsi","english":"meaning; idea","level":2},{"word":"阴","pinyin":"yīn","english":"cloudy; overcast","level":2},{"word":"在","pinyin":"zài","english":"at; in; exist","level":2},{"word":"因为","pinyin":"yīnwèi","english":"because","level":2},{"word":"游泳","pinyin":"yóuyǒng","english":"swim","level":2},{"word":"有","pinyin":"yǒu","english":"to have; there is","level":2},{"word":"右边","pinyin":"yòubian","english":"right side","level":2},{"word":"鱼","pinyin":"yú","english":"fish","level":2},{"word":"元","pinyin":"yuán","english":"yuan; dollar","level":2},{"word":"远","pinyin":"yuǎn","english":"far","level":2},{"word":"月","pinyin":"yuè","english":"month; moon","level":2},{"word":"运动","pinyin":"yùndòng","english":"exercise; sport","level":2},{"word":"再","pinyin":"zài","english":"again","level":2},{"word":"再见","pinyin":"zàijiàn","english":"goodbye","level":2},{"word":"早上","pinyin":"zǎoshang","english":"morning","level":2},{"word":"怎么","pinyin":"zěnme","english":"how","level":2},{"word":"怎么样","pinyin":"zěnmeyàng","english":"how about; how is it","level":2},{"word":"张","pinyin":"zhāng","english":"classifier for flat objects","level":2},{"word":"丈夫","pinyin":"zhàngfu","english":"husband","level":2},{"word":"找","pinyin":"zhǎo","english":"to look for","level":2},{"word":"这","pinyin":"zhè","english":"this","level":2},{"word":"这儿","pinyin":"zhèr","english":"here","level":2},{"word":"着","pinyin":"zhe","english":"action-in-progress particle","level":2},{"word":"真","pinyin":"zhēn","english":"really; true","level":2},{"word":"正在","pinyin":"zhèngzài","english":"in the process of","level":2},{"word":"知道","pinyin":"zhīdao","english":"to know","level":2},{"word":"中国","pinyin":"Zhōngguó","english":"China","level":2},{"word":"中午","pinyin":"zhōngwǔ","english":"noon","level":2},{"word":"住","pinyin":"zhù","english":"to live; stay","level":2},{"word":"准备","pinyin":"zhǔnbèi","english":"to prepare","level":2},{"word":"桌子","pinyin":"zhuōzi","english":"table; desk","level":2},{"word":"字","pinyin":"zì","english":"character; word","level":2},{"word":"自行车","pinyin":"zìxíngchē","english":"bicycle","level":2},{"word":"走","pinyin":"zǒu","english":"to walk; leave","level":2},{"word":"最","pinyin":"zuì","english":"most","level":2},{"word":"昨天","pinyin":"zuótiān","english":"yesterday","level":2},{"word":"左边","pinyin":"zuǒbian","english":"left side","level":2},{"word":"坐","pinyin":"zuò","english":"to sit; take transport","level":2},{"word":"做","pinyin":"zuò","english":"to do; make","level":2},{"word":"阿姨","pinyin":"āyí","english":"aunt; nanny","level":3},{"word":"啊","pinyin":"a","english":"sentence particle; ah","level":3},{"word":"矮","pinyin":"ǎi","english":"short; low","level":3},{"word":"爱好","pinyin":"àihào","english":"hobby; interest","level":3},{"word":"安静","pinyin":"ānjìng","english":"quiet; peaceful","level":3},{"word":"把","pinyin":"bǎ","english":"object marker; to hold","level":3},{"word":"班","pinyin":"bān","english":"class; team","level":3},{"word":"搬","pinyin":"bān","english":"to move","level":3},{"word":"半","pinyin":"bàn","english":"half","level":3},{"word":"办法","pinyin":"bànfǎ","english":"method; way","level":3},{"word":"办公室","pinyin":"bàngōngshì","english":"office","level":3},{"word":"帮忙","pinyin":"bāngmáng","english":"to help","level":3},{"word":"包","pinyin":"bāo","english":"bag; package; to wrap","level":3},{"word":"饱","pinyin":"bǎo","english":"full; satisfied","level":3},{"word":"北方","pinyin":"běifāng","english":"north","level":3},{"word":"被","pinyin":"bèi","english":"passive marker; by","level":3},{"word":"鼻子","pinyin":"bízi","english":"nose","level":3},{"word":"比较","pinyin":"bǐjiào","english":"to compare; relatively","level":3},{"word":"比赛","pinyin":"bǐsài","english":"competition; match","level":3},{"word":"必须","pinyin":"bìxū","english":"must; have to","level":3},{"word":"变化","pinyin":"biànhuà","english":"change","level":3},{"word":"表示","pinyin":"biǎoshì","english":"to express; indicate","level":3},{"word":"表演","pinyin":"biǎoyǎn","english":"to perform; performance","level":3},{"word":"别人","pinyin":"biérén","english":"other people","level":3},{"word":"宾馆","pinyin":"bīnguǎn","english":"hotel; guesthouse","level":3},{"word":"冰箱","pinyin":"bīngxiāng","english":"refrigerator","level":3},{"word":"才","pinyin":"cái","english":"only; just","level":3},{"word":"菜单","pinyin":"càidān","english":"menu","level":3},{"word":"参加","pinyin":"cānjiā","english":"to participate","level":3},{"word":"草","pinyin":"cǎo","english":"grass","level":3},{"word":"层","pinyin":"céng","english":"floor; layer","level":3},{"word":"差","pinyin":"chà","english":"poor; differ","level":3},{"word":"超市","pinyin":"chāoshì","english":"supermarket","level":3},{"word":"衬衫","pinyin":"chènshān","english":"shirt","level":3},{"word":"成绩","pinyin":"chéngjì","english":"grades; results","level":3},{"word":"城市","pinyin":"chéngshì","english":"city","level":3},{"word":"迟到","pinyin":"chídào","english":"to be late","level":3},{"word":"出现","pinyin":"chūxiàn","english":"to appear","level":3},{"word":"厨房","pinyin":"chúfáng","english":"kitchen","level":3},{"word":"除了","pinyin":"chúle","english":"besides; except","level":3},{"word":"春","pinyin":"chūn","english":"spring","level":3},{"word":"词语","pinyin":"cíyǔ","english":"word; expression","level":3},{"word":"聪明","pinyin":"cōngming","english":"smart; clever","level":3},{"word":"打扫","pinyin":"dǎsǎo","english":"to clean","level":3},{"word":"打算","pinyin":"dǎsuàn","english":"to plan; intend","level":3},{"word":"带","pinyin":"dài","english":"to bring; belt","level":3},{"word":"担心","pinyin":"dānxīn","english":"to worry","level":3},{"word":"蛋糕","pinyin":"dàngāo","english":"cake","level":3},{"word":"当然","pinyin":"dāngrán","english":"of course","level":3},{"word":"地","pinyin":"de","english":"-ly adverbial particle","level":3},{"word":"灯","pinyin":"dēng","english":"lamp; light","level":3},{"word":"低","pinyin":"dī","english":"low","level":3},{"word":"地方","pinyin":"dìfang","english":"place","level":3},{"word":"地铁","pinyin":"dìtiě","english":"subway","level":3},{"word":"地图","pinyin":"dìtú","english":"map","level":3},{"word":"电梯","pinyin":"diàntī","english":"elevator","level":3},{"word":"电子邮件","pinyin":"diànzǐ yóujiàn","english":"email","level":3},{"word":"东","pinyin":"dōng","english":"east","level":3},{"word":"冬","pinyin":"dōng","english":"winter","level":3},{"word":"动物","pinyin":"dòngwù","english":"animal","level":3},{"word":"短","pinyin":"duǎn","english":"short","level":3},{"word":"段","pinyin":"duàn","english":"section; paragraph","level":3},{"word":"锻炼","pinyin":"duànliàn","english":"to exercise","level":3},{"word":"多么","pinyin":"duōme","english":"how; what","level":3},{"word":"饿","pinyin":"è","english":"hungry","level":3},{"word":"而且","pinyin":"érqiě","english":"moreover; also","level":3},{"word":"耳朵","pinyin":"ěrduo","english":"ear","level":3},{"word":"发烧","pinyin":"fāshāo","english":"to have a fever","level":3},{"word":"发现","pinyin":"fāxiàn","english":"to discover","level":3},{"word":"方便","pinyin":"fāngbiàn","english":"convenient","level":3},{"word":"放","pinyin":"fàng","english":"to put; release","level":3},{"word":"放心","pinyin":"fàngxīn","english":"to relax; be at ease","level":3},{"word":"分","pinyin":"fēn","english":"to divide; point; cent","level":3},{"word":"附近","pinyin":"fùjìn","english":"nearby","level":3},{"word":"复习","pinyin":"fùxí","english":"to review","level":3},{"word":"干净","pinyin":"gānjìng","english":"clean","level":3},{"word":"敢","pinyin":"gǎn","english":"to dare","level":3},{"word":"感冒","pinyin":"gǎnmào","english":"cold; catch a cold","level":3},{"word":"刚才","pinyin":"gāngcái","english":"just now","level":3},{"word":"跟","pinyin":"gēn","english":"with; follow","level":3},{"word":"根据","pinyin":"gēnjù","english":"according to","level":3},{"word":"更","pinyin":"gèng","english":"more; even more","level":3},{"word":"公园","pinyin":"gōngyuán","english":"park","level":3},{"word":"故事","pinyin":"gùshi","english":"story","level":3},{"word":"刮风","pinyin":"guāfēng","english":"windy","level":3},{"word":"关","pinyin":"guān","english":"to close; concern","level":3},{"word":"关系","pinyin":"guānxi","english":"relationship","level":3},{"word":"关心","pinyin":"guānxīn","english":"to care about","level":3},{"word":"关于","pinyin":"guānyú","english":"about; regarding","level":3},{"word":"国家","pinyin":"guójiā","english":"country","level":3},{"word":"果汁","pinyin":"guǒzhī","english":"fruit juice","level":3},{"word":"过去","pinyin":"guòqù","english":"past; formerly","level":3},{"word":"还是","pinyin":"háishi","english":"or; still","level":3},{"word":"害怕","pinyin":"hàipà","english":"afraid","level":3},{"word":"河","pinyin":"hé","english":"river","level":3},{"word":"黑板","pinyin":"hēibǎn","english":"blackboard","level":3},{"word":"护照","pinyin":"hùzhào","english":"passport","level":3},{"word":"花","pinyin":"huā","english":"flower; spend","level":3},{"word":"花园","pinyin":"huāyuán","english":"garden","level":3},{"word":"画","pinyin":"huà","english":"to draw; picture","level":3},{"word":"坏","pinyin":"huài","english":"bad; broken","level":3},{"word":"环境","pinyin":"huánjìng","english":"environment","level":3},{"word":"换","pinyin":"huàn","english":"to change; exchange","level":3},{"word":"黄","pinyin":"huáng","english":"yellow","level":3},{"word":"会议","pinyin":"huìyì","english":"meeting","level":3},{"word":"或者","pinyin":"huòzhě","english":"or; perhaps","level":3},{"word":"几乎","pinyin":"jīhū","english":"almost","level":3},{"word":"机会","pinyin":"jīhuì","english":"opportunity","level":3},{"word":"极","pinyin":"jí","english":"extremely","level":3},{"word":"记得","pinyin":"jìde","english":"to remember","level":3},{"word":"季节","pinyin":"jìjié","english":"season","level":3},{"word":"检查","pinyin":"jiǎnchá","english":"to inspect; check","level":3},{"word":"简单","pinyin":"jiǎndān","english":"simple","level":3},{"word":"健康","pinyin":"jiànkāng","english":"healthy; health","level":3},{"word":"见面","pinyin":"jiànmiàn","english":"to meet","level":3},{"word":"讲","pinyin":"jiǎng","english":"to speak; explain","level":3},{"word":"教","pinyin":"jiāo","english":"to teach","level":3},{"word":"脚","pinyin":"jiǎo","english":"foot","level":3},{"word":"角","pinyin":"jiǎo","english":"corner; angle","level":3},{"word":"接","pinyin":"jiē","english":"to receive; meet","level":3},{"word":"街道","pinyin":"jiēdào","english":"street","level":3},{"word":"结婚","pinyin":"jiéhūn","english":"to marry","level":3},{"word":"结束","pinyin":"jiéshù","english":"to finish; end","level":3},{"word":"节目","pinyin":"jiémù","english":"program","level":3},{"word":"节日","pinyin":"jiérì","english":"holiday; festival","level":3},{"word":"解决","pinyin":"jiějué","english":"to solve","level":3},{"word":"借","pinyin":"jiè","english":"to borrow; lend","level":3},{"word":"经常","pinyin":"jīngcháng","english":"often","level":3},{"word":"经过","pinyin":"jīngguò","english":"to pass; process","level":3},{"word":"经理","pinyin":"jīnglǐ","english":"manager","level":3},{"word":"久","pinyin":"jiǔ","english":"long time","level":3},{"word":"旧","pinyin":"jiù","english":"old; used","level":3},{"word":"举行","pinyin":"jǔxíng","english":"to hold; conduct","level":3},{"word":"句子","pinyin":"jùzi","english":"sentence","level":3},{"word":"决定","pinyin":"juédìng","english":"to decide","level":3},{"word":"渴","pinyin":"kě","english":"thirsty","level":3},{"word":"可爱","pinyin":"kě'ài","english":"cute; lovely","level":3},{"word":"刻","pinyin":"kè","english":"quarter hour; carve","level":3},{"word":"客人","pinyin":"kèrén","english":"guest; customer","level":3},{"word":"空调","pinyin":"kōngtiáo","english":"air conditioning","level":3},{"word":"口","pinyin":"kǒu","english":"mouth","level":3},{"word":"哭","pinyin":"kū","english":"to cry","level":3},{"word":"裤子","pinyin":"kùzi","english":"pants","level":3},{"word":"筷子","pinyin":"kuàizi","english":"chopsticks","level":3},{"word":"蓝","pinyin":"lán","english":"blue","level":3},{"word":"老","pinyin":"lǎo","english":"old; always","level":3},{"word":"离开","pinyin":"líkāi","english":"to leave","level":3},{"word":"礼物","pinyin":"lǐwù","english":"gift","level":3},{"word":"历史","pinyin":"lìshǐ","english":"history","level":3},{"word":"脸","pinyin":"liǎn","english":"face","level":3},{"word":"练习","pinyin":"liànxí","english":"practice","level":3},{"word":"辆","pinyin":"liàng","english":"vehicle classifier","level":3},{"word":"了解","pinyin":"liǎojiě","english":"to understand","level":3},{"word":"邻居","pinyin":"línjū","english":"neighbor","level":3},{"word":"楼","pinyin":"lóu","english":"building; floor","level":3},{"word":"绿","pinyin":"lǜ","english":"green","level":3},{"word":"马","pinyin":"mǎ","english":"horse","level":3},{"word":"马上","pinyin":"mǎshàng","english":"right away","level":3},{"word":"满意","pinyin":"mǎnyì","english":"satisfied","level":3},{"word":"米","pinyin":"mǐ","english":"rice; meter","level":3},{"word":"面包","pinyin":"miànbāo","english":"bread","level":3},{"word":"面条","pinyin":"miàntiáo","english":"noodles","level":3},{"word":"明白","pinyin":"míngbai","english":"to understand; clear","level":3},{"word":"拿","pinyin":"ná","english":"to take; hold","level":3},{"word":"奶奶","pinyin":"nǎinai","english":"paternal grandmother","level":3},{"word":"南","pinyin":"nán","english":"south","level":3},{"word":"难","pinyin":"nán","english":"difficult","level":3},{"word":"难过","pinyin":"nánguò","english":"sad; upset","level":3},{"word":"年级","pinyin":"niánjí","english":"grade","level":3},{"word":"年轻","pinyin":"niánqīng","english":"young","level":3},{"word":"鸟","pinyin":"niǎo","english":"bird","level":3},{"word":"努力","pinyin":"nǔlì","english":"to work hard","level":3},{"word":"爬山","pinyin":"páshān","english":"to hike; climb mountain","level":3},{"word":"盘子","pinyin":"pánzi","english":"plate","level":3},{"word":"胖","pinyin":"pàng","english":"fat; plump","level":3},{"word":"啤酒","pinyin":"píjiǔ","english":"beer","level":3},{"word":"葡萄","pinyin":"pútao","english":"grape","level":3},{"word":"普通话","pinyin":"pǔtōnghuà","english":"Mandarin","level":3},{"word":"其实","pinyin":"qíshí","english":"actually","level":3},{"word":"其他","pinyin":"qítā","english":"other","level":3},{"word":"骑","pinyin":"qí","english":"to ride","level":3},{"word":"铅笔","pinyin":"qiānbǐ","english":"pencil","level":3},{"word":"清楚","pinyin":"qīngchu","english":"clear","level":3},{"word":"秋","pinyin":"qiū","english":"autumn","level":3},{"word":"奇怪","pinyin":"qíguài","english":"strange","level":3},{"word":"裙子","pinyin":"qúnzi","english":"skirt","level":3},{"word":"然后","pinyin":"ránhòu","english":"then; after that","level":3},{"word":"热情","pinyin":"rèqíng","english":"enthusiastic","level":3},{"word":"认为","pinyin":"rènwéi","english":"to think; believe","level":3},{"word":"认真","pinyin":"rènzhēn","english":"serious; earnest","level":3},{"word":"容易","pinyin":"róngyì","english":"easy","level":3},{"word":"如果","pinyin":"rúguǒ","english":"if","level":3},{"word":"伞","pinyin":"sǎn","english":"umbrella","level":3},{"word":"上网","pinyin":"shàngwǎng","english":"to go online","level":3},{"word":"生气","pinyin":"shēngqì","english":"angry","level":3},{"word":"声音","pinyin":"shēngyīn","english":"sound; voice","level":3},{"word":"使","pinyin":"shǐ","english":"to make; cause","level":3},{"word":"世界","pinyin":"shìjiè","english":"world","level":3},{"word":"瘦","pinyin":"shòu","english":"thin","level":3},{"word":"舒服","pinyin":"shūfu","english":"comfortable","level":3},{"word":"叔叔","pinyin":"shūshu","english":"uncle","level":3},{"word":"树","pinyin":"shù","english":"tree","level":3},{"word":"数学","pinyin":"shùxué","english":"math","level":3},{"word":"刷牙","pinyin":"shuāyá","english":"to brush teeth","level":3},{"word":"双","pinyin":"shuāng","english":"pair; double","level":3},{"word":"水平","pinyin":"shuǐpíng","english":"level; standard","level":3},{"word":"司机","pinyin":"sījī","english":"driver","level":3},{"word":"虽然","pinyin":"suīrán","english":"although","level":3},{"word":"太阳","pinyin":"tàiyáng","english":"sun","level":3},{"word":"糖","pinyin":"táng","english":"sugar; candy","level":3},{"word":"特别","pinyin":"tèbié","english":"special; especially","level":3},{"word":"疼","pinyin":"téng","english":"to hurt; painful","level":3},{"word":"提高","pinyin":"tígāo","english":"to improve; raise","level":3},{"word":"体育","pinyin":"tǐyù","english":"sports; PE","level":3},{"word":"甜","pinyin":"tián","english":"sweet","level":3},{"word":"条","pinyin":"tiáo","english":"strip; classifier for long things","level":3},{"word":"同事","pinyin":"tóngshì","english":"colleague","level":3},{"word":"同意","pinyin":"tóngyì","english":"to agree","level":3},{"word":"头发","pinyin":"tóufa","english":"hair","level":3},{"word":"突然","pinyin":"tūrán","english":"sudden","level":3},{"word":"图书馆","pinyin":"túshūguǎn","english":"library","level":3},{"word":"腿","pinyin":"tuǐ","english":"leg","level":3},{"word":"完成","pinyin":"wánchéng","english":"to complete","level":3},{"word":"碗","pinyin":"wǎn","english":"bowl","level":3},{"word":"万","pinyin":"wàn","english":"ten thousand","level":3},{"word":"忘记","pinyin":"wàngjì","english":"to forget","level":3},{"word":"为","pinyin":"wèi","english":"for; because of","level":3},{"word":"为了","pinyin":"wèile","english":"in order to","level":3},{"word":"位","pinyin":"wèi","english":"position; polite classifier","level":3},{"word":"文化","pinyin":"wénhuà","english":"culture","level":3},{"word":"西","pinyin":"xī","english":"west","level":3},{"word":"习惯","pinyin":"xíguàn","english":"habit; be used to","level":3},{"word":"洗手间","pinyin":"xǐshǒujiān","english":"washroom","level":3},{"word":"洗澡","pinyin":"xǐzǎo","english":"to bathe; shower","level":3},{"word":"夏","pinyin":"xià","english":"summer","level":3},{"word":"先","pinyin":"xiān","english":"first; before","level":3},{"word":"香蕉","pinyin":"xiāngjiāo","english":"banana","level":3},{"word":"相同","pinyin":"xiāngtóng","english":"same","level":3},{"word":"相信","pinyin":"xiāngxìn","english":"to believe","level":3},{"word":"像","pinyin":"xiàng","english":"to be like; resemble","level":3},{"word":"小心","pinyin":"xiǎoxīn","english":"careful","level":3},{"word":"校长","pinyin":"xiàozhǎng","english":"principal","level":3},{"word":"鞋","pinyin":"xié","english":"shoe","level":3},{"word":"新闻","pinyin":"xīnwén","english":"news","level":3},{"word":"新鲜","pinyin":"xīnxiān","english":"fresh","level":3},{"word":"信","pinyin":"xìn","english":"letter; trust","level":3},{"word":"行李箱","pinyin":"xínglixiāng","english":"suitcase","level":3},{"word":"兴趣","pinyin":"xìngqu","english":"interest","level":3},{"word":"熊猫","pinyin":"xióngmāo","english":"panda","level":3},{"word":"需要","pinyin":"xūyào","english":"to need","level":3},{"word":"选择","pinyin":"xuǎnzé","english":"to choose","level":3},{"word":"眼镜","pinyin":"yǎnjìng","english":"glasses","level":3},{"word":"要求","pinyin":"yāoqiú","english":"to request; require","level":3},{"word":"爷爷","pinyin":"yéye","english":"paternal grandfather","level":3},{"word":"一定","pinyin":"yídìng","english":"certainly; must","level":3},{"word":"一共","pinyin":"yígòng","english":"altogether","level":3},{"word":"一会儿","pinyin":"yíhuìr","english":"a while","level":3},{"word":"一样","pinyin":"yíyàng","english":"same","level":3},{"word":"以后","pinyin":"yǐhòu","english":"after; later","level":3},{"word":"以前","pinyin":"yǐqián","english":"before","level":3},{"word":"以为","pinyin":"yǐwéi","english":"to think mistakenly","level":3},{"word":"一般","pinyin":"yìbān","english":"ordinary; generally","level":3},{"word":"一边","pinyin":"yìbiān","english":"one side; while","level":3},{"word":"一直","pinyin":"yìzhí","english":"always; continuously","level":3},{"word":"音乐","pinyin":"yīnyuè","english":"music","level":3},{"word":"银行","pinyin":"yínháng","english":"bank","level":3},{"word":"应该","pinyin":"yīnggāi","english":"should","level":3},{"word":"影响","pinyin":"yǐngxiǎng","english":"influence; affect","level":3},{"word":"用","pinyin":"yòng","english":"to use","level":3},{"word":"游戏","pinyin":"yóuxì","english":"game","level":3},{"word":"有名","pinyin":"yǒumíng","english":"famous","level":3},{"word":"又","pinyin":"yòu","english":"again; also","level":3},{"word":"遇到","pinyin":"yùdào","english":"to meet; run into","level":3},{"word":"愿意","pinyin":"yuànyì","english":"to be willing","level":3},{"word":"月亮","pinyin":"yuèliang","english":"moon","level":3},{"word":"越","pinyin":"yuè","english":"the more; exceed","level":3},{"word":"云","pinyin":"yún","english":"cloud","level":3},{"word":"站","pinyin":"zhàn","english":"station; to stand","level":3},{"word":"长","pinyin":"zhǎng","english":"to grow; chief","level":3},{"word":"着急","pinyin":"zháojí","english":"to worry","level":3},{"word":"照顾","pinyin":"zhàogu","english":"to take care of","level":3},{"word":"照片","pinyin":"zhàopiàn","english":"photo","level":3},{"word":"照相机","pinyin":"zhàoxiàngjī","english":"camera","level":3},{"word":"只","pinyin":"zhǐ","english":"only","level":3},{"word":"中间","pinyin":"zhōngjiān","english":"middle","level":3},{"word":"终于","pinyin":"zhōngyú","english":"finally","level":3},{"word":"种","pinyin":"zhǒng","english":"kind; type","level":3},{"word":"重要","pinyin":"zhòngyào","english":"important","level":3},{"word":"周末","pinyin":"zhōumò","english":"weekend","level":3},{"word":"主要","pinyin":"zhǔyào","english":"main; primary","level":3},{"word":"祝","pinyin":"zhù","english":"to wish","level":3},{"word":"注意","pinyin":"zhùyì","english":"pay attention","level":3},{"word":"字典","pinyin":"zìdiǎn","english":"dictionary","level":3},{"word":"自己","pinyin":"zìjǐ","english":"oneself","level":3},{"word":"总是","pinyin":"zǒngshì","english":"always","level":3},{"word":"最近","pinyin":"zuìjìn","english":"recently","level":3},{"word":"作业","pinyin":"zuòyè","english":"homework","level":3},{"word":"作用","pinyin":"zuòyòng","english":"function; effect","level":3}];
-
-  // ===========================
-  // Utilities and state
-  // ===========================
-  const $ = id => document.getElementById(id);
-  const todayISO = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
-  const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
-  const isChineseChar = ch => /[\u3400-\u9FFF]/u.test(ch);
-  const uniq = arr => [...new Set(arr)];
-  const keyFor = word => word;
-  const DEFAULT_SETTINGS = {filter2:true,filter3:true,hideKnown:false,showPinyin:false,showEnglish:false,dark:false,ttsRate:0.85,voiceURI:'',onlineTranslate:true,autoStroke:true,readerFontSize:26,flashSkipKnown:false};
-  const STORE = {settings:'hskReaderSettings.v01',statuses:'hskReaderStatuses.v01',lessons:'hskReaderLessons.v01',draft:'hskReaderDraft.v01',lastTab:'hskReaderLastTab.v01',translationConsent:'hskReaderTranslationConsent.v01'};
-  function readJSON(key, fallback){ try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; } }
-  let storageWarned = false;
-  function writeJSON(key, value){
-    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
-    catch { if(!storageWarned){storageWarned=true; setTimeout(()=>toast('Browser storage unavailable. Export a backup before closing.'),0);} return false; }
-  }
-  let toastTimer = 0;
-  function toast(message){
-    const el=$('appToast'); if(!el) return;
-    clearTimeout(toastTimer); el.textContent=message; el.hidden=false;
-    toastTimer=setTimeout(()=>{el.hidden=true;},3200);
-  }
-  const SAMPLE_READER_TEXT = $('inputText').value;
-  const lastReaderDraft = readJSON(STORE.draft, null);
-  if (typeof lastReaderDraft === 'string') $('inputText').value = lastReaderDraft;
-  let settings = {...DEFAULT_SETTINGS, ...readJSON(STORE.settings, {})};
-  let statuses = readJSON(STORE.statuses, {});
-  if(!statuses||typeof statuses!=='object'||Array.isArray(statuses))statuses={};
-  let lessons = readJSON(STORE.lessons, {"2":{wordsPerDay:10,startDate:'',completedDays:0,completedDates:[]},"3":{wordsPerDay:10,startDate:'',completedDays:0,completedDates:[]}});
-  if(!lessons||typeof lessons!=='object'||Array.isArray(lessons))lessons={};
-  let activeLessonLevel = 2;
-
-  const uniqueByWord = new Map();
-  for (const item of RAW_VOCAB) {
-    const prior = uniqueByWord.get(item.word);
-    if (!prior || item.level < prior.level) uniqueByWord.set(item.word, item);
-  }
-  const VOCAB = [...uniqueByWord.values()].sort((a,b)=>a.level-b.level || a.pinyin.localeCompare(b.pinyin));
-  const BY_WORD = new Map(VOCAB.map(v => [v.word, v]));
-  const MATCH_WORDS = [...VOCAB].sort((a,b)=>b.word.length-a.word.length || a.level-b.level || a.pinyin.localeCompare(b.pinyin));
-  const MATCH_BY_FIRST = new Map();
-  MATCH_WORDS.forEach(v => { const first=v.word[0]; if (!MATCH_BY_FIRST.has(first)) MATCH_BY_FIRST.set(first,[]); MATCH_BY_FIRST.get(first).push(v); });
-  const HSK2 = RAW_VOCAB.filter(v=>v.level===2).sort((a,b)=>a.pinyin.localeCompare(b.pinyin));
-  const HSK3 = RAW_VOCAB.filter(v=>v.level===3).sort((a,b)=>a.pinyin.localeCompare(b.pinyin));
-
-  function statusOf(word){ return ['known','learning'].includes(statuses[keyFor(word)]) ? statuses[keyFor(word)] : 'new'; }
-  function setStatus(word, status){
-    if (!BY_WORD.has(word) || !['new','known','learning'].includes(status)) return;
-    if(status==='new') delete statuses[keyFor(word)]; else statuses[keyFor(word)] = status;
-    writeJSON(STORE.statuses,statuses);
-    renderAll();
-    // Preserve an active trace quiz rather than recreating the popup when a status changes.
-    if (currentDialogWord === word && $('wordDialog')?.open) updateOpenWordStatus();
-    updatePopupNavButtons();
-  }
-  function updateOpenWordStatus(){
-    if(!currentDialogWord || !$('wordDialog').open) return;
-    const state=statusOf(currentDialogWord);
-    const pill=$('wordDetails').querySelector('.status-chip');
-    if(pill){pill.textContent=state;pill.className=`status-chip ${state==='known'?'status-known':state==='learning'?'status-learning':''}`;}
-    $('wordDetails').querySelectorAll('[data-popup-status]').forEach(btn => btn.setAttribute('aria-pressed',String(btn.dataset.popupStatus===state)));
-  }
-  function saveSettings(){ writeJSON(STORE.settings, settings); }
-  function saveLessons(){ writeJSON(STORE.lessons, lessons); }
-
-
-  // Pinyin display helpers for the word popup.
-  const PINYIN_INITIALS = ['', 'b','p','m','f','d','t','n','l','g','k','h','j','q','x','zh','ch','sh','r','z','c','s','y','w'];
-  const PINYIN_FINALS = ['a','ai','an','ang','ao','e','ei','en','eng','er','o','ong','ou','i','ia','ian','iang','iao','ie','in','ing','iong','iu','u','ua','uai','uan','uang','ui','un','uo','v','ve','van','vn','ue','uan','un'];
-  const VALID_PINYIN = new Set();
-  for (const ini of PINYIN_INITIALS) for (const fin of PINYIN_FINALS) VALID_PINYIN.add(ini + fin);
-  ['a','ai','an','ang','ao','e','ei','en','eng','er','o','ou','m','n','ng','hm'].forEach(x => VALID_PINYIN.add(x));
-  const TONE_MAP = {'ā':'a','á':'a','ǎ':'a','à':'a','ē':'e','é':'e','ě':'e','è':'e','ī':'i','í':'i','ǐ':'i','ì':'i','ō':'o','ó':'o','ǒ':'o','ò':'o','ū':'u','ú':'u','ǔ':'u','ù':'u','ǖ':'v','ǘ':'v','ǚ':'v','ǜ':'v','ü':'v','ń':'n','ň':'n','ǹ':'n'};
-  function normalizePinyin(s){ return String(s || '').toLowerCase().replace(/[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüńňǹ]/g, ch => TONE_MAP[ch] || ch); }
-  function splitPinyinSyllables(pinyin, word){
-    const chars = Array.from(word).filter(isChineseChar);
-    const spaced = String(pinyin || '').trim().split(/\s+/).filter(Boolean);
-    if (spaced.length === chars.length) return spaced;
-    const raw = String(pinyin || '').toLowerCase().replace(/\s+/g, '').replace(/[^a-züāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜńňǹ]/g, '');
-    const target = chars.length;
-    const memo = new Map();
-    function dp(i, k){
-      const key = i + ':' + k;
-      if (memo.has(key)) return memo.get(key);
-      if (i === raw.length && k === target) return [];
-      if (i >= raw.length || k >= target) return null;
-      for (let end = Math.min(raw.length, i + 7); end > i; end--){
-        const piece = raw.slice(i, end);
-        if (!VALID_PINYIN.has(normalizePinyin(piece))) continue;
-        const rest = dp(end, k + 1);
-        if (rest) { const out = [piece, ...rest]; memo.set(key, out); return out; }
-      }
-      memo.set(key, null);
-      return null;
-    }
-    const parsed = dp(0,0);
-    if (parsed && parsed.length === target) return parsed;
-    if (target <= 1) return [pinyin];
-    return chars.map((_, i) => i === 0 ? pinyin : '');
-  }
-  function renderWordHero(v){
-    const chars = Array.from(v.word);
-    const syllables = splitPinyinSyllables(v.pinyin, v.word);
-    return `<div class="word-hero">${chars.map((ch,i)=>`<span class="char-stack"><span class="word-char">${escapeHtml(ch)}</span><span class="word-pin">${escapeHtml(syllables[i] || '')}</span></span>`).join('')}</div>`;
-  }
-
-  // ===========================
-  // Reader and segmentation
-  // ===========================
-  function vocabAllowed(v){
-    if (v.level === 2 && !settings.filter2) return false;
-    if (v.level === 3 && !settings.filter3) return false;
-    if (settings.hideKnown && statusOf(v.word) === 'known') return false;
-    return true;
-  }
-  function segmentTextWithPredicate(text, allowedFn){
-    const segs = [];
-    let i = 0, matches = 0;
-    while (i < text.length) {
-      let hit = null;
-      for (const v of (MATCH_BY_FIRST.get(text[i]) || [])) {
-        if (!allowedFn(v)) continue;
-        if (text.startsWith(v.word, i)) { hit = v; break; }
-      }
-      if (hit) { segs.push({type:'word', text:hit.word, v:hit}); i += hit.word.length; matches++; }
-      else { segs.push({type:'text', text:text[i]}); i++; }
-    }
-    return {segs, matches};
-  }
-  function segmentText(text){ return segmentTextWithPredicate(text, vocabAllowed); }
-  function vocabAllowedForNav(v){
-    if (v.level === 2 && !settings.filter2) return false;
-    if (v.level === 3 && !settings.filter3) return false;
-    return true;
-  }
-  let currentReaderAllWords = [];
-  function refreshReaderNavWords(){
-    const text = $('inputText').value || '';
-    currentReaderAllWords = segmentTextWithPredicate(text, vocabAllowedForNav).segs
-      .filter(s => s.type === 'word')
-      .map(s => s.v.word);
-    return currentReaderAllWords;
-  }
-  function renderReader(){
-    const text = $('inputText').value || '';
-    refreshReaderNavWords();
-    const {segs, matches} = segmentText(text);
-    let lastNavIdx = -1;
-    const html = segs.map(s => {
-      if (s.type === 'text') return escapeHtml(s.text).replace(/\n/g,'<br>');
-      const v = s.v;
-      const navIdx = currentReaderAllWords.findIndex((w, i) => i > lastNavIdx && w === v.word);
-      if (navIdx >= 0) lastNavIdx = navIdx;
-      return `<span class="tok hsk${v.level} word-${statusOf(v.word)}" data-word="${escapeHtml(v.word)}" data-token-index="${navIdx}" role="button" tabindex="0" aria-label="${escapeHtml(v.word)}: ${escapeHtml(v.english)}"><span class="zh">${escapeHtml(v.word)}</span>${settings.showPinyin?`<span class="pin">${escapeHtml(v.pinyin)}</span>`:''}${settings.showEnglish?`<span class="eng">${escapeHtml(v.english)}</span>`:''}</span>`;
-    }).join('');
-    $('readerView').innerHTML = html || '<span class="small">Paste text and click Read.</span>';
-    const distinct=uniq(segs.filter(x=>x.type==='word').map(x=>x.v.word));
-    const unfamiliar=distinct.filter(w=>statusOf(w)!=='known').length;
-    $('matchStats').textContent = matches ? `${matches} matches · ${distinct.length} unique · ${unfamiliar} to review` : '';
-    $('readerView').style.fontSize=`${Math.max(18,Math.min(38,Number(settings.readerFontSize)||26))}px`;
-    updatePopupNavButtons();
-  }
-
-  // ===========================
-  // Full-text translation
-  // ===========================
-  function offlineGloss(text){
-    const {segs} = segmentText(text);
-    const parts = [];
-    for (const s of segs) {
-      if (s.type === 'word') parts.push(`${s.text} = ${s.v.english}`);
-    }
-    if (!parts.length) return 'No HSK 2/3 words found for the local gloss.';
-    return 'Local glossary translation, not a natural sentence translation:\n' + parts.join(' | ');
-  }
-  async function onlineTranslate(text){
-    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=zh-CN|en';
-    const res = await fetch(url, {method:'GET'});
-    if (!res.ok) throw new Error('Translation request failed');
-    const data = await res.json();
-    const translated = data?.responseData?.translatedText;
-    if (!translated) throw new Error('No translation returned');
-    return translated;
-  }
-  let translationRequestId = 0;
-  async function translateInput(){
-    const text = $('inputText').value.trim();
-    const requestId=++translationRequestId;
-    if(text && settings.onlineTranslate && !readJSON(STORE.translationConsent, false)){
-      if(!confirm('Online translation sends your Chinese text to MyMemory, a third-party service. Continue?')){
-        $('translationBox').hidden=false; $('translationModeLabel').textContent='Local glossary'; $('translationOutput').textContent=offlineGloss(text); return;
-      }
-      writeJSON(STORE.translationConsent,true);
-    }
-    $('translationBox').hidden = false;
-    if (!text) { $('translationModeLabel').textContent = ''; $('translationOutput').textContent = 'Paste Chinese text first.'; return; }
-    $('translationOutput').textContent = settings.onlineTranslate ? 'Translating online...' : 'Generating local gloss...';
-    if (settings.onlineTranslate) {
-      try {
-        const out = await onlineTranslate(text);
-        if(requestId!==translationRequestId || $('inputText').value.trim()!==text) return;
-        $('translationModeLabel').textContent = 'Online full-text translation';
-        const local = offlineGloss(text).replace(/^Local glossary translation, not a natural sentence translation:\n/, '');
-        $('translationOutput').innerHTML = `${escapeHtml(out)}<div class="local-gloss"><strong>Local gloss:</strong><br>${escapeHtml(local)}</div>`;
-        return;
-      } catch (err) {
-        if(requestId!==translationRequestId || $('inputText').value.trim()!==text) return;
-        $('translationModeLabel').textContent = 'Online failed; local fallback';
-        $('translationOutput').textContent = offlineGloss(text);
-        return;
-      }
-    }
-    $('translationModeLabel').textContent = 'Local glossary fallback';
-    $('translationOutput').textContent = offlineGloss(text);
-  }
-
-  // ===========================
-  // Word popup and stroke order
-  // ===========================
-  let currentDialogWord = null;
-  let currentNavAnchorIndex = -1;
-  let currentStrokeWriters = [];
-  let currentStrokeTraceMode = false;
-  const POPUP_ANIMATION_MS = 0;
-
-  function nearestIndexForWord(word, preferredIndex){
-    refreshReaderNavWords();
-    const idx = Number(preferredIndex);
-    if (Number.isInteger(idx) && idx >= 0 && idx < currentReaderAllWords.length) return idx;
-    const found = currentReaderAllWords.indexOf(word);
-    return found >= 0 ? found : -1;
-  }
-  function findAdjacentUnknownIndex(direction){
-    if (!currentReaderAllWords.length) refreshReaderNavWords();
-    const start = currentNavAnchorIndex >= 0 ? currentNavAnchorIndex : nearestIndexForWord(currentDialogWord, -1);
-    if (start < 0) return -1;
-    for (let i = start + direction; i >= 0 && i < currentReaderAllWords.length; i += direction) {
-      if (statusOf(currentReaderAllWords[i]) !== 'known') return i;
-    }
-    return -1;
-  }
-  function updatePopupNavButtons(){
-    const prevBtn = $('prevUnknownBtn'), nextBtn = $('nextUnknownBtn');
-    if (!prevBtn || !nextBtn || !$('wordDialog')?.open || !currentDialogWord) return;
-    refreshReaderNavWords();
-    const prevIdx = findAdjacentUnknownIndex(-1);
-    const nextIdx = findAdjacentUnknownIndex(1);
-    prevBtn.hidden = prevIdx < 0;
-    nextBtn.hidden = nextIdx < 0;
-    prevBtn.dataset.targetIndex = prevIdx;
-    nextBtn.dataset.targetIndex = nextIdx;
-  }
-  function navigateUnknown(direction){
-    const idx = findAdjacentUnknownIndex(direction);
-    if (idx < 0) return;
-    showWord(currentReaderAllWords[idx], idx, direction);
-  }
-  function buildWordDetails(v, status, statusClass, safeWord){
-    return `
-      <div class="word-top">
-        ${renderWordHero(v)}
-        <div class="word-info-side">
-          <div class="word-english">${escapeHtml(v.english)}</div>
-          <div class="word-level">HSK ${v.level}</div>
-          <span class="status-chip ${statusClass}">${escapeHtml(status)}</span>
-        </div>
-      </div>
-      <div class="word-actions">
-        <button class="good" data-popup-status="known" aria-pressed="${status==='known'}" onclick="setStatus('${safeWord}','known')">Known</button>
-        <button class="learn" data-popup-status="learning" aria-pressed="${status==='learning'}" onclick="setStatus('${safeWord}','learning')">Learning</button>
-        <button data-popup-status="new" aria-pressed="${status==='new'}" onclick="setStatus('${safeWord}','new')">Reset</button>
-        <button onclick="speakChinese('${safeWord}')">Speak</button>
-      </div>
-      <div class="stroke-panel">
-        <div class="stroke-head row between"><strong>Stroke order</strong><span id="strokeStatus" class="small"></span></div>
-        <div id="strokePanel" class="stroke-grid"><span class="small">Loading...</span></div>
-        <div class="stroke-controls row"><button id="animateStrokeBtn">Replay animation</button><button id="traceStrokeBtn">Trace practice</button><button id="retryTraceBtn" hidden>Try again</button><button id="traceGuideBtn" hidden>Hide guide</button><button id="exitTraceBtn" type="button" hidden>Done tracing</button></div>
-        <p class="stroke-device-tip small">Write inside a pad with your finger or Apple Pencil. Scroll outside the pad.</p>
-      </div>`;
-  }
-  function bindWordPopupControls(){
-    $('animateStrokeBtn').onclick = animateStrokes;
-    $('traceStrokeBtn').onclick = traceStrokes;
-    $('retryTraceBtn').onclick = traceStrokes;
-    $('traceGuideBtn').onclick = () => toggleTraceGuide('popup');
-    $('exitTraceBtn').onclick=()=>{currentStrokeTraceMode=false;animateStrokes();};
-  }
-  function clearWordMotionClasses(body){
-    body.classList.remove('word-changing','word-exit-next','word-enter-next','word-exit-prev','word-enter-prev');
-  }
-  function showWord(word, tokenIndex, direction = 0){
-    const v = BY_WORD.get(word) || RAW_VOCAB.find(x=>x.word===word);
-    if (!v) return;
-    const dialog = $('wordDialog');
-    const body = $('wordDetails');
-    const oldWord = currentDialogWord;
-    const shouldAnimate = false;
-    const motion = direction < 0 ? 'prev' : 'next';
-    const renderNewWord = () => {
-      clearWordMotionClasses(body);
-      currentDialogWord = word;
-      currentNavAnchorIndex = nearestIndexForWord(word, tokenIndex);
-      currentStrokeTraceMode = false;
-      currentStrokeGuide = true;
-      ++popupStrokeGeneration;
-      const status = statusOf(word);
-      const statusClass = status === 'known' ? 'status-known' : status === 'learning' ? 'status-learning' : '';
-      const safeWord = escapeHtml(v.word);
-      body.innerHTML = buildWordDetails(v, status, statusClass, safeWord);
-      bindWordPopupControls();
-      updatePopupNavButtons();
-      setTimeout(updatePopupNavButtons, 0);
-      if (settings.autoStroke) renderStrokeOrder(word); else { syncTraceButtons('popup',false,true); $('strokeStatus').textContent='Auto-load off'; $('strokePanel').innerHTML='<span class="small">Tap Replay animation or Trace practice to load stroke data.</span>'; }
-      if (shouldAnimate) {
-        body.classList.add(`word-enter-${motion}`);
-        requestAnimationFrame(()=>body.classList.remove(`word-enter-${motion}`));
-      }
-    };
-    if (!dialog.open) dialog.showModal();
-    requestAnimationFrame(()=>dialog.classList.add('showing'));
-    if (shouldAnimate) {
-      clearWordMotionClasses(body);
-      body.classList.add(`word-exit-${motion}`);
-      setTimeout(renderNewWord, POPUP_ANIMATION_MS);
-    } else {
-      clearWordMotionClasses(body);
-      renderNewWord();
-    }
-  }
-  function closeWordDialog(){
-    const dialog = $('wordDialog');
-    ++popupStrokeGeneration;
-    dialog.classList.remove('showing');
-    if(dialog.open) dialog.close();
-    currentDialogWord=null;
-    dialog.classList.remove('trace-active');
-  }
-
-  let hanziWriterPromise = null;
-  function ensureHanziWriter(){
-    if (window.HanziWriter) return Promise.resolve(window.HanziWriter);
-    if (hanziWriterPromise) return hanziWriterPromise;
-    hanziWriterPromise = new Promise((resolve,reject)=>{
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js';
-      script.async = true;
-      script.onload = () => window.HanziWriter ? resolve(window.HanziWriter) : reject(new Error('Hanzi Writer unavailable'));
-      script.onerror = () => reject(new Error('Could not load Hanzi Writer. Check internet access.'));
-      document.head.appendChild(script);
-    }).catch(err=>{hanziWriterPromise=null;throw err;});
-    return hanziWriterPromise;
-  }
-
-  function animateElementResize(el, mutate){
-    mutate();
-  }
-  function getSequentialStrokeStartTimes(count, baseGap = 1200){
-    const times = [];
-    for (let i=0;i<count;i++) times.push(i * baseGap);
-    return times;
-  }
-  function playStrokeAnimationsSequentially(writers, baseGap = 1200, valid = () => true){
-    const starts = getSequentialStrokeStartTimes(writers.length, baseGap);
-    writers.forEach((w,i)=>setTimeout(()=>{ if(valid()) w.animateCharacter().catch?.(()=>{}); }, starts[i]));
-  }
-  let popupStrokeGeneration=0, flashStrokeGeneration=0;
-  let currentStrokeGuide=true, flashStrokeGuide=true;
-  function getTracePadSize(){return window.matchMedia('(max-width: 375px)').matches ? 188 : window.matchMedia('(max-width: 520px)').matches ? 208 : 240;}
-  function syncTraceButtons(area, traceMode, guideVisible){
-    const popup = area==='popup';
-    const btn=popup?$('traceStrokeBtn'):$('flashTraceBtn');
-    const retry=popup?$('retryTraceBtn'):$('flashRetryTraceBtn');
-    const guide=popup?$('traceGuideBtn'):$('flashGuideBtn');
-    if(btn) btn.classList.toggle('is-set', traceMode);
-    if(retry) retry.hidden=!traceMode;
-    if(guide){guide.hidden=!traceMode;guide.textContent=guideVisible?'Hide guide':'Show guide';}
-    const done=popup?$('exitTraceBtn'):$('flashExitTraceBtn');if(done)done.hidden=!traceMode;
-  }
-  function toggleTraceGuide(area){
-    const popup=area==='popup';
-    if(popup) currentStrokeGuide=!currentStrokeGuide; else flashStrokeGuide=!flashStrokeGuide;
-    const visible=popup?currentStrokeGuide:flashStrokeGuide;
-    const writers=popup?currentStrokeWriters:flashStrokeWriters;
-    writers.forEach(w=>{ try{if(visible) w.showOutline();else w.hideOutline();}catch{} });
-    syncTraceButtons(area,true,visible);
-  }
-  function renderStrokeSurfaces({panel,status,wrap,chars,prefix,traceMode,startQuiz,valid,guideVisible}){
-    const size=traceMode?getTracePadSize():128;
-    const padding=traceMode?12:8;
-    if(wrap) wrap.classList.toggle('trace-mode',traceMode);
-    const single=traceMode && window.matchMedia('(max-width:520px)').matches && chars.length>1;
-    panel.classList.toggle('single-trace',single);
-    const nav=single?`<div class="trace-step-nav"><button type="button" data-trace-prev aria-label="Previous character">‹ Prev</button><span class="trace-step-count" aria-live="polite"></span><button type="button" data-trace-next aria-label="Next character">Next ›</button></div>`:'';
-    panel.innerHTML=nav+chars.map((ch,i)=>`<div class="stroke-box"><div id="${prefix}${i}" class="stroke-char" aria-label="Practice writing ${escapeHtml(ch)}"></div><div class="stroke-progress-label" id="${prefix}Label${i}">${traceMode?'Ready to trace':escapeHtml(ch)}</div></div>`).join('');
-    let visibleIndex=0;
-    const showStep=index=>{
-      if(!single||!valid())return;
-      visibleIndex=Math.max(0,Math.min(chars.length-1,index));
-      panel.querySelectorAll('.stroke-box').forEach((box,i)=>{box.hidden=i!==visibleIndex;});
-      const text=panel.querySelector('.trace-step-count');
-      if(text)text.textContent=`${visibleIndex+1} / ${chars.length} · ${chars[visibleIndex]}`;
-      panel.querySelector('[data-trace-prev]').disabled=visibleIndex===0;
-      panel.querySelector('[data-trace-next]').disabled=visibleIndex>=chars.length-1;
-    };
-    const writers=[], done=new Set(), errors=new Array(chars.length).fill(0);
-    const updateSummary=()=>{
-      if(!valid()) return;
-      if(!traceMode){status.textContent='';return;}
-      const mistakes=errors.reduce((a,b)=>a+b,0);
-      status.textContent=`${done.size}/${chars.length} characters complete · ${mistakes} mistakes`;
-      if(done.size===chars.length) toast(`Tracing complete: ${chars.length} character${chars.length===1?'':'s'}!`);
-    };
-    chars.forEach((ch,i)=>{
-      const label=()=>$(prefix+'Label'+i);
-      const writer=HanziWriter.create(prefix+i,ch,{
-        width:size,height:size,padding,showCharacter:!traceMode,
-        showOutline:traceMode?guideVisible:true,
-        strokeAnimationSpeed:1.5,delayBetweenStrokes:190,
-        drawingWidth:traceMode?6:4,showHintAfterMisses:2,
-        onLoadCharDataError:()=>{if(valid() && label()){label().textContent='Stroke data unavailable';status.textContent='Could not load character data';}}
-      });
-      writers.push(writer);
-      if(startQuiz){
-        writer.quiz({showHintAfterMisses:2,leniency:1.2,highlightOnComplete:true,
-          onCorrectStroke:d=>{if(!valid() || !label())return;label().textContent=`${d.strokesRemaining} strokes remaining${errors[i]?' · '+errors[i]+' mistakes':''}`;},
-          onMistake:d=>{if(!valid() || !label())return;errors[i]=d.totalMistakes;label().textContent=`Try that stroke again · ${d.totalMistakes} mistake${d.totalMistakes===1?'':'s'}`;updateSummary();},
-          onComplete:d=>{
-            if(!valid() || !label())return;
-            errors[i]=d.totalMistakes;done.add(i);label().classList.add('completed');
-            label().textContent=`Completed${errors[i]?' · '+errors[i]+' mistakes':''}`;updateSummary();
-            if(single&&visibleIndex===i&&i<chars.length-1)setTimeout(()=>showStep(i+1),380);
-          }
-        });
-      }
-    });
-    if(single){
-      panel.querySelector('[data-trace-prev]').onclick=()=>showStep(visibleIndex-1);
-      panel.querySelector('[data-trace-next]').onclick=()=>showStep(visibleIndex+1);
-      showStep(0);
-    }
-    if(startQuiz) updateSummary();
-    else playStrokeAnimationsSequentially(writers,1300,valid);
-    return writers;
-  }
-  async function renderStrokeOrder(word,opts={}){
-    const panel=$('strokePanel'),status=$('strokeStatus');
-    if(!panel||!status||!currentDialogWord)return;
-    const wrap=panel.closest('.stroke-panel');
-    const traceMode=opts.traceMode??currentStrokeTraceMode;
-    $('wordDialog').classList.toggle('trace-active',traceMode);
-    const startQuiz=!!opts.startQuiz;
-    const generation=++popupStrokeGeneration;
-    const valid=()=>generation===popupStrokeGeneration && currentDialogWord===word && $('wordDialog').open && $('strokePanel')===panel;
-    const chars=Array.from(word).filter(isChineseChar).slice(0,8);
-    if(!chars.length){panel.textContent='No Chinese characters found.';return;}
-    status.textContent='Loading stroke data...';
-    syncTraceButtons('popup',traceMode,currentStrokeGuide);
-    try{
-      await ensureHanziWriter();
-      if(!valid())return;
-      currentStrokeWriters=renderStrokeSurfaces({panel,status,wrap,chars,prefix:'strokeTarget',traceMode,startQuiz,valid,guideVisible:currentStrokeGuide});
-    }catch(err){if(valid()){status.textContent='Unavailable';panel.innerHTML='<span class="small">Stroke data needs internet access. Reconnect and tap Replay animation or Trace practice.</span>';}}
-  }
-  function replayStrokes(){if(currentDialogWord) animateStrokes();}
-  async function animateStrokes(){
-    if(!currentDialogWord)return;
-    currentStrokeTraceMode=false;
-    await renderStrokeOrder(currentDialogWord,{traceMode:false,startQuiz:false});
-  }
-  async function traceStrokes(){
-    if(!currentDialogWord)return;
-    currentStrokeTraceMode=true;
-    currentStrokeGuide=true;
-    await renderStrokeOrder(currentDialogWord,{traceMode:true,startQuiz:true});
-  }
-
-  async function preloadStrokeData(){
-    const lvl = $('preloadStrokeLevel').value;
-    const words = RAW_VOCAB.filter(v => lvl==='all' || String(v.level)===lvl);
-    const chars = uniq(words.flatMap(v => Array.from(v.word).filter(isChineseChar)));
-    const status = $('strokePreloadStatus');
-    status.textContent = `Loading Hanzi Writer and ${chars.length} unique characters...`;
-    try {
-      await ensureHanziWriter();
-      let ok = 0, fail = 0;
-      for (let i=0;i<chars.length;i++) {
-        try { await HanziWriter.loadCharacterData(chars[i]); ok++; } catch { fail++; }
-        if (i % 10 === 0 || i === chars.length-1) status.textContent = `Loaded ${i+1}/${chars.length}. Success: ${ok}. Failed: ${fail}.`;
-      }
-    } catch (err) { status.textContent = 'Could not load Hanzi Writer. Check internet access.'; }
-  }
-
-  // ===========================
-  // Text-to-speech
-  // ===========================
-  let voices = [];
-  function loadVoices(){
-    if (!('speechSynthesis' in window)) return;
-    voices = window.speechSynthesis.getVoices();
-    settings.voiceURI = '';
-  }
-  function preferredMandarinVoice(){
-    if (!voices.length && 'speechSynthesis' in window) voices = window.speechSynthesis.getVoices();
-    const score = v => {
-      const lang=(v.lang||'').toLowerCase(), name=(v.name||'').toLowerCase();
-      let s=0;
-      if (lang === 'zh-cn' || lang === 'cmn-cn') s += 100;
-      if (lang.startsWith('zh-cn') || lang.includes('hans')) s += 70;
-      if (name.includes('mandarin') || name.includes('putonghua') || name.includes('普通话') || name.includes('xiaoxiao') || name.includes('tingting')) s += 50;
-      if (lang.includes('zh-hk') || lang.includes('yue') || name.includes('cantonese') || name.includes('粤')) s -= 100;
-      if (lang.startsWith('zh')) s += 10;
-      return s;
-    };
-    return [...voices].sort((a,b)=>score(b)-score(a))[0] || null;
-  }
-  function speakChinese(text){
-    if (!('speechSynthesis' in window)) { alert('Text-to-speech is not supported in this browser.'); return; }
-    const clean = String(text || '').trim();
-    if (!clean) return;
-    const u = new SpeechSynthesisUtterance(clean);
-    u.lang = 'zh-CN';
-    u.rate = Number(settings.ttsRate || 0.85);
-    const voice = preferredMandarinVoice();
-    if (voice) u.voice = voice;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  }
-  function stopVoice(){ if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
-
-  // ===========================
-  // Vocab browser
-  // ===========================
-  let vocabVisibleCount=0, lastVocabRows=[];
-  const vocabPageSize=()=>window.matchMedia('(max-width:720px)').matches?30:75;
-  function filteredVocab(){
-    const q=$('vocabSearch').value.trim().toLowerCase();
-    const qRoman=normalizePinyin(q).replace(/\s+/g,'');
-    const lev=$('vocabLevel').value,stat=$('vocabStatus').value,sort=$('vocabSort').value;
-    const tokens=q.split(/\s+/).filter(Boolean);
-    let rows=VOCAB.filter(v=>(lev==='all'||String(v.level)===lev)&&(stat==='all'||statusOf(v.word)===stat));
-    if(q) rows=rows.filter(v=>{
-      const hay=[v.word.toLowerCase(),v.pinyin.toLowerCase(),v.english.toLowerCase(),normalizePinyin(v.pinyin).replace(/\s+/g,'')];
-      return hay.some(t=>t.includes(q))||hay[3].includes(qRoman)||tokens.every(part=>hay.some(t=>t.includes(part)));
-    });
-    rows.sort((a,b)=>sort==='pinyin'?a.pinyin.localeCompare(b.pinyin):sort==='word'?a.word.localeCompare(b.word,'zh-Hans-CN'):(a.level-b.level||a.pinyin.localeCompare(b.pinyin)));
-    return rows;
-  }
-  function renderVocab(resetPage=false){
-    const rows=filteredVocab();lastVocabRows=rows;
-    if(resetPage||!vocabVisibleCount)vocabVisibleCount=vocabPageSize();
-    const shown=rows.slice(0,vocabVisibleCount);
-    $('vocabCount').textContent=`${rows.length} / ${VOCAB.length} words`;
-    $('vocabShown').textContent=rows.length?`Showing ${shown.length} of ${rows.length}`:'No matching words';
-    $('vocabLoadMoreBtn').hidden=shown.length>=rows.length;
-    $('vocabStudyResultsBtn').disabled=!rows.length;
-    $('vocabTable').innerHTML=shown.map(v=>{
-      const st=statusOf(v.word);
-      return `<tr><td data-label="Chinese"><button class="word-link" data-word="${escapeHtml(v.word)}" style="font-size:26px;padding:4px 6px;border:0;background:transparent">${escapeHtml(v.word)}</button></td><td data-label="Pinyin">${escapeHtml(v.pinyin)}</td><td data-label="Meaning">${escapeHtml(v.english)}</td><td data-label="Level"><span class="pill">HSK ${v.level}</span></td><td data-label="Status"><span class="status-chip ${st==='known'?'status-known':st==='learning'?'status-learning':''}">${escapeHtml(st)}</span></td><td data-label="Mark"><div class="actions-cell"><button class="good" data-status-word="${escapeHtml(v.word)}" data-status="known" aria-label="Mark ${escapeHtml(v.word)} known" ${st==='known'?'aria-pressed="true"':''}>Known</button><button class="learn" data-status-word="${escapeHtml(v.word)}" data-status="learning" aria-label="Mark ${escapeHtml(v.word)} learning" ${st==='learning'?'aria-pressed="true"':''}>Learning</button><button data-status-word="${escapeHtml(v.word)}" data-status="new" aria-label="Reset ${escapeHtml(v.word)}">Reset</button></div></td></tr>`;
-    }).join('');
-  }
-  function studyVocabResults(){
-    if(!lastVocabRows.length){toast('No vocabulary matches these filters.');return;}
-    createCustomDeck(lastVocabRows,'Filtered vocabulary');
-    switchTab('flashcards');
-    toast(`Studying ${deck.length} filtered words`);
-  }
-
-  // ===========================
-  // Lessons
-  // ===========================
-  function planFor(level){
-    const k=String(level);
-    if (!lessons[k]) lessons[k] = {wordsPerDay:10,startDate:'',completedDays:0,completedDates:[],coveredWords:0,daySizes:[]};
-    const plan=lessons[k],total=listForLevel(level).length;
-    // Migrate v0.30 plans without losing any completed-day or vocabulary progress.
-    const n=Math.max(1,Math.min(100,Math.floor(Number(plan.wordsPerDay)||10)));
-    plan.completedDays=Math.max(0,Math.min(600,Math.floor(Number(plan.completedDays)||0)));
-    if(!Array.isArray(plan.daySizes)||plan.daySizes.length!==plan.completedDays){
-      plan.daySizes=Array(plan.completedDays).fill(n);
-    }
-    if(plan.coveredWords==null || !Number.isFinite(Number(plan.coveredWords))){
-      plan.coveredWords=Math.min(total,plan.completedDays*n);
-    }
-    plan.coveredWords=Math.max(0,Math.min(total,Math.floor(Number(plan.coveredWords)||0)));
-    return plan;
-  }
-  function listForLevel(level){ return Number(level)===2 ? HSK2 : HSK3; }
-  function currentLessonWords(level){
-    const plan = planFor(level), list = listForLevel(level), n = Math.max(1, Number(plan.wordsPerDay||10));
-    const start = Math.min(plan.coveredWords, list.length);
-    return list.slice(start, start+n);
-  }
-  function savePlan(level){
-    const plan = planFor(level), input = $('lessonDaily'+level);
-    plan.wordsPerDay = Math.max(1, Math.min(100, Math.floor(Number(input.value) || 10)));
-    if (!plan.startDate) plan.startDate = todayISO();
-    saveLessons(); activeLessonLevel = Number(level); renderLessons();
-  }
-  function resetPlan(level){
-    if (!confirm(`Reset HSK ${level} lesson progress? Word statuses will stay unchanged.`)) return;
-    lessons[String(level)] = {wordsPerDay:Math.max(1,Math.min(100,Math.floor(Number($('lessonDaily'+level).value)||10))),startDate:'',completedDays:0,completedDates:[],coveredWords:0,daySizes:[]};
-    saveLessons(); activeLessonLevel = Number(level); renderLessons();
-  }
-  function completeLesson(){
-    const plan = planFor(activeLessonLevel), words = currentLessonWords(activeLessonLevel);
-    if (!words.length) return;
-    plan.completedDates = plan.completedDates || [];
-    if(plan.completedDates.includes(todayISO()) && !confirm('You have already completed a study day today. Advance another day?'))return;
-    plan.completedDays += 1;
-    plan.coveredWords=Math.min(listForLevel(activeLessonLevel).length,plan.coveredWords+words.length);
-    plan.daySizes.push(words.length);
-    plan.completedDates.push(todayISO());
-    saveLessons();renderLessons();toast(`HSK ${activeLessonLevel} day completed.`);
-  }
-  function markLesson(status){
-    const words=currentLessonWords(activeLessonLevel);if(!words.length)return;
-    if(!confirm(`Mark all ${words.length} lesson words as ${status}?`))return;
-    words.forEach(v=>{if(status==='new')delete statuses[keyFor(v.word)];else statuses[keyFor(v.word)]=status;});
-    writeJSON(STORE.statuses,statuses);renderAll();toast(`${words.length} lesson words marked ${status}.`);
-  }
-  function undoLessonDay(){
-    const plan=planFor(activeLessonLevel);if(!plan.completedDays)return;
-    if(!confirm(`Return to the previous HSK ${activeLessonLevel} study day? Word statuses will remain unchanged.`))return;
-    plan.completedDays--;if(Array.isArray(plan.completedDates))plan.completedDates.pop();
-    const back=(Array.isArray(plan.daySizes)&&plan.daySizes.length)?plan.daySizes.pop():Math.max(1,Number(plan.wordsPerDay)||10);
-    plan.coveredWords=Math.max(0,plan.coveredWords-back);
-    saveLessons();renderLessons();toast('Returned to the previous study day.');
-  }
-  function studyLessonWords(){
-    const words=currentLessonWords(activeLessonLevel);
-    if(!words.length){toast('This study plan is complete.');return;}
-    createCustomDeck(words,`HSK ${activeLessonLevel} lesson`);
-    switchTab('flashcards');
-    toast(`Loaded ${words.length} lesson words into flashcards.`);
-  }
-  function renderLessonMeta(level){
-    const plan = planFor(level), list = listForLevel(level), n = Math.max(1, Number(plan.wordsPerDay||10));
-    const done=plan.coveredWords,pct=Math.round(done/list.length*100);
-    $('lessonDaily'+level).value = n;
-    $('lessonMeta'+level).textContent = `${done}/${list.length} words covered (${pct}%). Day ${plan.completedDays+1}. ${plan.startDate ? 'Started '+plan.startDate+'.' : 'Not started.'}`;
-  }
-  function renderLessons(){
-    renderLessonMeta(2); renderLessonMeta(3);
-    const level = activeLessonLevel, plan = planFor(level), list = listForLevel(level), words = currentLessonWords(level);
-    const done=plan.coveredWords;
-    $('lessonTitle').textContent=`HSK ${level} · Day ${plan.completedDays+1}`;
-    $('lessonSummary').textContent = words.length ? `${words.length} words today · ${done}/${list.length} completed` : `HSK ${level} complete`;
-    $('lessonProgressBar').style.width = `${Math.round(done/list.length*100)}%`;
-    $('lessonUndoBtn').disabled=!(plan.completedDays>0);
-    ['lessonMarkLearning','lessonMarkKnown','lessonStudyBtn','lessonComplete'].forEach(id=>$(id).disabled=!words.length);
-    $('lessonWords').innerHTML=words.length?words.map(v=>{
-      const st=statusOf(v.word);
-      return `<div class="lesson-word"><button class="word-link zh" data-word="${escapeHtml(v.word)}">${escapeHtml(v.word)}</button><div><strong>${escapeHtml(v.pinyin)}</strong><br><span class="small">${escapeHtml(v.english)}</span></div><div class="lesson-word-actions"><button class="good ${st==='known'?'is-set':''}" data-status-word="${escapeHtml(v.word)}" data-status="known">Known</button><button class="learn ${st==='learning'?'is-set':''}" data-status-word="${escapeHtml(v.word)}" data-status="learning">Learning</button></div></div>`;
-    }).join(''):'<p class="small">This HSK level is complete. Reset the plan to start again.</p>';
-  }
-
-  // ===========================
-  // Flashcards
-  // ===========================
-  let deck=[], deckIndex=0, flashRevealPinyin=false, flashRevealEnglish=false, flashStrokeWriters=[], flashStrokeTraceMode=false, flashStrokeOpen=false, flashStrokeRenderedWord='', deckLabel='';
-  function getDeck(sel){
-    return sel==='2'?VOCAB.filter(v=>v.level===2):
-      sel==='3'?VOCAB.filter(v=>v.level===3):
-      sel==='learning'?VOCAB.filter(v=>statusOf(v.word)==='learning'):
-      sel==='new'?VOCAB.filter(v=>statusOf(v.word)==='new'):VOCAB.slice();
-  }
-  function createCustomDeck(words,label){
-    deck=words.map(v=>BY_WORD.get(v.word)||v).filter(Boolean);
-    deckLabel=label;deckIndex=0;flashRevealPinyin=false;flashRevealEnglish=false;
-    flashStrokeTraceMode=false;toggleFlashStrokePanel(false);renderFlash();
-  }
-  function flipFlash(){
-    if(!currentCard())return;
-    const reveal=!(flashRevealPinyin&&flashRevealEnglish);
-    flashRevealPinyin=reveal;flashRevealEnglish=reveal;renderFlash();
-  }
-  function flashDeckLimit(){
-    const el = $('flashDeckCount');
-    const raw = Number(el?.value || 20);
-    const n = Number.isFinite(raw) ? Math.max(1, Math.min(VOCAB.length, Math.floor(raw))) : 20;
-    if (el) el.value = String(n);
-    return n;
-  }
-  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
-  function normalizePinyinBasic(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ü/g,'v'); }
-  function isValidPinyinSyllableBasic(s){
-    const t = normalizePinyinBasic(s);
-    return /^(zh|ch|sh|b|p|m|f|d|t|n|l|g|k|h|j|q|x|r|z|c|s|y|w)?(iang|iong|uang|ueng|iao|ian|uan|uai|uei|ang|eng|ong|ing|uo|ua|ui|un|iu|ie|ve|er|ai|ei|ao|ou|an|en|ia|in|ue|a|o|e|i|u|v)$/.test(t);
-  }
-  function splitTwoSyllablePinyin(pinyin){
-    const raw = String(pinyin||'').trim();
-    if (!raw || raw.includes(' ')) return raw.replace(/\s+/g,' · ');
-    for (let i=1;i<raw.length;i++) {
-      const left = raw.slice(0,i), right = raw.slice(i);
-      if (isValidPinyinSyllableBasic(left) && isValidPinyinSyllableBasic(right)) return `${left} · ${right}`;
-    }
-    return raw;
-  }
-  function displayFlashPinyin(v){
-    const chars = Array.from(String(v.word||'')).filter(isChineseChar).length;
-    if (chars===2) return splitTwoSyllablePinyin(v.pinyin);
-    return String(v.pinyin||'').replace(/\s+/g,' · ');
-  }
-  function flashBackText(v){
-    const parts = [];
-    if (flashRevealPinyin) parts.push(displayFlashPinyin(v));
-    if (flashRevealEnglish) parts.push(v.english);
-    return parts.join(' · ');
-  }
-  function setFlashReveal(kind){
-    if (kind === 'pinyin') flashRevealPinyin = !flashRevealPinyin;
-    if (kind === 'english') flashRevealEnglish = !flashRevealEnglish;
-    renderFlash();
-  }
-  function toggleFlashStrokePanel(forceOpen){
-    if (typeof forceOpen === 'boolean') flashStrokeOpen = forceOpen; else flashStrokeOpen = !flashStrokeOpen;
-    const shell = $('flashStrokeShell');
-    if (shell) { shell.classList.toggle('open', flashStrokeOpen); shell.setAttribute('aria-hidden', flashStrokeOpen ? 'false' : 'true'); }
-    const btn = $('flashStrokeToggleBtn');
-    if (btn) btn.classList.toggle('active', flashStrokeOpen);
-    if (!flashStrokeOpen) {
-      ++flashStrokeGeneration;
-      flashStrokeWriters=[];
-      $('flashStrokeStatus').textContent = '';
-      $('flashStrokePanel').innerHTML = '';
-      $('flashStrokePanel').closest('.stroke-panel')?.classList.remove('trace-mode');
-      flashStrokeRenderedWord = '';
-      syncTraceButtons('flash',false,true);
-      return;
-    }
-    flashStrokeTraceMode = false;
-    flashStrokeRenderedWord = '';
-    renderFlashStroke({traceMode:false, startQuiz:false, force:true});
-  }
-  function newDeck(){
-    let candidates=getDeck($('flashLevel').value);
-    if($('flashSkipKnown').checked)candidates=candidates.filter(v=>statusOf(v.word)!=='known');
-    if($('flashShuffle').checked)shuffle(candidates);
-    deck=candidates.slice(0,flashDeckLimit());
-    deckLabel='';deckIndex=0;flashRevealPinyin=false;flashRevealEnglish=false;
-    flashStrokeTraceMode=false;toggleFlashStrokePanel(false);renderFlash();
-    if(!deck.length)toast('No words match this deck. Try another deck or disable Skip known.');
-  }
-  function currentCard(){ return deck[deckIndex] || null; }
-  async function renderFlashStroke(opts={}){
-    const panel=$('flashStrokePanel'),status=$('flashStrokeStatus'),v=currentCard();
-    if(!panel||!status||!flashStrokeOpen)return;
-    const wrap=panel.closest('.stroke-panel');
-    if(!v){panel.textContent='No flashcard selected.';status.textContent='';flashStrokeRenderedWord='';return;}
-    const traceMode=opts.traceMode??flashStrokeTraceMode;
-    const startQuiz=!!opts.startQuiz;
-    if(!opts.force && flashStrokeRenderedWord===v.word && !traceMode)return;
-    const generation=++flashStrokeGeneration;
-    const valid=()=>generation===flashStrokeGeneration&&flashStrokeOpen&&currentCard()===v&&$('flashStrokePanel')===panel;
-    const chars=Array.from(v.word).filter(isChineseChar).slice(0,8);
-    if(!chars.length){panel.textContent='No Chinese characters found.';return;}
-    status.textContent='Loading stroke data...';
-    syncTraceButtons('flash',traceMode,flashStrokeGuide);
-    try{
-      await ensureHanziWriter();if(!valid())return;
-      flashStrokeWriters=renderStrokeSurfaces({panel,status,wrap,chars,prefix:'flashStrokeTarget',traceMode,startQuiz,valid,guideVisible:flashStrokeGuide});
-      flashStrokeRenderedWord=v.word;
-    }catch(err){if(valid()){status.textContent='Unavailable';panel.innerHTML='<span class="small">Stroke data needs internet access. Try again once connected.</span>';flashStrokeRenderedWord='';}}
-  }
-  function replayFlashStrokes(){if(!flashStrokeOpen)return;flashStrokeTraceMode=false;renderFlashStroke({traceMode:false,startQuiz:false,force:true});}
-  async function traceFlashStrokes(){
-    if(!flashStrokeOpen)toggleFlashStrokePanel(true);
-    flashStrokeTraceMode=true;flashStrokeGuide=true;
-    await renderFlashStroke({traceMode:true,startQuiz:true,force:true});
-  }
-  function renderFlash(){
-    const v=currentCard();
-    $('flashTogglePinyinBtn')?.classList.toggle('active', flashRevealPinyin);
-    $('flashToggleEnglishBtn')?.classList.toggle('active', flashRevealEnglish);
-    if(!v){ $('flashDeckProgressFill').style.width='0%'; $('flashFront').textContent='No matching words'; $('flashFront').classList.add('flash-card-empty'); $('flashBack').hidden=true; $('flashBack').textContent=''; $('flashProgress').textContent='Choose another deck, change filters, or mark some words Learning.'; if (!flashStrokeOpen) {$('flashStrokePanel').innerHTML=''; $('flashStrokeStatus').textContent='';} return; }
-    $('flashFront').classList.remove('flash-card-empty');
-    $('flashFront').textContent=v.word;
-    const backText = flashBackText(v);
-    $('flashBack').textContent = backText;
-    $('flashBack').hidden = !backText;
-    $('flashProgress').textContent = `${deckIndex+1} / ${deck.length} · HSK ${v.level} · ${statusOf(v.word)}${deckLabel?' · '+deckLabel:''}`;
-    $('flashDeckProgressFill').style.width=`${(deckIndex+1)/deck.length*100}%`;
-    if (flashStrokeOpen && flashStrokeRenderedWord !== v.word) renderFlashStroke({traceMode:flashStrokeTraceMode, startQuiz:flashStrokeTraceMode, force:true});
-  }
-  function nextFlash(){ if(!deck.length) return; deckIndex=(deckIndex+1)%deck.length; flashRevealPinyin=false; flashRevealEnglish=false; flashStrokeTraceMode=false; flashStrokeRenderedWord=''; renderFlash(); }
-  function prevFlash(){ if(!deck.length) return; deckIndex=(deckIndex-1+deck.length)%deck.length; flashRevealPinyin=false; flashRevealEnglish=false; flashStrokeTraceMode=false; flashStrokeRenderedWord=''; renderFlash(); }
-
-  // ===========================
-  // Quiz
-  // ===========================
-  let quiz={score:0,total:0,current:null,locked:false,max:20,deck:[],index:0,currentDir:'zh-en',missed:[]};
-  function quizPool(){return getDeck($('quizLevel').value);}
-  function quizCountLimit(){const el=$('quizCount');const raw=Number(el?.value||20);const n=Number.isFinite(raw)?Math.max(1,Math.min(VOCAB.length,Math.floor(raw))):20;if(el)el.value=String(n);return n;}
-  function pickQuizDirection(){
-    const dir=$('quizDirection').value;
-    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
-    if (dir === 'mix-zh-en') return pick(['zh-en','en-zh']);
-    if (dir === 'mix-py-zh') return pick(['py-zh','zh-py']);
-    if (dir === 'mix-py-en') return pick(['py-en','en-py']);
-    if (dir === 'supermix') return pick(['zh-en','en-zh','py-zh','zh-py','py-en','en-py']);
-    return dir;
-  }
-  function quizPromptFor(card, dir){
-    if (dir==='zh-en') return card.word;
-    if (dir==='en-zh') return card.english;
-    if (dir==='py-zh') return displayFlashPinyin(card);
-    if (dir==='zh-py') return card.word;
-    if (dir==='py-en') return displayFlashPinyin(card);
-    if (dir==='en-py') return card.english;
-    return card.word;
-  }
-  function quizCorrectFor(card, dir){
-    if (dir==='zh-en') return card.english;
-    if (dir==='en-zh') return card.word;
-    if (dir==='py-zh') return card.word;
-    if (dir==='zh-py') return displayFlashPinyin(card);
-    if (dir==='py-en') return card.english;
-    if (dir==='en-py') return displayFlashPinyin(card);
-    return card.english;
-  }
-  function quizOptionValue(v, dir){
-    if (dir==='zh-en') return v.english;
-    if (dir==='en-zh') return v.word;
-    if (dir==='py-zh') return v.word;
-    if (dir==='zh-py') return displayFlashPinyin(v);
-    if (dir==='py-en') return v.english;
-    if (dir==='en-py') return displayFlashPinyin(v);
-    return v.english;
-  }
-  function startQuiz(poolOverride=null){
-    const pool=poolOverride||quizPool();
-    if(!pool.length){
-      quiz={score:0,total:0,current:null,locked:false,max:0,deck:[],index:0,currentDir:'zh-en',missed:[]};
-      $('quizPrompt').textContent='No words in this deck';$('quizPrompt').classList.add('quiz-idle');
-      $('quizOptions').innerHTML='';$('quizFeedback').textContent='Select a different deck or mark some words for review.';
-      $('quizNextBtn').disabled=true;$('quizRetryMissedBtn').hidden=true;renderQuizScore();return;
-    }
-    const count=poolOverride?pool.length:Math.min(quizCountLimit(),pool.length);
-    quiz={score:0,total:0,current:null,locked:false,max:count,deck:shuffle(pool.slice()).slice(0,count),index:0,currentDir:'zh-en',missed:[]};
-    $('quizRetryMissedBtn').hidden=true;renderQuizScore();nextQuiz();
-  }
-  function nextQuiz(){
-    if(!quiz.deck.length||quiz.index>=quiz.deck.length){
-      $('quizPrompt').textContent=quiz.total?'Quiz complete':'Press Start Quiz';
-      $('quizPrompt').classList.remove('quiz-prompt-latin','quiz-prompt-han');$('quizPrompt').classList.add('quiz-idle');
-      $('quizOptions').innerHTML='';
-      $('quizFeedback').textContent=quiz.total?`Final score: ${quiz.score} / ${quiz.total} · ${quiz.missed.length} to revisit`:'';
-      $('quizNextBtn').disabled=true;
-      $('quizRetryMissedBtn').hidden=!quiz.missed.length;
-      quiz.current=null;renderQuizScore();return;
-    }
-    quiz.current=quiz.deck[quiz.index];quiz.currentDir=pickQuizDirection();quiz.locked=false;
-    $('quizFeedback').textContent='';$('quizNextBtn').disabled=true;
-    const dir=quiz.currentDir;
-    $('quizPrompt').textContent=quizPromptFor(quiz.current,dir);
-    $('quizPrompt').classList.remove('quiz-idle');
-    $('quizPrompt').classList.toggle('quiz-prompt-latin',['en-zh','py-zh','py-en','en-py'].includes(dir));
-    $('quizPrompt').classList.toggle('quiz-prompt-han',['zh-en','zh-py'].includes(dir));
-    const correct=quizCorrectFor(quiz.current,dir);
-    const distractors=[];
-    for(const v of shuffle(VOCAB.filter(v=>v.word!==quiz.current.word))){
-      const value=quizOptionValue(v,dir);
-      if(value===correct||distractors.includes(value))continue;
-      distractors.push(value);if(distractors.length>=3)break;
-    }
-    const options=shuffle([correct,...distractors]);
-    $('quizOptions').innerHTML=options.map(o=>`<button class="quiz-option ${Array.from(String(o)).some(isChineseChar)?'quiz-option-han':''}" data-answer="${escapeHtml(o)}">${escapeHtml(o)}</button>`).join('');
-    $('quizNextBtn').textContent='Next question';renderQuizScore();
-  }
-  function answerQuiz(answer,btn){
-    if(quiz.locked||!quiz.current)return;
-    quiz.locked=true;quiz.total++;
-    const correct=quizCorrectFor(quiz.current,quiz.currentDir);
-    if(answer===correct){quiz.score++;btn.classList.add('correct');}
-    else{btn.classList.add('wrong');quiz.missed.push(quiz.current);[...document.querySelectorAll('.quiz-option')].forEach(b=>{if(b.dataset.answer===correct)b.classList.add('correct');});}
-    quiz.index++;
-    [...document.querySelectorAll('.quiz-option')].forEach(b=>b.disabled=true);
-    $('quizNextBtn').disabled=false;
-    $('quizNextBtn').textContent=quiz.index>=quiz.deck.length?'Finish quiz':'Next question';
-    renderQuizScore();
-  }
-  function renderQuizScore(){ $('quizScore').textContent=`Score: ${quiz.score} / ${quiz.total}`; }
-
-  // ===========================
-  // Settings, backup, event bindings
-  // ===========================
-  function applySettingsToUI(){
-    document.documentElement.dataset.theme = settings.dark ? 'dark' : 'light';
-    $('darkToggle').textContent = settings.dark ? '☀️' : '🌙';
-    $('darkToggle').title = settings.dark ? 'Switch to light mode' : 'Switch to dark mode';
-    $('darkToggle').setAttribute('aria-label', $('darkToggle').title);
-    ['filter2','filter3','hideKnown','showPinyin','showEnglish','onlineTranslate','autoStroke'].forEach(id=>{ if($(id)) $(id).checked = !!settings[id]; });
-    if ($('ttsRate')) { $('ttsRate').value = settings.ttsRate; $('ttsRateLabel').textContent = `${Number(settings.ttsRate).toFixed(2)}x`; }
-    $('readerFontSize').value=Math.max(18,Math.min(38,Number(settings.readerFontSize)||26));
-    $('readerFontSizeLabel').textContent=`${$('readerFontSize').value}px`;
-    $('flashSkipKnown').checked=!!settings.flashSkipKnown;
-  }
-  const SIDEBAR_STORE = 'hskReaderSidebarCollapsed.v01';
-  function syncSidebarState(){ try{document.body.classList.toggle('sidebar-collapsed',localStorage.getItem(SIDEBAR_STORE)==='1');}catch{document.body.classList.remove('sidebar-collapsed');} }
-  function syncVocabSearchClear(){ const btn = $('clearVocabSearchBtn'); if (!btn) return; btn.style.visibility = $('vocabSearch').value ? 'visible' : 'hidden'; }
-  function renderProgressSummary(){
-    const known=VOCAB.filter(v=>statusOf(v.word)==='known').length;
-    const learning=VOCAB.filter(v=>statusOf(v.word)==='learning').length;
-    const fresh=VOCAB.length-known-learning;
-    $('headerProgress').textContent=`${known} known · ${learning} learning`;
-    const orbit=$('headerProgressOrbit');if(orbit){orbit.style.setProperty('--completion',`${Math.min(100,known/VOCAB.length*100).toFixed(2)}%`);orbit.setAttribute('aria-label',`${known} of ${VOCAB.length} vocabulary words known`);}
-    $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
-  }
-  function renderAll(){renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','vocab','lessons','flashcards','quiz','settings'];
-  const APP_TAB_DETAILS={reader:['Reader','YOUR READING DESK'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
-  function switchTab(name){
-    if(!APP_TAB_NAMES.includes(name))return;
-    document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
-    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===name));
-    $('pageTitle').textContent=APP_TAB_DETAILS[name][0];$('pageKicker').textContent=APP_TAB_DETAILS[name][1];
-    document.title=`${APP_TAB_DETAILS[name][0]} · HSK Reader`;
-    writeJSON(STORE.lastTab,name);
-    window.scrollTo({top:0,behavior:'instant'});
-  }
-  function getBackup(){return {version:'V0.32 Studio Refresh',exportedAt:new Date().toISOString(),settings,statuses,lessons,readerText:$('inputText').value};}
-  function importBackup(raw){
-    try{
-      const data=JSON.parse(raw);
-      if(!data||typeof data!=='object'||Array.isArray(data)||(!data.settings&&!data.statuses&&!data.lessons&&typeof data.readerText!=='string'))throw new Error('Invalid backup format');
-      if(!confirm('Import this backup and overwrite current settings, word statuses and lesson progress?'))return;
-      if(data.settings&&typeof data.settings==='object'&&!Array.isArray(data.settings)){
-        settings={...DEFAULT_SETTINGS};
-        for(const k of Object.keys(DEFAULT_SETTINGS))if(Object.prototype.hasOwnProperty.call(data.settings,k))settings[k]=data.settings[k];
-        settings.readerFontSize=Math.max(18,Math.min(38,Number(settings.readerFontSize)||26));
-        settings.ttsRate=Math.max(.5,Math.min(1.25,Number(settings.ttsRate)||.85));
-      }
-      if(data.statuses&&typeof data.statuses==='object'&&!Array.isArray(data.statuses)){
-        const allowed=Object.create(null);
-        for(const [key,val] of Object.entries(data.statuses))if(BY_WORD.has(key)&&['known','learning'].includes(val))allowed[key]=val;
-        statuses=allowed;
-      }
-      if(data.lessons&&typeof data.lessons==='object'&&!Array.isArray(data.lessons)){
-        for(const level of ['2','3']){
-          const v=data.lessons[level];if(!v||typeof v!=='object')continue;
-          lessons[level]={wordsPerDay:Math.max(1,Math.min(100,Math.floor(Number(v.wordsPerDay)||10))),startDate:typeof v.startDate==='string'?v.startDate:'',completedDays:Math.max(0,Math.min(600,Math.floor(Number(v.completedDays)||0))),completedDates:Array.isArray(v.completedDates)?v.completedDates.filter(x=>typeof x==='string').slice(0,600):[],coveredWords:v.coveredWords!=null&&Number.isFinite(Number(v.coveredWords))?Math.max(0,Math.floor(Number(v.coveredWords))):null,daySizes:Array.isArray(v.daySizes)?v.daySizes.slice(0,600).map(n=>Math.max(0,Math.floor(Number(n)||0))):null};
-        }
-      }
-      if(typeof data.readerText==='string'){$('inputText').value=data.readerText;writeJSON(STORE.draft,data.readerText);}
-      saveSettings();writeJSON(STORE.statuses,statuses);saveLessons();applySettingsToUI();newDeck();renderAll();toast('Backup imported successfully.');
-    }catch(err){toast('Invalid backup JSON. No changes imported.');}
-  }
-  function downloadBackup(){
-    try{
-      const data=JSON.stringify(getBackup(),null,2);
-      const blob=new Blob([data],{type:'application/json'});
-      const url=URL.createObjectURL(blob),a=document.createElement('a');
-      a.href=url;a.download=`hsk-reader-backup-${todayISO()}.json`;document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url),10000);toast('Backup download requested.');
-    }catch{ $('jsonBox').value=JSON.stringify(getBackup(),null,2);toast('Download unavailable. Copy the backup JSON from the box.'); }
-  }
-
-  document.addEventListener('click', e=>{
-    const tab = e.target.closest('[data-tab]');
-    if(tab){switchTab(tab.dataset.tab);return;}
-    const wordEl = e.target.closest('[data-word]');
-    if(wordEl){ showWord(wordEl.dataset.word, wordEl.dataset.tokenIndex); return; }
-    const st = e.target.closest('[data-status-word]');
-    if(st){ setStatus(st.dataset.statusWord, st.dataset.status); return; }
-    const ls = e.target.closest('[data-lesson-save]'); if(ls){ savePlan(ls.dataset.lessonSave); return; }
-    const ll = e.target.closest('[data-lesson-load]'); if(ll){ activeLessonLevel=Number(ll.dataset.lessonLoad); renderLessons(); return; }
-    const lr = e.target.closest('[data-lesson-reset]'); if(lr){ resetPlan(lr.dataset.lessonReset); return; }
-  });
-  let undoneReaderText=null,readerInputTimer=0;
-  function saveReaderDraft(){writeJSON(STORE.draft,$('inputText').value);$('draftNotice').textContent='Saved on this device';}
-  function onReaderChanged(){
-    ++translationRequestId;
-    $('translationBox').hidden=true;
-    clearTimeout(readerInputTimer);
-    $('draftNotice').textContent='Saving…';
-    readerInputTimer=setTimeout(()=>{saveReaderDraft();renderReader();},300);
-  }
-  $('inputText').addEventListener('input',()=>{undoneReaderText=null;$('undoClearBtn').hidden=true;onReaderChanged();});
-  const compactEditor=()=>window.matchMedia('(max-width:900px)').matches;
-  function showPassageEditor(open,{focus=false,scroll=false}={}){
-    document.body.classList.toggle('editor-open',Boolean(open));
-    $('editPassageBtn').setAttribute('aria-expanded',String(Boolean(open)));
-    $('editPassageBtn').textContent=open?'✕ Close':'✎ Edit';
-    if(open&&scroll){$('readerEditorCard').scrollIntoView({behavior:'smooth',block:'start'});}
-    if(open&&focus){setTimeout(()=>$('inputText').focus({preventScroll:true}),280);}
-  }
-  $('editPassageBtn').onclick=()=>showPassageEditor(!document.body.classList.contains('editor-open'),{scroll:true,focus:true});
-  $('finishEditingBtn').onclick=()=>{clearTimeout(readerInputTimer);saveReaderDraft();renderReader();showPassageEditor(false);$('readerOutputCard').scrollIntoView({behavior:'smooth',block:'start'});};
-  $('readerQuickSpeakBtn').onclick=()=>speakChinese($('inputText').value);
-  $('readerQuickTranslateBtn').onclick=translateInput;
-  $('renderBtn').onclick=()=>{clearTimeout(readerInputTimer);saveReaderDraft();renderReader();if(compactEditor()){showPassageEditor(false);$('readerOutputCard').scrollIntoView({behavior:'smooth',block:'start'});}};
-  $('clearTextBtn').onclick=()=>{
-    const old=$('inputText').value;if(!old)return;
-    undoneReaderText=old;$('undoClearBtn').hidden=false;$('inputText').value='';onReaderChanged();
-    toast('Reader cleared. Undo is available below the input.');
-  };
-  $('undoClearBtn').onclick=()=>{if(undoneReaderText===null)return;$('inputText').value=undoneReaderText;undoneReaderText=null;$('undoClearBtn').hidden=true;onReaderChanged();};
-  $('sampleTextBtn').onclick=()=>{$('inputText').value=SAMPLE_READER_TEXT;undoneReaderText=null;$('undoClearBtn').hidden=true;onReaderChanged();toast('Sample Chinese loaded.');};
-  window.addEventListener('pagehide',saveReaderDraft);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)saveReaderDraft();});
-  $('speakTextBtn').onclick = () => speakChinese($('inputText').value);
-  $('stopVoiceBtn').onclick = stopVoice;
-  $('translateBtn').onclick = translateInput;
-  ['filter2','filter3','hideKnown','showPinyin','showEnglish'].forEach(id => $(id).onchange = () => {settings[id]=$(id).checked;saveSettings();renderReader();});
-  $('readerFontSize').oninput=()=>{settings.readerFontSize=Number($('readerFontSize').value);$('readerFontSizeLabel').textContent=`${settings.readerFontSize}px`;saveSettings();$('readerView').style.fontSize=`${settings.readerFontSize}px`;};
-  $('vocabSearch').oninput=()=>{renderVocab(true);syncVocabSearchClear();};
-  ['vocabLevel','vocabStatus','vocabSort'].forEach(id=>$(id).oninput=()=>renderVocab(true));
-  $('vocabLoadMoreBtn').onclick=()=>{vocabVisibleCount+=vocabPageSize();renderVocab();};
-  $('vocabStudyResultsBtn').onclick=studyVocabResults;
-  $('darkToggle').onclick = () => { settings.dark=!settings.dark; saveSettings(); applySettingsToUI(); };
-  $('sidebarToggle').onclick=()=>{document.body.classList.toggle('sidebar-collapsed');try{localStorage.setItem(SIDEBAR_STORE,document.body.classList.contains('sidebar-collapsed')?'1':'0');}catch{}};
-  $('clearVocabSearchBtn').onclick=()=>{$('vocabSearch').value='';syncVocabSearchClear();renderVocab(true);$('vocabSearch').focus();};
-  $('closeDialog').onclick = closeWordDialog; $('prevUnknownBtn').onclick = () => navigateUnknown(-1); $('nextUnknownBtn').onclick = () => navigateUnknown(1); $('wordDialog').addEventListener('cancel', e=>{e.preventDefault(); closeWordDialog();});
-  $('wordDialog').addEventListener('click', e=>{
-    const dialog = $('wordDialog');
-    if (!dialog.open) return;
-    if (e.target.closest('.dialog-arrow,.modal-close')) return;
-    const rect = dialog.getBoundingClientRect();
-    const insideDialog = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
-    if (!insideDialog) closeWordDialog();
-  });
-  $('lessonMarkLearning').onclick=()=>markLesson('learning');$('lessonMarkKnown').onclick=()=>markLesson('known');
-  $('lessonComplete').onclick=completeLesson;$('lessonUndoBtn').onclick=undoLessonDay;$('lessonStudyBtn').onclick=studyLessonWords;
-  $('newDeckBtn').onclick=newDeck;$('flashDeckCount').onchange=()=>{flashDeckLimit();newDeck();};
-  $('flashLevel').onchange=newDeck;$('flashShuffle').onchange=newDeck;
-  $('flashSkipKnown').onchange=()=>{settings.flashSkipKnown=$('flashSkipKnown').checked;saveSettings();newDeck();};
-  $('flashTogglePinyinBtn').onclick=()=>setFlashReveal('pinyin');$('flashToggleEnglishBtn').onclick=()=>setFlashReveal('english');
-  $('flashcardBox').onclick=flipFlash;
-  $('flashcardBox').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();flipFlash();}};
-  $('flashStrokeToggleBtn').onclick=()=>toggleFlashStrokePanel();
-  $('flashPrevBtn').onclick=prevFlash;$('flashNextArrowBtn').onclick=nextFlash;
-  $('flashKnownBtn').onclick=()=>{const v=currentCard();if(v){setStatus(v.word,'known');nextFlash();}};
-  $('flashLearningBtn').onclick=()=>{const v=currentCard();if(v){setStatus(v.word,'learning');nextFlash();}};
-  $('flashSpeakBtn').onclick=()=>{const v=currentCard();if(v)speakChinese(v.word);};
-  $('flashReplayBtn').onclick=replayFlashStrokes;$('flashTraceBtn').onclick=traceFlashStrokes;
-  $('flashRetryTraceBtn').onclick=traceFlashStrokes;$('flashGuideBtn').onclick=()=>toggleTraceGuide('flash');
-  $('flashExitTraceBtn').onclick=()=>{flashStrokeTraceMode=false;replayFlashStrokes();};
-  $('startQuizBtn').onclick=()=>startQuiz();$('quizCount').onchange=quizCountLimit;
-  $('quizNextBtn').onclick=nextQuiz;
-  $('quizRetryMissedBtn').onclick=()=>startQuiz(quiz.missed.slice());
-  $('quizOptions').onclick=e=>{const b=e.target.closest('.quiz-option');if(b)answerQuiz(b.dataset.answer,b);};
-  $('ttsRate').oninput = () => { settings.ttsRate=Number($('ttsRate').value); $('ttsRateLabel').textContent=`${settings.ttsRate.toFixed(2)}x`; saveSettings(); };
-  $('onlineTranslate').onchange = () => { settings.onlineTranslate=$('onlineTranslate').checked; saveSettings(); };
-  $('autoStroke').onchange = () => { settings.autoStroke=$('autoStroke').checked; saveSettings(); };
-  $('preloadStrokeBtn').onclick = preloadStrokeData;
-  let lastWritingInput='Not observed';
-  function refreshDeviceProbe(){
-    const pointerSupport='PointerEvent' in window;
-    const touch=Number(navigator.maxTouchPoints)||0;
-    const storage=(()=>{try{const k='hskReaderProbe.temp';localStorage.setItem(k,'1');localStorage.removeItem(k);return 'available';}catch{return 'blocked';}})();
-    const probe=$('deviceProbeResults');if(!probe)return;
-    probe.innerHTML=`<div><span>Touch points</span><strong>${touch}</strong></div><div><span>Pointer input</span><strong>${pointerSupport?'Supported':'Unavailable'}</strong></div><div><span>Local saving</span><strong>${storage}</strong></div><div class="probe-input"><span>Last trace input</span><strong>${escapeHtml(lastWritingInput)}</strong></div>`;
-  }
-  $('checkDeviceBtn').onclick=()=>{refreshDeviceProbe();toast('Browser capabilities refreshed.');};
-  document.addEventListener('pointerdown',event=>{
-    if(!event.target.closest('.stroke-panel.trace-mode .stroke-char'))return;
-    lastWritingInput=event.pointerType==='pen'?'Pen / stylus':event.pointerType==='touch'?'Finger / touch':event.pointerType==='mouse'?'Mouse / trackpad':event.pointerType||'Unknown';
-    refreshDeviceProbe();
-  },true);
-  $('exportBtn').onclick=()=>{$('jsonBox').value=JSON.stringify(getBackup(),null,2);toast('Backup JSON copied into the box.');};
-  $('downloadBackupBtn').onclick=downloadBackup;
-  $('importBtn').onclick=()=>importBackup($('jsonBox').value);
-  $('uploadBackupBtn').onclick=()=>$('backupFileInput').click();
-  $('backupFileInput').onchange=async()=>{
-    const file=$('backupFileInput').files?.[0];if(!file)return;
-    try{const raw=await file.text();$('jsonBox').value=raw;importBackup(raw);}
-    catch{toast('Could not read that backup file.');}
-    $('backupFileInput').value='';
-  };
-  $('resetBtn').onclick=()=>{
-    if(confirm('Erase all word progress, lesson plans, settings and saved reader text in this browser? Export a backup first if needed.')){
-      [STORE.settings,STORE.statuses,STORE.lessons,STORE.draft,STORE.lastTab,STORE.translationConsent].forEach(k=>{try{localStorage.removeItem(k);}catch{}});
-      location.reload();
-    }
-  };
-  if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;}
-  document.addEventListener('keydown',e=>{
-    if(e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-6]$/.test(e.key)){
-      e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
-    }
-    const tag=document.activeElement?.tagName;
-    const editing=['INPUT','TEXTAREA','SELECT'].includes(tag)||document.activeElement?.isContentEditable;
-    if($('wordDialog').open){
-      if(e.key==='Escape'){e.preventDefault();closeWordDialog();return;}
-      if(!editing&&e.key==='ArrowLeft'){e.preventDefault();navigateUnknown(-1);return;}
-      if(!editing&&e.key==='ArrowRight'){e.preventDefault();navigateUnknown(1);return;}
-      return;
-    }
-    if(!editing&&e.key==='/'){e.preventDefault();switchTab('vocab');$('vocabSearch').focus();return;}
-    if(editing||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;
-    if($('flashcards').classList.contains('active')){
-      if(e.key==='ArrowLeft'){e.preventDefault();prevFlash();}
-      else if(e.key==='ArrowRight'){e.preventDefault();nextFlash();}
-      else if(e.key===' '){e.preventDefault();flipFlash();}
-      else if(e.key.toLowerCase()==='k'){e.preventDefault();$('flashKnownBtn').click();}
-      else if(e.key.toLowerCase()==='l'){e.preventDefault();$('flashLearningBtn').click();}
-    }else if($('quiz').classList.contains('active')){
-      if(/^[1-4]$/.test(e.key)&&!quiz.locked&&quiz.current){
-        const btn=$('quizOptions').querySelectorAll('.quiz-option')[Number(e.key)-1];
-        if(btn){e.preventDefault();btn.click();}
-      }else if(e.key==='Enter'&&!$('quizNextBtn').disabled){e.preventDefault();nextQuiz();}
-    }
-  });
-  // Enable keyboard access for highlighted words without changing their inline layout.
-  $('readerView').addEventListener('keydown',e=>{
-    if(e.key==='Enter'||e.key===' '){const w=e.target.closest('[data-word]');if(w){e.preventDefault();showWord(w.dataset.word,w.dataset.tokenIndex);}}
-  });
-  syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();newDeck();renderAll();syncVocabSearchClear();refreshDeviceProbe();
-  const restoredTab=readJSON(STORE.lastTab,'reader');if(restoredTab!=='reader')switchTab(APP_TAB_NAMES.includes(restoredTab)?restoredTab:'reader');
-  </script>
-  
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('./sw.js', { scope: './' })
-        .catch(error =>
-          console.warn('PWA setup failed:', error)
-        );
-    });
-  }
-</script>
-
+  <script src="./assets/vocabulary.js" defer></script>
+  <script src="./assets/app.js" defer></script>
+  <script src="./assets/pwa.js" defer></script>
 </body>
 </html>
