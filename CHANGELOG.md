@@ -1,3 +1,10 @@
+## 1.8.0
+
+- Fixed sidebar row heights and removed the navigation eyebrow in both states; collapsing keeps the logo, header and navigation at the same vertical positions.
+- Quick quiz opens vocabulary selection and question settings, then starts questions directly. Separate flashcard review no longer silently switches into a quiz.
+- Reader options save a 10–30 sentence interval, maximum question count and meaning/pinyin preference. Completed quiz blocks reset the interval; unfinished quizzes resume and survive backup/import.
+- Quiz distractors prefer vocabulary from the covered sentences; sentence reconstruction uses a sentence from the completed block.
+
 ## 1.7.0
 
 - Collapsed navigation retains the top-left logo and hides floating labels.

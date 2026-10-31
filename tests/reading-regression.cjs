@@ -25,14 +25,53 @@ test('Collapsed rail keeps the top-left brand and has no floating label tooltip 
 test('Pinyin hint choices survive backup sanitization',()=>{const r=run('sanitizeExtras(extras).reading');assert.ok(Object.keys(r.hiddenPinyin).length);assert.equal(r.source,'2')});
 test('Sentence translation is initially hidden, reveals and can be pinned',()=>{assert.equal($('readingTranslationText').hidden,true);$('readingTranslateToggle').click();assert.equal($('readingTranslationText').hidden,false);$('readingPinTranslation').click();$('readingMarkNext').click();assert.equal($('readingTranslationText').hidden,false)});
 test('Reading 10 sentences triggers the review prompt without repeating progress',()=>{for(let i=1;i<10;i++)$('readingMarkNext').click();assert.equal(run('extras.reading.read.length'),10);assert.equal($('readingCheckpoint').hidden,false);assert.match($('readingPosition').textContent,/10 read/)});
-test('Reading practice opens cards for the words just read',()=>{$('readingCheckpointStart').click();assert.equal($('readingPracticeDialog').open,true);assert.equal(run('extras.reading.practice.phase'),'cards');assert.ok(run('extras.reading.practice.words.length')>=5)});
-test('Exactly five classifications lead to an integrated quiz',()=>{for(let i=0;i<5;i++)click('[data-reading-rate="learning"]');assert.equal(run('extras.reading.practice.cursor'),5);assert.equal(run('extras.reading.practice.phase'),'quiz');assert.ok(w.document.querySelector('[data-reading-answer]'))});
+test('Checkpoint opens a word-selection quiz popup, not a flashcard',()=>{
+ $('readingCheckpointStart').click();assert.equal($('readingPracticeDialog').open,true);
+ assert.ok($('readingQuizStart'));assert.equal($('readingCardReveal'),null);assert.ok(w.document.querySelectorAll('[data-quiz-word]').length>=5);
+});
+test('Zero selected words prevents starting; a specific selection controls quiz content',()=>{
+ click('[data-quiz-select="none"]');assert.equal($('readingQuizStart').disabled,true);
+ const boxes=Array.from(w.document.querySelectorAll('[data-quiz-word]')).slice(0,3);boxes.forEach(b=>b.click());
+ $('readingSetupOrder').checked=true;$('readingSetupType').value='pinyin';$('readingQuizStart').click();
+ assert.equal(run('extras.reading.practice.phase'),'quiz');assert.equal(run('extras.reading.practice.mode'),'direct');
+ assert.equal(run('extras.reading.practice.words.length'),3);assert.equal(run('extras.reading.practice.questions.length'),4);
+ assert.ok(run("extras.reading.practice.questions.every(q=>['pinyin','order'].includes(q.kind))"));
+});
 test('Correct answers and sentence ordering produce a finite quiz summary',()=>{while(run('extras.reading.practice.phase')==='quiz'){
  const p=run('extras.reading.practice'),q=p.questions[p.q];if(q.kind==='order'){
   const used=new Set();for(const text of q.answer){const i=q.options.findIndex((o,i)=>o.text===text&&!used.has(i));assert.ok(i>=0);used.add(i);click(`[data-reading-order="${i}"]`);}click('#readingOrderCheck');
  }else click(`[data-reading-answer="${q.options.indexOf(q.word)}"]`);
  assert.equal(run('extras.reading.practice.answered'),true);click('#readingQuestionNext');
  }assert.equal(run('extras.reading.practice.phase'),'summary');assert.equal(run('extras.reading.practice.score'),run('extras.reading.practice.total'))});
-test('Reader practice and duplicate sentence tokens survive backup round-trip',()=>{const r=run('sanitizeExtras(JSON.parse(JSON.stringify(extras)))');assert.equal(r.reading.practice.cursor,5);assert.equal(r.reading.practice.phase,'summary');assert.equal(r.reading.practice.score,r.reading.practice.total)});
+test('Reader practice and duplicate sentence tokens survive backup round-trip',()=>{const r=run('sanitizeExtras(JSON.parse(JSON.stringify(extras)))');assert.equal(r.reading.practice.cursor,3);assert.equal(r.reading.practice.mode,'direct');assert.equal(r.reading.practice.sentenceIds.length,10);assert.equal(r.reading.practice.phase,'summary');assert.equal(r.reading.practice.score,r.reading.practice.total)});
+test('Completing a quiz resets only its sentence interval and prevents the same prompt',()=>{
+ assert.equal(run('extras.reading.quizCovered["2"].length'),10);assert.equal($('readingCheckpoint').hidden,true);
+ assert.match($('readingIntervalProgress').textContent,/0 \/ 10 sentences/);
+});
+test('Saved reader options support all intervals from 10 to 30 with proper boundaries',()=>{
+ $('readingPracticeClose').click();$('readingOptionsToggle').click();assert.equal($('readingOptions').hidden,false);
+ for(const n of [10,17,20,30]){
+  $('readingSentenceInterval').value=n;$('readingSentenceInterval').dispatchEvent(new w.Event('change'));
+  assert.equal(run('sanitizeExtras(extras).reading.sentenceInterval'),n);
+  run(`extras.reading.read=READING_SENTENCES.filter(s=>s.level===2).slice(0,${n-1}).map(s=>s.id);extras.reading.quizCovered={};extras.reading.dismissedCheckpoint=[];ReadingStudio.render()`);
+  assert.equal($('readingCheckpoint').hidden,true);
+  run(`extras.reading.read=READING_SENTENCES.filter(s=>s.level===2).slice(0,${n}).map(s=>s.id);ReadingStudio.render()`);
+  assert.equal($('readingCheckpoint').hidden,false);
+ }
+ $('readingSentenceInterval').value=100;$('readingSentenceInterval').dispatchEvent(new w.Event('change'));assert.equal(run('extras.reading.sentenceInterval'),30);
+ $('readingSentenceInterval').value=1;$('readingSentenceInterval').dispatchEvent(new w.Event('change'));assert.equal(run('extras.reading.sentenceInterval'),10);
+});
+test('A 30-question direct quiz survives a backup and resumes without flashcards',()=>{
+ run('extras.reading.practice=null');$('readingResumePractice').click();click('[data-quiz-select="all"]');$('readingSetupCount').value='30';$('readingSetupOrder').checked=true;$('readingQuizStart').click();
+ const before=run('extras.reading.practice');assert.ok(before.questions.length>11);assert.ok(before.questions.length<=30);
+ run('extras.reading=sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');assert.equal(run('extras.reading.practice.questions.length'),before.questions.length);
+ assert.equal(run('extras.reading.practice.phase'),'quiz');assert.equal(run('extras.reading.sentenceInterval'),10);
+ $('readingPracticeClose').click();$('readingResumePractice').click();assert.ok(w.document.querySelector('[data-reading-answer]'));assert.equal($('readingCardReveal'),null);
+});
+test('Flashcard review stays separate and completes without silently becoming a quiz',()=>{
+ $('readingPracticeClose').click();$('readingReviewWords').click();assert.ok($('readingCardReveal'));
+ const n=run('extras.reading.practice.words.length');for(let i=0;i<n;i++)click('[data-reading-rate="learning"]');
+ assert.equal(run('extras.reading.practice.phase'),'summary');assert.equal(run('extras.reading.practice.cursor'),n);
+});
 test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
 console.log(count+' reading workflow checks passed');dom.window.close();
