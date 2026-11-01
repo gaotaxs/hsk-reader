@@ -1,3 +1,10 @@
+## 1.11.0
+
+- Added 192 original everyday-context sentences: totals are 421 HSK 2 and 1,181 HSK 3. Exact-token audit covers all 601 study entries at least once in their matching track; 203 have three or more examples, with remaining low-frequency entries explicitly reported.
+- Balanced study order alternates everyday contexts with interleaved grammar patterns. Existing sentence IDs, read history and the current sentence are preserved; original order remains available.
+- Reader settings add finite reviews of earlier sentences and vocabulary missed in quizzes. A simple sentence schedule uses 1/3/7/14/30 days; misses reset relevant material to a ten-minute retry. Review sessions preserve the main reading position and survive backups.
+- Context-sensitive 长 and classifier 只 definitions/pronunciations are carried into word details and quiz feedback.
+
 ## 1.10.0
 
 - Logo, navigation icons and collapse button share the same fixed horizontal centre in expanded and collapsed desktop navigation.

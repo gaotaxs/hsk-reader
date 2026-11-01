@@ -1,11 +1,11 @@
 const {JSDOM}=require('jsdom'),fs=require('fs'),path=require('path'),assert=require('node:assert/strict');process.chdir(path.resolve(__dirname,'..'));
 const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'https://example.test/hsk-reader/',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
 w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};w.confirm=()=>true;w.CSS={escape:x=>x};w.TextEncoder=TextEncoder;
-w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/sentences-hsk2.js','assets/sentences-hsk3-0.js','assets/sentences-hsk3-1.js','assets/sentences-hsk3-2.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+'\nwindow.readerTest={eval:s=>eval(s)};');
+w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/sentences-hsk2.js','assets/sentences-hsk3-0.js','assets/sentences-hsk3-1.js','assets/sentences-hsk3-2.js','assets/sentences-context.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+'\nwindow.readerTest={eval:s=>eval(s)};');
 const $=id=>w.document.getElementById(id),run=s=>w.readerTest.eval(s);let count=0;
 function test(name,fn){fn();console.log('PASS '+name);count++;}
 const click=sel=>{const b=w.document.querySelector(sel);assert.ok(b,sel);b.click();};
-test('All 1,410 sentences have one pinyin syllable per Chinese character',()=>{for(const s of run('READING_SENTENCES'))assert.equal([...s.zh].filter(c=>/[\u3400-\u9fff]/.test(c)).length,s.py.split(/\s+/).length,s.zh)});
+test('All 1,602 sentences have one pinyin syllable per Chinese character',()=>{for(const s of run('READING_SENTENCES'))assert.equal([...s.zh].filter(c=>/[\u3400-\u9fff]/.test(c)).length,s.py.split(/\s+/).length,s.zh)});
 test('Static navigation has no animated image or picture elements',()=>assert.equal(w.document.querySelectorAll('.sidebar-nav img,.sidebar-nav picture').length,0));
 test('Dictionary segments multi-character words beyond the original HSK deck',()=>assert.ok(run("ReadingStudio.segments('为了明天的比赛').some(x=>x.text==='比赛'&&x.v)")));
 test('Word hint toggles globally without marking the word known',()=>{const word=w.document.querySelector('[data-r-word]').dataset.rWord,st=run(`statusOf(${JSON.stringify(word)})`);click('[data-r-word]');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false);assert.equal(run(`statusOf(${JSON.stringify(word)})`),st);run('ReadingStudio.render()');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false)});
@@ -15,7 +15,7 @@ test('Pinyin and Chinese use separate buttons; a word opens definition and writi
  $('readingWordClose').click();assert.equal($('readingWordDialog').open,false);
 });
 test('Each study track has the requested sentence depth with no duplicate sentences',()=>{
- const rows=run('READING_SENTENCES');assert.equal(rows.filter(x=>x.level===2).length,340);assert.equal(rows.filter(x=>x.level===3).length,1070);
+ const rows=run('READING_SENTENCES');assert.equal(rows.filter(x=>x.level===2).length,421);assert.equal(rows.filter(x=>x.level===3).length,1181);
  assert.equal(new Set(rows.map(x=>x.zh)).size,rows.length);assert.equal(new Set(rows.map(x=>x.id)).size,rows.length);
 });
 test('Collapsed rail keeps the top-left brand and has no floating label tooltip rule',()=>{
@@ -81,6 +81,32 @@ test('Workspace is separate from Reader and keeps text tools and credits togethe
  assert.equal($('inputText').closest('.panel').id,'workspace');assert.equal($('readingUseCustom').closest('.panel').id,'workspace');
  assert.equal(w.document.querySelector('.reading-credit').closest('.panel').id,'workspace');assert.equal($('reader').querySelector('textarea'),null);
  click('[data-tab="workspace"]');assert.equal($('workspace').classList.contains('active'),true);assert.equal($('pageTitle').textContent,'Workspace');
+});
+test('Every study entry has a matching-track sentence, without claiming universal three-example coverage',()=>{
+ const audit=JSON.parse(fs.readFileSync('tools/vocabulary-coverage.json','utf8'));assert.equal(audit.entries.length,601);
+ assert.ok(audit.entries.every(v=>v.sentences>0));assert.ok(audit.entries.some(v=>v.sentences<3));
+ for(const entry of audit.entries)for(const id of entry.ids){const row=run(`READING_SENTENCES.find(s=>s.id===${JSON.stringify(id)})`);assert.equal(row.level,entry.level);assert.ok(run(`ReadingStudio.segments(${JSON.stringify(row.zh)},${JSON.stringify(row.py)}).some(t=>t.text===${JSON.stringify(entry.word)})`));}
+});
+test('Balanced order mixes contexts and patterns and preserves the current sentence on order changes',()=>{
+ run('extras.reading.reviewSession=null;extras.reading.source="2";extras.reading.order="original";extras.reading.positions["2"]=25;ReadingStudio.render()');const id=run('ReadingStudio.current().id');
+ $('readingOrder').value='balanced';$('readingOrder').dispatchEvent(new w.Event('change'));assert.equal(run('ReadingStudio.current().id'),id);
+ const rows=run('ReadingStudio.orderedLevel(2)');assert.ok(rows[20].id.startsWith('context-'));assert.ok(rows[21].id.startsWith('pattern-'));assert.notEqual(rows[20].topic,rows[22].topic);
+ assert.equal(new Set(rows.map(s=>s.id)).size,rows.length);
+});
+test('Sentence reviews are finite, preserve the reading place and schedule the next visit',()=>{
+ const pos=run('extras.reading.positions["2"]'),read=run('extras.reading.read.length');run('ReadingStudio.startSentenceReview()');assert.ok(run('extras.reading.reviewSession'));
+ const id=run('ReadingStudio.current().id'),n=run('extras.reading.reviewSession.ids.length');for(let i=0;i<n;i++)$('readingMarkNext').click();
+ assert.equal(run('extras.reading.reviewSession'),null);assert.equal(run('extras.reading.positions["2"]'),pos);assert.equal(run('extras.reading.read.length'),read);
+ assert.ok(run(`extras.reading.sentenceReview[${JSON.stringify(id)}].due`)>Date.now());
+});
+test('A quiz miss schedules vocabulary and relevant sentences; review uses that word in context',()=>{
+ run('extras.reading.practice=null');$('readingResumePractice').click();$('readingQuizStart').click();const p=run('extras.reading.practice'),q=p.questions[p.q],word=q.target;
+ click(`[data-reading-answer="${q.options.findIndex(x=>x!==q.word)}"]`);assert.equal(run(`extras.reading.wordReview[${JSON.stringify(word)}].misses`),1);
+ const due=run(`extras.reading.wordReview[${JSON.stringify(word)}].due`);assert.ok(due>Date.now()+590000&&due<=Date.now()+600000);
+ $('readingPracticeClose').click();run('ReadingStudio.startSentenceReview(true)');
+ assert.ok(run(`ReadingStudio.sentences().every(s=>ReadingStudio.segments(s.zh,s.py).some(t=>t.text===${JSON.stringify(word)}))`));
+ const restored=run('sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');assert.equal(restored.reviewSession.reason,'missed vocabulary');assert.ok(restored.wordReview[word]);
+ $('readingExitReview').click();assert.equal(run('extras.reading.reviewSession'),null);
 });
 test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('reader').classList.contains('active'),true);assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
 console.log(count+' reading workflow checks passed');dom.window.close();

@@ -1,0 +1,7012 @@
+{
+  "method": "Exact reader tokens in the matching study track; distinct sentences, with separate 长 readings. Contexts are source topic/pattern labels, not independent linguistic certification.",
+  "summary": {
+    "2": {
+      "sentences": 421,
+      "studyEntries": 303,
+      "covered": 303,
+      "atLeast3": 133,
+      "missing": []
+    },
+    "3": {
+      "sentences": 1181,
+      "studyEntries": 298,
+      "covered": 298,
+      "atLeast3": 70,
+      "missing": []
+    }
+  },
+  "entries": [
+    {
+      "word": "爱",
+      "pinyin": "ài",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ef47607f3ef11c"
+      ]
+    },
+    {
+      "word": "八",
+      "pinyin": "bā",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-613b63f75fd5fb",
+        "context-64533dbf4bf81f"
+      ]
+    },
+    {
+      "word": "爸爸",
+      "pinyin": "bàba",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 4,
+      "ids": [
+        "pattern-f7fe56a96c44f6",
+        "pattern-80c032f7ff35f2",
+        "pattern-91ce81ff2cd683",
+        "pattern-7f01540bc54fcc",
+        "pattern-d4455bd6403ba8",
+        "pattern-f5817e77b72166"
+      ]
+    },
+    {
+      "word": "吧",
+      "pinyin": "ba",
+      "level": 2,
+      "sentences": 23,
+      "contexts": 7,
+      "ids": [
+        "original-3",
+        "pattern-116fe7c903b97a",
+        "pattern-395c2ac0727f39",
+        "pattern-eda5b56f526cbd",
+        "pattern-00180b496556e0",
+        "pattern-67488a61f2b2ff"
+      ]
+    },
+    {
+      "word": "白",
+      "pinyin": "bái",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-92a3c8f2f83cd6",
+        "context-7de1314d2d86ab"
+      ]
+    },
+    {
+      "word": "百",
+      "pinyin": "bǎi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8414fe71c8424b"
+      ]
+    },
+    {
+      "word": "帮助",
+      "pinyin": "bāngzhù",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-96ad9e5f5329b1",
+        "context-957722dd7c789c"
+      ]
+    },
+    {
+      "word": "报纸",
+      "pinyin": "bàozhǐ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-17ed3ea4195f17"
+      ]
+    },
+    {
+      "word": "杯子",
+      "pinyin": "bēizi",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 2,
+      "ids": [
+        "pattern-7da29a00efc07b",
+        "pattern-6add5fe44be355",
+        "pattern-851bfa1b57840c",
+        "context-b96b2d1a4e4ad8"
+      ]
+    },
+    {
+      "word": "北京",
+      "pinyin": "Běijīng",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "original-9",
+        "context-aafbc74b22ce56",
+        "context-a7c3395bf0c9db"
+      ]
+    },
+    {
+      "word": "本",
+      "pinyin": "běn",
+      "level": 2,
+      "sentences": 8,
+      "contexts": 5,
+      "ids": [
+        "original-11",
+        "pattern-f597b5b7e55383",
+        "pattern-80c032f7ff35f2",
+        "context-750da501e9099c",
+        "context-a25097a4b831b1",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "比",
+      "pinyin": "bǐ",
+      "level": 2,
+      "sentences": 19,
+      "contexts": 4,
+      "ids": [
+        "original-17",
+        "pattern-0443312bb6473b",
+        "pattern-305c5646eb214c",
+        "pattern-ebfff3e54a0df7",
+        "pattern-76abc6f42009c6",
+        "pattern-85110a9dd59b75"
+      ]
+    },
+    {
+      "word": "别",
+      "pinyin": "bié",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-15",
+        "context-b467cb4771c336"
+      ]
+    },
+    {
+      "word": "不客气",
+      "pinyin": "búkèqi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-96ad9e5f5329b1"
+      ]
+    },
+    {
+      "word": "不",
+      "pinyin": "bù",
+      "level": 2,
+      "sentences": 15,
+      "contexts": 11,
+      "ids": [
+        "original-14",
+        "context-553abcfc0596d4",
+        "context-50f8bb24d30e5f",
+        "context-3a62f22d33bb1c",
+        "context-199793bd5754ed",
+        "context-7274866f3ccd89"
+      ]
+    },
+    {
+      "word": "菜",
+      "pinyin": "cài",
+      "level": 2,
+      "sentences": 11,
+      "contexts": 5,
+      "ids": [
+        "pattern-23f951f40eb0c3",
+        "pattern-0bc90c90a6a154",
+        "pattern-305c5646eb214c",
+        "pattern-76abc6f42009c6",
+        "pattern-55e1d59ed5ba83",
+        "pattern-651c92c4df55f0"
+      ]
+    },
+    {
+      "word": "茶",
+      "pinyin": "chá",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 3,
+      "ids": [
+        "original-1",
+        "original-4",
+        "pattern-d10fc255c4546b",
+        "pattern-084a016f21a04b",
+        "pattern-e7ae8ede6b4429",
+        "pattern-bda18b8ff303ef"
+      ]
+    },
+    {
+      "word": "长",
+      "pinyin": "cháng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5cb66c73ca9935"
+      ]
+    },
+    {
+      "word": "唱歌",
+      "pinyin": "chànggē",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-37ef38b200103a"
+      ]
+    },
+    {
+      "word": "吃",
+      "pinyin": "chī",
+      "level": 2,
+      "sentences": 38,
+      "contexts": 5,
+      "ids": [
+        "pattern-a4e1a3feef557b",
+        "pattern-23f951f40eb0c3",
+        "pattern-0bc90c90a6a154",
+        "pattern-67cf75ef504ada",
+        "pattern-65d1a662bf2dcf",
+        "pattern-bc5607e0b7064b"
+      ]
+    },
+    {
+      "word": "出",
+      "pinyin": "chū",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-00c4051724d918",
+        "context-84811fd577afb6"
+      ]
+    },
+    {
+      "word": "出租车",
+      "pinyin": "chūzūchē",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f7c56a6631485f"
+      ]
+    },
+    {
+      "word": "穿",
+      "pinyin": "chuān",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-ede68ac3ed8ac0",
+        "context-00c4051724d918",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "船",
+      "pinyin": "chuán",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-50f8bb24d30e5f"
+      ]
+    },
+    {
+      "word": "次",
+      "pinyin": "cì",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-2b4ee14ccf6739",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "从",
+      "pinyin": "cóng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e552ecb5544bf0"
+      ]
+    },
+    {
+      "word": "错",
+      "pinyin": "cuò",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-382c9e4bc2d00f",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "打电话",
+      "pinyin": "dǎ diànhuà",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-8"
+      ]
+    },
+    {
+      "word": "打篮球",
+      "pinyin": "dǎ lánqiú",
+      "level": 2,
+      "sentences": 8,
+      "contexts": 5,
+      "ids": [
+        "pattern-b5df908713e999",
+        "pattern-46d7124ab7c34d",
+        "pattern-1ebca0e04d63e2",
+        "pattern-32cc4251ad264f",
+        "pattern-4b9ab40d0c8810",
+        "pattern-e3d3b7aa3e2176"
+      ]
+    },
+    {
+      "word": "大",
+      "pinyin": "dà",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-17",
+        "context-b96b2d1a4e4ad8"
+      ]
+    },
+    {
+      "word": "大家",
+      "pinyin": "dàjiā",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-dd2c55eb6d86ae"
+      ]
+    },
+    {
+      "word": "但是",
+      "pinyin": "dànshì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-553abcfc0596d4"
+      ]
+    },
+    {
+      "word": "到",
+      "pinyin": "dào",
+      "level": 2,
+      "sentences": 19,
+      "contexts": 3,
+      "ids": [
+        "pattern-5f7b1290b16498",
+        "pattern-9f63eb0ed981c7",
+        "pattern-c6e121274e6c9d",
+        "pattern-b9d27730731d26",
+        "pattern-f8718d03c3a96e",
+        "pattern-1da730bd0b6b0f"
+      ]
+    },
+    {
+      "word": "的",
+      "pinyin": "de",
+      "level": 2,
+      "sentences": 59,
+      "contexts": 18,
+      "ids": [
+        "original-2",
+        "original-5",
+        "original-18",
+        "pattern-03bc4c1906dab4",
+        "pattern-8f21befa1c08e0",
+        "pattern-f1ab2930fa2576"
+      ]
+    },
+    {
+      "word": "得",
+      "pinyin": "de",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-8e1c0fec322259",
+        "context-38f847f5011ecc"
+      ]
+    },
+    {
+      "word": "等",
+      "pinyin": "děng",
+      "level": 2,
+      "sentences": 20,
+      "contexts": 4,
+      "ids": [
+        "original-7",
+        "pattern-aea07239f40edc",
+        "pattern-f5817e77b72166",
+        "pattern-7446961dce3000",
+        "pattern-b53b95bcaad7e4",
+        "pattern-c468c47d0eab66"
+      ]
+    },
+    {
+      "word": "弟弟",
+      "pinyin": "dìdi",
+      "level": 2,
+      "sentences": 13,
+      "contexts": 5,
+      "ids": [
+        "pattern-f597b5b7e55383",
+        "pattern-6d7d4fdec3f8ba",
+        "pattern-6f0552bca57e79",
+        "pattern-c76b5c35d80f12",
+        "pattern-41260495ad5496",
+        "pattern-20ff204d4e0dae"
+      ]
+    },
+    {
+      "word": "第一",
+      "pinyin": "dìyī",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2b4ee14ccf6739"
+      ]
+    },
+    {
+      "word": "点",
+      "pinyin": "diǎn",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 3,
+      "ids": [
+        "original-16",
+        "context-0d2ca09cdacb26",
+        "context-b33ac114658985",
+        "context-64533dbf4bf81f",
+        "context-1949e4fec7c16d"
+      ]
+    },
+    {
+      "word": "电脑",
+      "pinyin": "diànnǎo",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-263ecca9c86638",
+        "context-bfe08aabd4de0a"
+      ]
+    },
+    {
+      "word": "电视",
+      "pinyin": "diànshì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-47ee767a253aa2"
+      ]
+    },
+    {
+      "word": "电影",
+      "pinyin": "diànyǐng",
+      "level": 2,
+      "sentences": 12,
+      "contexts": 7,
+      "ids": [
+        "original-16",
+        "pattern-6304aa0dbb171a",
+        "pattern-44de9c87f8627b",
+        "pattern-c1d62f5e323503",
+        "pattern-f35234a434f275",
+        "pattern-c76b5c35d80f12"
+      ]
+    },
+    {
+      "word": "东西",
+      "pinyin": "dōngxi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-541697178fd66e"
+      ]
+    },
+    {
+      "word": "懂",
+      "pinyin": "dǒng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-14",
+        "context-553abcfc0596d4"
+      ]
+    },
+    {
+      "word": "都",
+      "pinyin": "dōu",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-613b63f75fd5fb",
+        "context-dd2c55eb6d86ae",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "读",
+      "pinyin": "dú",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-17ed3ea4195f17",
+        "context-df77849594c078",
+        "context-a25097a4b831b1"
+      ]
+    },
+    {
+      "word": "对",
+      "pinyin": "duì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-12"
+      ]
+    },
+    {
+      "word": "对不起",
+      "pinyin": "duìbuqǐ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-05c3887db77ecc"
+      ]
+    },
+    {
+      "word": "多",
+      "pinyin": "duō",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 4,
+      "ids": [
+        "context-df77849594c078",
+        "context-00c4051724d918",
+        "context-b42e269129a064",
+        "context-5a24f8604bb247"
+      ]
+    },
+    {
+      "word": "多少",
+      "pinyin": "duōshǎo",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3d8f996d8f0448"
+      ]
+    },
+    {
+      "word": "儿子",
+      "pinyin": "érzi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-613b63f75fd5fb"
+      ]
+    },
+    {
+      "word": "二",
+      "pinyin": "èr",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-0d2ca09cdacb26",
+        "context-8414fe71c8424b",
+        "context-79826dea122b9c",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "饭馆",
+      "pinyin": "fànguǎn",
+      "level": 2,
+      "sentences": 19,
+      "contexts": 8,
+      "ids": [
+        "original-5",
+        "pattern-92f2443de45ddf",
+        "pattern-4a0c5b35b248de",
+        "pattern-92c07e4f806dca",
+        "pattern-f8718d03c3a96e",
+        "pattern-c148d880d168c0"
+      ]
+    },
+    {
+      "word": "房间",
+      "pinyin": "fángjiān",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-17",
+        "context-8177768467cd81"
+      ]
+    },
+    {
+      "word": "非常",
+      "pinyin": "fēicháng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-47ee767a253aa2"
+      ]
+    },
+    {
+      "word": "飞机",
+      "pinyin": "fēijī",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-50f8bb24d30e5f"
+      ]
+    },
+    {
+      "word": "分钟",
+      "pinyin": "fēnzhōng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e4636ce02eece3"
+      ]
+    },
+    {
+      "word": "服务员",
+      "pinyin": "fúwùyuán",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-bf698e465bb371"
+      ]
+    },
+    {
+      "word": "高",
+      "pinyin": "gāo",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5cb66c73ca9935"
+      ]
+    },
+    {
+      "word": "高兴",
+      "pinyin": "gāoxìng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-dd2c55eb6d86ae"
+      ]
+    },
+    {
+      "word": "告诉",
+      "pinyin": "gàosu",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-382c9e4bc2d00f",
+        "context-3a62f22d33bb1c"
+      ]
+    },
+    {
+      "word": "哥哥",
+      "pinyin": "gēge",
+      "level": 2,
+      "sentences": 11,
+      "contexts": 5,
+      "ids": [
+        "pattern-4d7bd77fd37b00",
+        "pattern-c4d97f91cad323",
+        "pattern-b0f0f03b35ac19",
+        "pattern-0a93ff648d0ed3",
+        "pattern-2a32be890fe03d",
+        "pattern-ce13d2eeedf8a0"
+      ]
+    },
+    {
+      "word": "个",
+      "pinyin": "gè",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 4,
+      "ids": [
+        "pattern-95671fadf1baae",
+        "pattern-6f0552bca57e79",
+        "pattern-7da29a00efc07b",
+        "pattern-5e6cf3b67fdf2e",
+        "pattern-6add5fe44be355",
+        "pattern-851bfa1b57840c"
+      ]
+    },
+    {
+      "word": "给",
+      "pinyin": "gěi",
+      "level": 2,
+      "sentences": 22,
+      "contexts": 6,
+      "ids": [
+        "original-8",
+        "original-11",
+        "pattern-f7fe56a96c44f6",
+        "pattern-f597b5b7e55383",
+        "pattern-95671fadf1baae",
+        "pattern-6d7d4fdec3f8ba"
+      ]
+    },
+    {
+      "word": "公共汽车",
+      "pinyin": "gōnggòng qìchē",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f7c56a6631485f"
+      ]
+    },
+    {
+      "word": "公斤",
+      "pinyin": "gōngjīn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3d8f996d8f0448"
+      ]
+    },
+    {
+      "word": "公司",
+      "pinyin": "gōngsī",
+      "level": 2,
+      "sentences": 17,
+      "contexts": 7,
+      "ids": [
+        "pattern-8dfb4accdc4901",
+        "pattern-b2a7fd5696fc43",
+        "pattern-b8635ef15276e8",
+        "pattern-4a9f063b8c63e3",
+        "pattern-569a65f58246ce",
+        "pattern-9f63eb0ed981c7"
+      ]
+    },
+    {
+      "word": "工作",
+      "pinyin": "gōngzuò",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "original-6",
+        "context-263ecca9c86638",
+        "context-b467cb4771c336"
+      ]
+    },
+    {
+      "word": "狗",
+      "pinyin": "gǒu",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-92a3c8f2f83cd6"
+      ]
+    },
+    {
+      "word": "贵",
+      "pinyin": "guì",
+      "level": 2,
+      "sentences": 18,
+      "contexts": 3,
+      "ids": [
+        "original-10",
+        "pattern-0443312bb6473b",
+        "pattern-305c5646eb214c",
+        "pattern-ebfff3e54a0df7",
+        "pattern-76abc6f42009c6",
+        "pattern-85110a9dd59b75"
+      ]
+    },
+    {
+      "word": "过",
+      "pinyin": "guò",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-a7c3395bf0c9db",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "还",
+      "pinyin": "hái",
+      "level": 2,
+      "sentences": 7,
+      "contexts": 7,
+      "ids": [
+        "original-14",
+        "context-05c3887db77ecc",
+        "context-8414fe71c8424b",
+        "context-8cbc52fb2b468b",
+        "context-e4636ce02eece3",
+        "context-646704fa9e60d8"
+      ]
+    },
+    {
+      "word": "孩子",
+      "pinyin": "háizi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-dd2c55eb6d86ae",
+        "context-37d5fb788be97d"
+      ]
+    },
+    {
+      "word": "汉语",
+      "pinyin": "Hànyǔ",
+      "level": 2,
+      "sentences": 7,
+      "contexts": 5,
+      "ids": [
+        "original-13",
+        "pattern-b24ce636e406aa",
+        "pattern-7f01540bc54fcc",
+        "pattern-e500c77b628f01",
+        "pattern-5dde7775a169fe",
+        "pattern-4ad7bec16fc59a"
+      ]
+    },
+    {
+      "word": "好",
+      "pinyin": "hǎo",
+      "level": 2,
+      "sentences": 8,
+      "contexts": 5,
+      "ids": [
+        "original-2",
+        "original-12",
+        "original-18",
+        "context-aafbc74b22ce56",
+        "context-646704fa9e60d8",
+        "context-8e1c0fec322259"
+      ]
+    },
+    {
+      "word": "好吃",
+      "pinyin": "hǎochī",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-5",
+        "context-8cbc52fb2b468b"
+      ]
+    },
+    {
+      "word": "号",
+      "pinyin": "hào",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-79826dea122b9c",
+        "context-e4636ce02eece3"
+      ]
+    },
+    {
+      "word": "喝",
+      "pinyin": "hē",
+      "level": 2,
+      "sentences": 18,
+      "contexts": 2,
+      "ids": [
+        "original-1",
+        "original-4",
+        "pattern-4dfdeb8f9f3d68",
+        "pattern-5e98ff6bd3a3c7",
+        "pattern-1e568c3444c792",
+        "pattern-74c79bb17e9419"
+      ]
+    },
+    {
+      "word": "和",
+      "pinyin": "hé",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-92a3c8f2f83cd6",
+        "context-750da501e9099c"
+      ]
+    },
+    {
+      "word": "黑",
+      "pinyin": "hēi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-92a3c8f2f83cd6",
+        "context-ca17cd5712a67a"
+      ]
+    },
+    {
+      "word": "很",
+      "pinyin": "hěn",
+      "level": 2,
+      "sentences": 25,
+      "contexts": 9,
+      "ids": [
+        "original-2",
+        "original-5",
+        "pattern-38e7bebb8ae7d7",
+        "pattern-a0bc9e5c740303",
+        "pattern-dd441cbca77549",
+        "pattern-78209d603c6a3a"
+      ]
+    },
+    {
+      "word": "红",
+      "pinyin": "hóng",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-4ee28daa698809",
+        "context-7de1314d2d86ab",
+        "context-ca17cd5712a67a"
+      ]
+    },
+    {
+      "word": "后面",
+      "pinyin": "hòumian",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3f26f3ae543bb1"
+      ]
+    },
+    {
+      "word": "欢迎",
+      "pinyin": "huānyíng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aafbc74b22ce56"
+      ]
+    },
+    {
+      "word": "回",
+      "pinyin": "huí",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-0d2ca09cdacb26",
+        "context-bc8a65f0e4a9c9",
+        "context-1949e4fec7c16d"
+      ]
+    },
+    {
+      "word": "回答",
+      "pinyin": "huídá",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23e10dee48001d"
+      ]
+    },
+    {
+      "word": "会",
+      "pinyin": "huì",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-23e10dee48001d",
+        "context-141abb4e6cddba",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "火车站",
+      "pinyin": "huǒchēzhàn",
+      "level": 2,
+      "sentences": 25,
+      "contexts": 8,
+      "ids": [
+        "pattern-bd628148a77c6f",
+        "pattern-71d7e587342671",
+        "pattern-a2ee398755ad04",
+        "pattern-111b7b71d16cff",
+        "pattern-d3d1d1fe51338b",
+        "pattern-5f7b1290b16498"
+      ]
+    },
+    {
+      "word": "机场",
+      "pinyin": "jīchǎng",
+      "level": 2,
+      "sentences": 21,
+      "contexts": 7,
+      "ids": [
+        "pattern-18343a5c1e4209",
+        "pattern-ff6c147bff3be6",
+        "pattern-30eb6f684a7a69",
+        "pattern-9b2c5af063831c",
+        "pattern-dac9957904c409",
+        "pattern-0dadb35e7d4d2b"
+      ]
+    },
+    {
+      "word": "鸡蛋",
+      "pinyin": "jīdàn",
+      "level": 2,
+      "sentences": 14,
+      "contexts": 4,
+      "ids": [
+        "pattern-67cf75ef504ada",
+        "pattern-65d1a662bf2dcf",
+        "pattern-bc5607e0b7064b",
+        "pattern-76abc6f42009c6",
+        "pattern-81c62a6dc9ca94",
+        "pattern-c5883a75697b56"
+      ]
+    },
+    {
+      "word": "几",
+      "pinyin": "jǐ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e4636ce02eece3"
+      ]
+    },
+    {
+      "word": "家",
+      "pinyin": "jiā",
+      "level": 2,
+      "sentences": 33,
+      "contexts": 13,
+      "ids": [
+        "original-5",
+        "original-20",
+        "pattern-a7d071b07a9015",
+        "pattern-611013d0f49762",
+        "pattern-ef3bf480983728",
+        "pattern-2942f96146fa58"
+      ]
+    },
+    {
+      "word": "件",
+      "pinyin": "jiàn",
+      "level": 2,
+      "sentences": 6,
+      "contexts": 4,
+      "ids": [
+        "original-10",
+        "context-957722dd7c789c",
+        "context-7de1314d2d86ab",
+        "context-750da501e9099c",
+        "context-ede68ac3ed8ac0",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "叫",
+      "pinyin": "jiào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4ee28daa698809"
+      ]
+    },
+    {
+      "word": "教室",
+      "pinyin": "jiàoshì",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-17ed3ea4195f17",
+        "context-3e0ec3ed4e4599"
+      ]
+    },
+    {
+      "word": "姐姐",
+      "pinyin": "jiějie",
+      "level": 2,
+      "sentences": 6,
+      "contexts": 5,
+      "ids": [
+        "original-6",
+        "pattern-1125cb6e2e3ed0",
+        "pattern-001313b10d593d",
+        "pattern-d709cd02dabab0",
+        "pattern-09d6e0f7c07612",
+        "context-a298a26e616c67"
+      ]
+    },
+    {
+      "word": "介绍",
+      "pinyin": "jièshào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ff850238a080cd"
+      ]
+    },
+    {
+      "word": "今天",
+      "pinyin": "jīntiān",
+      "level": 2,
+      "sentences": 90,
+      "contexts": 20,
+      "ids": [
+        "original-2",
+        "pattern-23f951f40eb0c3",
+        "pattern-65d1a662bf2dcf",
+        "pattern-bc5607e0b7064b",
+        "pattern-01302077a2d4d2",
+        "pattern-5b190a9b2c308f"
+      ]
+    },
+    {
+      "word": "进",
+      "pinyin": "jìn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-17ed3ea4195f17"
+      ]
+    },
+    {
+      "word": "近",
+      "pinyin": "jìn",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 1,
+      "ids": [
+        "pattern-38e7bebb8ae7d7",
+        "pattern-a0bc9e5c740303",
+        "pattern-dd441cbca77549",
+        "pattern-78209d603c6a3a",
+        "pattern-830acbfc798eba",
+        "pattern-4dfd248718eb38"
+      ]
+    },
+    {
+      "word": "九",
+      "pinyin": "jiǔ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-0d2ca09cdacb26"
+      ]
+    },
+    {
+      "word": "就",
+      "pinyin": "jiù",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 5,
+      "ids": [
+        "context-bc8a65f0e4a9c9",
+        "context-1949e4fec7c16d",
+        "context-646704fa9e60d8",
+        "context-b467cb4771c336",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "觉得",
+      "pinyin": "juéde",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-2b4ee14ccf6739",
+        "context-f5f3811474a4e0",
+        "context-aecea332c54773"
+      ]
+    },
+    {
+      "word": "咖啡",
+      "pinyin": "kāfēi",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 3,
+      "ids": [
+        "original-4",
+        "pattern-5e98ff6bd3a3c7",
+        "pattern-1e568c3444c792",
+        "pattern-d33a0ccb88d4c8",
+        "pattern-d021d48647f2b0",
+        "pattern-db02f142176272"
+      ]
+    },
+    {
+      "word": "开",
+      "pinyin": "kāi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aecea332c54773"
+      ]
+    },
+    {
+      "word": "开始",
+      "pinyin": "kāishǐ",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-05c3887db77ecc",
+        "context-e4636ce02eece3"
+      ]
+    },
+    {
+      "word": "看",
+      "pinyin": "kàn",
+      "level": 2,
+      "sentences": 26,
+      "contexts": 9,
+      "ids": [
+        "original-16",
+        "pattern-6304aa0dbb171a",
+        "pattern-f80630a80ef76a",
+        "pattern-80ac7718d32ce0",
+        "pattern-44de9c87f8627b",
+        "pattern-56fba034b771d6"
+      ]
+    },
+    {
+      "word": "看见",
+      "pinyin": "kànjiàn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3f26f3ae543bb1"
+      ]
+    },
+    {
+      "word": "考试",
+      "pinyin": "kǎoshì",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-18",
+        "context-2b4ee14ccf6739"
+      ]
+    },
+    {
+      "word": "可能",
+      "pinyin": "kěnéng",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-47ee767a253aa2",
+        "context-00c4051724d918",
+        "context-9d8f57d3c6aa08",
+        "context-d1f723731aa579"
+      ]
+    },
+    {
+      "word": "可以",
+      "pinyin": "kěyǐ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-33556f2a09e93e"
+      ]
+    },
+    {
+      "word": "课",
+      "pinyin": "kè",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-33556f2a09e93e"
+      ]
+    },
+    {
+      "word": "块",
+      "pinyin": "kuài",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 1,
+      "ids": [
+        "pattern-f7fe56a96c44f6",
+        "pattern-6d7d4fdec3f8ba",
+        "pattern-3f00bd5e2da0b4",
+        "pattern-001313b10d593d"
+      ]
+    },
+    {
+      "word": "快",
+      "pinyin": "kuài",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a3fa8845fa4706"
+      ]
+    },
+    {
+      "word": "快乐",
+      "pinyin": "kuàilè",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-37d5fb788be97d"
+      ]
+    },
+    {
+      "word": "来",
+      "pinyin": "lái",
+      "level": 2,
+      "sentences": 22,
+      "contexts": 5,
+      "ids": [
+        "pattern-2a32be890fe03d",
+        "pattern-ce13d2eeedf8a0",
+        "pattern-a0aca04e92d1f6",
+        "pattern-3790687cc371de",
+        "pattern-20ff204d4e0dae",
+        "pattern-68135e99228bcc"
+      ]
+    },
+    {
+      "word": "老师",
+      "pinyin": "lǎoshī",
+      "level": 2,
+      "sentences": 9,
+      "contexts": 6,
+      "ids": [
+        "pattern-9e86606a445af7",
+        "pattern-8c24ca0d41ffd9",
+        "pattern-3790687cc371de",
+        "pattern-c6fd53ca4edb78",
+        "pattern-35158682105450",
+        "pattern-b53b95bcaad7e4"
+      ]
+    },
+    {
+      "word": "了",
+      "pinyin": "le",
+      "level": 2,
+      "sentences": 65,
+      "contexts": 13,
+      "ids": [
+        "original-15",
+        "original-18",
+        "pattern-5f7b1290b16498",
+        "pattern-9f63eb0ed981c7",
+        "pattern-c6e121274e6c9d",
+        "pattern-b9d27730731d26"
+      ]
+    },
+    {
+      "word": "累",
+      "pinyin": "lèi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-19",
+        "context-b467cb4771c336"
+      ]
+    },
+    {
+      "word": "冷",
+      "pinyin": "lěng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-7274866f3ccd89",
+        "context-aecea332c54773"
+      ]
+    },
+    {
+      "word": "离",
+      "pinyin": "lí",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 1,
+      "ids": [
+        "pattern-38e7bebb8ae7d7",
+        "pattern-a0bc9e5c740303",
+        "pattern-dd441cbca77549",
+        "pattern-78209d603c6a3a",
+        "pattern-830acbfc798eba",
+        "pattern-4dfd248718eb38"
+      ]
+    },
+    {
+      "word": "里",
+      "pinyin": "lǐ",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-8177768467cd81",
+        "context-aa4b3f4e590288"
+      ]
+    },
+    {
+      "word": "两",
+      "pinyin": "liǎng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-750da501e9099c",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "零",
+      "pinyin": "líng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b33ac114658985"
+      ]
+    },
+    {
+      "word": "六",
+      "pinyin": "liù",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-613b63f75fd5fb",
+        "context-1949e4fec7c16d"
+      ]
+    },
+    {
+      "word": "路",
+      "pinyin": "lù",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3a62f22d33bb1c"
+      ]
+    },
+    {
+      "word": "旅游",
+      "pinyin": "lǚyóu",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-50f8bb24d30e5f"
+      ]
+    },
+    {
+      "word": "妈妈",
+      "pinyin": "māma",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 7,
+      "ids": [
+        "original-8",
+        "pattern-3f00bd5e2da0b4",
+        "pattern-851bfa1b57840c",
+        "pattern-e2d465300f8e97",
+        "pattern-e3d3b7aa3e2176",
+        "pattern-9329d3662cf763"
+      ]
+    },
+    {
+      "word": "吗",
+      "pinyin": "ma",
+      "level": 2,
+      "sentences": 37,
+      "contexts": 5,
+      "ids": [
+        "pattern-f93422f820c80f",
+        "pattern-44de9c87f8627b",
+        "pattern-56fba034b771d6",
+        "pattern-32cc4251ad264f",
+        "pattern-b2aae5faab2553",
+        "pattern-a7a2a042f754eb"
+      ]
+    },
+    {
+      "word": "买",
+      "pinyin": "mǎi",
+      "level": 2,
+      "sentences": 38,
+      "contexts": 4,
+      "ids": [
+        "original-3",
+        "original-11",
+        "pattern-f7fe56a96c44f6",
+        "pattern-f597b5b7e55383",
+        "pattern-95671fadf1baae",
+        "pattern-6d7d4fdec3f8ba"
+      ]
+    },
+    {
+      "word": "卖",
+      "pinyin": "mài",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-541697178fd66e"
+      ]
+    },
+    {
+      "word": "慢",
+      "pinyin": "màn",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "original-19",
+        "context-f7c56a6631485f",
+        "context-8e1c0fec322259"
+      ]
+    },
+    {
+      "word": "忙",
+      "pinyin": "máng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-47ee767a253aa2"
+      ]
+    },
+    {
+      "word": "猫",
+      "pinyin": "māo",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-92a3c8f2f83cd6"
+      ]
+    },
+    {
+      "word": "没",
+      "pinyin": "méi",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-05c3887db77ecc",
+        "context-a25097a4b831b1",
+        "context-84811fd577afb6"
+      ]
+    },
+    {
+      "word": "没关系",
+      "pinyin": "méiguānxi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-05c3887db77ecc"
+      ]
+    },
+    {
+      "word": "每",
+      "pinyin": "měi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-9493933589c3c4",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "妹妹",
+      "pinyin": "mèimei",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 5,
+      "ids": [
+        "pattern-95671fadf1baae",
+        "pattern-7da29a00efc07b",
+        "pattern-b4ea096aa23a95",
+        "pattern-bf99c458d371b2",
+        "pattern-9558b64efc7ce3",
+        "pattern-7446961dce3000"
+      ]
+    },
+    {
+      "word": "门",
+      "pinyin": "mén",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 3,
+      "ids": [
+        "context-9c5bcbc9f68d6a",
+        "context-00c4051724d918",
+        "context-aecea332c54773",
+        "context-aa4b3f4e590288",
+        "context-84811fd577afb6"
+      ]
+    },
+    {
+      "word": "米饭",
+      "pinyin": "mǐfàn",
+      "level": 2,
+      "sentences": 7,
+      "contexts": 4,
+      "ids": [
+        "pattern-5b190a9b2c308f",
+        "pattern-9062c378c27898",
+        "pattern-0443312bb6473b",
+        "pattern-10d5a3f357f9c7",
+        "pattern-75c0bff505ac51",
+        "pattern-9dabe527770253"
+      ]
+    },
+    {
+      "word": "明天",
+      "pinyin": "míngtiān",
+      "level": 2,
+      "sentences": 55,
+      "contexts": 12,
+      "ids": [
+        "original-9",
+        "original-18",
+        "pattern-a4e1a3feef557b",
+        "pattern-0bc90c90a6a154",
+        "pattern-67cf75ef504ada",
+        "pattern-6bbc7c83e2bae9"
+      ]
+    },
+    {
+      "word": "名字",
+      "pinyin": "míngzi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-4ee28daa698809",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "哪",
+      "pinyin": "nǎ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7125e05fc6c263"
+      ]
+    },
+    {
+      "word": "哪儿",
+      "pinyin": "nǎr",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5935ee2babcf57"
+      ]
+    },
+    {
+      "word": "那",
+      "pinyin": "nà",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-7de1314d2d86ab",
+        "context-5cb66c73ca9935"
+      ]
+    },
+    {
+      "word": "那儿",
+      "pinyin": "nàr",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a7c3395bf0c9db"
+      ]
+    },
+    {
+      "word": "男人",
+      "pinyin": "nánrén",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a298a26e616c67"
+      ]
+    },
+    {
+      "word": "呢",
+      "pinyin": "ne",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 1,
+      "ids": [
+        "pattern-4dfdeb8f9f3d68",
+        "pattern-5e98ff6bd3a3c7",
+        "pattern-1e568c3444c792",
+        "pattern-74c79bb17e9419",
+        "pattern-b86d5889fcfaa9",
+        "pattern-b472eb9af5b5a6"
+      ]
+    },
+    {
+      "word": "能",
+      "pinyin": "néng",
+      "level": 2,
+      "sentences": 6,
+      "contexts": 5,
+      "ids": [
+        "context-382c9e4bc2d00f",
+        "context-957722dd7c789c",
+        "context-8414fe71c8424b",
+        "context-3a62f22d33bb1c",
+        "context-cf4b2491148f34",
+        "context-5a24f8604bb247"
+      ]
+    },
+    {
+      "word": "你",
+      "pinyin": "nǐ",
+      "level": 2,
+      "sentences": 68,
+      "contexts": 14,
+      "ids": [
+        "original-4",
+        "original-13",
+        "pattern-4dfdeb8f9f3d68",
+        "pattern-5e98ff6bd3a3c7",
+        "pattern-1e568c3444c792",
+        "pattern-74c79bb17e9419"
+      ]
+    },
+    {
+      "word": "年",
+      "pinyin": "nián",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a7c3395bf0c9db"
+      ]
+    },
+    {
+      "word": "您",
+      "pinyin": "nín",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-aafbc74b22ce56",
+        "context-7125e05fc6c263"
+      ]
+    },
+    {
+      "word": "牛奶",
+      "pinyin": "niúnǎi",
+      "level": 2,
+      "sentences": 7,
+      "contexts": 2,
+      "ids": [
+        "pattern-4dfdeb8f9f3d68",
+        "pattern-b86d5889fcfaa9",
+        "pattern-b5e1f40f9de96a",
+        "pattern-03bc4c1906dab4",
+        "pattern-f7c17727054101",
+        "pattern-0461c6aefee396"
+      ]
+    },
+    {
+      "word": "女儿",
+      "pinyin": "nǚ'ér",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-613b63f75fd5fb"
+      ]
+    },
+    {
+      "word": "女人",
+      "pinyin": "nǚrén",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a298a26e616c67"
+      ]
+    },
+    {
+      "word": "旁边",
+      "pinyin": "pángbiān",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-1f1b769d3c6c3d"
+      ]
+    },
+    {
+      "word": "跑步",
+      "pinyin": "pǎobù",
+      "level": 2,
+      "sentences": 8,
+      "contexts": 5,
+      "ids": [
+        "pattern-0eb929854dd50f",
+        "pattern-6d657e93bdc632",
+        "pattern-8003ece66b0cda",
+        "pattern-b0f0f03b35ac19",
+        "pattern-41260495ad5496",
+        "pattern-67488a61f2b2ff"
+      ]
+    },
+    {
+      "word": "朋友",
+      "pinyin": "péngyou",
+      "level": 2,
+      "sentences": 37,
+      "contexts": 12,
+      "ids": [
+        "original-11",
+        "pattern-a7d071b07a9015",
+        "pattern-611013d0f49762",
+        "pattern-ef3bf480983728",
+        "pattern-2942f96146fa58",
+        "pattern-4000b072a4c289"
+      ]
+    },
+    {
+      "word": "便宜",
+      "pinyin": "piányi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7de1314d2d86ab"
+      ]
+    },
+    {
+      "word": "票",
+      "pinyin": "piào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8414fe71c8424b"
+      ]
+    },
+    {
+      "word": "漂亮",
+      "pinyin": "piàoliang",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-92a3c8f2f83cd6"
+      ]
+    },
+    {
+      "word": "苹果",
+      "pinyin": "píngguǒ",
+      "level": 2,
+      "sentences": 15,
+      "contexts": 5,
+      "ids": [
+        "pattern-01302077a2d4d2",
+        "pattern-7f27f811cc4749",
+        "pattern-85110a9dd59b75",
+        "pattern-81c62a6dc9ca94",
+        "pattern-b43cb0432b800f",
+        "pattern-613dc03a3fef92"
+      ]
+    },
+    {
+      "word": "七",
+      "pinyin": "qī",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-16",
+        "context-b33ac114658985"
+      ]
+    },
+    {
+      "word": "妻子",
+      "pinyin": "qīzi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ef47607f3ef11c"
+      ]
+    },
+    {
+      "word": "起床",
+      "pinyin": "qǐchuáng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b33ac114658985"
+      ]
+    },
+    {
+      "word": "千",
+      "pinyin": "qiān",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f5f3811474a4e0"
+      ]
+    },
+    {
+      "word": "钱",
+      "pinyin": "qián",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-cf4b2491148f34",
+        "context-5a24f8604bb247"
+      ]
+    },
+    {
+      "word": "前面",
+      "pinyin": "qiánmiàn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9c5bcbc9f68d6a"
+      ]
+    },
+    {
+      "word": "晴",
+      "pinyin": "qíng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-7274866f3ccd89",
+        "context-9d8f57d3c6aa08"
+      ]
+    },
+    {
+      "word": "请",
+      "pinyin": "qǐng",
+      "level": 2,
+      "sentences": 27,
+      "contexts": 10,
+      "ids": [
+        "original-7",
+        "pattern-2a32be890fe03d",
+        "pattern-ce13d2eeedf8a0",
+        "pattern-a0aca04e92d1f6",
+        "pattern-3790687cc371de",
+        "pattern-20ff204d4e0dae"
+      ]
+    },
+    {
+      "word": "去",
+      "pinyin": "qù",
+      "level": 2,
+      "sentences": 54,
+      "contexts": 6,
+      "ids": [
+        "original-3",
+        "original-9",
+        "original-16",
+        "pattern-18343a5c1e4209",
+        "pattern-92f2443de45ddf",
+        "pattern-dfef170b72c6dd"
+      ]
+    },
+    {
+      "word": "去年",
+      "pinyin": "qùnián",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-df77849594c078"
+      ]
+    },
+    {
+      "word": "让",
+      "pinyin": "ràng",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-ff850238a080cd",
+        "context-17ed3ea4195f17",
+        "context-b42e269129a064"
+      ]
+    },
+    {
+      "word": "热",
+      "pinyin": "rè",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 1,
+      "ids": [
+        "pattern-03bc4c1906dab4",
+        "pattern-8f21befa1c08e0",
+        "pattern-f1ab2930fa2576",
+        "pattern-f7c17727054101",
+        "pattern-45990232bfca4f",
+        "pattern-cb801bc2b1a670"
+      ]
+    },
+    {
+      "word": "人",
+      "pinyin": "rén",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-3f26f3ae543bb1",
+        "context-8177768467cd81",
+        "context-3e0ec3ed4e4599"
+      ]
+    },
+    {
+      "word": "认识",
+      "pinyin": "rènshi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-df77849594c078"
+      ]
+    },
+    {
+      "word": "日",
+      "pinyin": "rì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-199793bd5754ed"
+      ]
+    },
+    {
+      "word": "三",
+      "pinyin": "sān",
+      "level": 2,
+      "sentences": 15,
+      "contexts": 5,
+      "ids": [
+        "pattern-ef3bf480983728",
+        "pattern-4a0c5b35b248de",
+        "pattern-56fba034b771d6",
+        "pattern-32cc4251ad264f",
+        "pattern-5099bb72d7565d",
+        "pattern-f35234a434f275"
+      ]
+    },
+    {
+      "word": "商店",
+      "pinyin": "shāngdiàn",
+      "level": 2,
+      "sentences": 13,
+      "contexts": 9,
+      "ids": [
+        "pattern-288e7640d06bb7",
+        "pattern-f3f692504cc88a",
+        "pattern-8481079ec04706",
+        "pattern-cd1d533c02f350",
+        "pattern-c6e121274e6c9d",
+        "pattern-78209d603c6a3a"
+      ]
+    },
+    {
+      "word": "上",
+      "pinyin": "shàng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-bfe08aabd4de0a",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "上班",
+      "pinyin": "shàngbān",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-0d2ca09cdacb26",
+        "context-199793bd5754ed"
+      ]
+    },
+    {
+      "word": "上午",
+      "pinyin": "shàngwǔ",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-0d2ca09cdacb26",
+        "context-646704fa9e60d8"
+      ]
+    },
+    {
+      "word": "少",
+      "pinyin": "shǎo",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-3e0ec3ed4e4599",
+        "context-38f847f5011ecc"
+      ]
+    },
+    {
+      "word": "谁",
+      "pinyin": "shéi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-23e10dee48001d",
+        "context-aecea332c54773"
+      ]
+    },
+    {
+      "word": "身体",
+      "pinyin": "shēntǐ",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "original-12",
+        "context-8e1c0fec322259",
+        "context-7f945954b3d63f"
+      ]
+    },
+    {
+      "word": "什么",
+      "pinyin": "shénme",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 4,
+      "ids": [
+        "context-541697178fd66e",
+        "context-3165153e926759",
+        "context-1949e4fec7c16d",
+        "context-ca17cd5712a67a"
+      ]
+    },
+    {
+      "word": "生病",
+      "pinyin": "shēngbìng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b42e269129a064"
+      ]
+    },
+    {
+      "word": "生日",
+      "pinyin": "shēngrì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-79826dea122b9c"
+      ]
+    },
+    {
+      "word": "十",
+      "pinyin": "shí",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 3,
+      "ids": [
+        "context-0d2ca09cdacb26",
+        "context-8414fe71c8424b",
+        "context-79826dea122b9c",
+        "context-64533dbf4bf81f",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "时候",
+      "pinyin": "shíhou",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-33556f2a09e93e",
+        "context-1949e4fec7c16d"
+      ]
+    },
+    {
+      "word": "时间",
+      "pinyin": "shíjiān",
+      "level": 2,
+      "sentences": 18,
+      "contexts": 3,
+      "ids": [
+        "pattern-f93422f820c80f",
+        "pattern-44de9c87f8627b",
+        "pattern-56fba034b771d6",
+        "pattern-32cc4251ad264f",
+        "pattern-b2aae5faab2553",
+        "pattern-a7a2a042f754eb"
+      ]
+    },
+    {
+      "word": "是",
+      "pinyin": "shì",
+      "level": 2,
+      "sentences": 13,
+      "contexts": 8,
+      "ids": [
+        "context-a298a26e616c67",
+        "context-613b63f75fd5fb",
+        "context-7125e05fc6c263",
+        "context-ff850238a080cd",
+        "context-2b4ee14ccf6739",
+        "context-79826dea122b9c"
+      ]
+    },
+    {
+      "word": "事情",
+      "pinyin": "shìqíng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-957722dd7c789c"
+      ]
+    },
+    {
+      "word": "手表",
+      "pinyin": "shǒubiǎo",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 1,
+      "ids": [
+        "pattern-f7fe56a96c44f6",
+        "pattern-6d7d4fdec3f8ba",
+        "pattern-3f00bd5e2da0b4",
+        "pattern-001313b10d593d"
+      ]
+    },
+    {
+      "word": "手机",
+      "pinyin": "shǒujī",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-263ecca9c86638",
+        "context-5935ee2babcf57"
+      ]
+    },
+    {
+      "word": "书",
+      "pinyin": "shū",
+      "level": 2,
+      "sentences": 21,
+      "contexts": 11,
+      "ids": [
+        "original-11",
+        "pattern-f80630a80ef76a",
+        "pattern-80ac7718d32ce0",
+        "pattern-56fba034b771d6",
+        "pattern-b2aae5faab2553",
+        "pattern-f2f663d6a2d4e2"
+      ]
+    },
+    {
+      "word": "水",
+      "pinyin": "shuǐ",
+      "level": 2,
+      "sentences": 9,
+      "contexts": 3,
+      "ids": [
+        "pattern-74c79bb17e9419",
+        "pattern-b472eb9af5b5a6",
+        "pattern-22873c18c00ce9",
+        "pattern-0e5b5aab67e767",
+        "pattern-f1ab2930fa2576",
+        "pattern-b837d483512684"
+      ]
+    },
+    {
+      "word": "水果",
+      "pinyin": "shuǐguǒ",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "original-3",
+        "context-3d8f996d8f0448",
+        "context-5a24f8604bb247"
+      ]
+    },
+    {
+      "word": "睡觉",
+      "pinyin": "shuìjiào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-64533dbf4bf81f"
+      ]
+    },
+    {
+      "word": "说话",
+      "pinyin": "shuōhuà",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23e10dee48001d"
+      ]
+    },
+    {
+      "word": "四",
+      "pinyin": "sì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-750da501e9099c"
+      ]
+    },
+    {
+      "word": "送",
+      "pinyin": "sòng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7504991de8f077"
+      ]
+    },
+    {
+      "word": "岁",
+      "pinyin": "suì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-613b63f75fd5fb"
+      ]
+    },
+    {
+      "word": "所以",
+      "pinyin": "suǒyǐ",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-263ecca9c86638",
+        "context-7f945954b3d63f"
+      ]
+    },
+    {
+      "word": "他",
+      "pinyin": "tā",
+      "level": 2,
+      "sentences": 8,
+      "contexts": 6,
+      "ids": [
+        "original-8",
+        "context-a298a26e616c67",
+        "context-613b63f75fd5fb",
+        "context-0d2ca09cdacb26",
+        "context-7f945954b3d63f",
+        "context-37ef38b200103a"
+      ]
+    },
+    {
+      "word": "她",
+      "pinyin": "tā",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-ef47607f3ef11c",
+        "context-4ee28daa698809",
+        "context-b42e269129a064"
+      ]
+    },
+    {
+      "word": "它",
+      "pinyin": "tā",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-92a3c8f2f83cd6",
+        "context-553abcfc0596d4",
+        "context-1f1b769d3c6c3d"
+      ]
+    },
+    {
+      "word": "太",
+      "pinyin": "tài",
+      "level": 2,
+      "sentences": 22,
+      "contexts": 6,
+      "ids": [
+        "original-14",
+        "pattern-03bc4c1906dab4",
+        "pattern-8f21befa1c08e0",
+        "pattern-f1ab2930fa2576",
+        "pattern-f7c17727054101",
+        "pattern-45990232bfca4f"
+      ]
+    },
+    {
+      "word": "踢足球",
+      "pinyin": "tī zúqiú",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b19efdd320bf90"
+      ]
+    },
+    {
+      "word": "题",
+      "pinyin": "tí",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-14",
+        "context-382c9e4bc2d00f"
+      ]
+    },
+    {
+      "word": "天气",
+      "pinyin": "tiānqì",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-2",
+        "context-646704fa9e60d8"
+      ]
+    },
+    {
+      "word": "跳舞",
+      "pinyin": "tiàowǔ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-37ef38b200103a"
+      ]
+    },
+    {
+      "word": "听",
+      "pinyin": "tīng",
+      "level": 2,
+      "sentences": 13,
+      "contexts": 5,
+      "ids": [
+        "pattern-f8888400473604",
+        "pattern-ed21c284c815fa",
+        "pattern-c763e6c7792fee",
+        "pattern-e9810e81ef46b5",
+        "pattern-5099bb72d7565d",
+        "pattern-b4ea096aa23a95"
+      ]
+    },
+    {
+      "word": "同学",
+      "pinyin": "tóngxué",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ff850238a080cd"
+      ]
+    },
+    {
+      "word": "外",
+      "pinyin": "wài",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-aa4b3f4e590288",
+        "context-84811fd577afb6"
+      ]
+    },
+    {
+      "word": "完",
+      "pinyin": "wán",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-b467cb4771c336",
+        "context-a25097a4b831b1"
+      ]
+    },
+    {
+      "word": "玩",
+      "pinyin": "wán",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-dd2c55eb6d86ae"
+      ]
+    },
+    {
+      "word": "晚上",
+      "pinyin": "wǎnshang",
+      "level": 2,
+      "sentences": 48,
+      "contexts": 11,
+      "ids": [
+        "original-16",
+        "pattern-01302077a2d4d2",
+        "pattern-5b190a9b2c308f",
+        "pattern-a0da23c5b4f9d5",
+        "pattern-4dfdeb8f9f3d68",
+        "pattern-5e98ff6bd3a3c7"
+      ]
+    },
+    {
+      "word": "喂",
+      "pinyin": "wèi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7125e05fc6c263"
+      ]
+    },
+    {
+      "word": "为什么",
+      "pinyin": "wèishénme",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-13",
+        "context-d1f723731aa579"
+      ]
+    },
+    {
+      "word": "问",
+      "pinyin": "wèn",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-7125e05fc6c263",
+        "context-3d8f996d8f0448",
+        "context-d1f723731aa579"
+      ]
+    },
+    {
+      "word": "问题",
+      "pinyin": "wèntí",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23e10dee48001d"
+      ]
+    },
+    {
+      "word": "我",
+      "pinyin": "wǒ",
+      "level": 2,
+      "sentences": 239,
+      "contexts": 28,
+      "ids": [
+        "original-1",
+        "original-6",
+        "original-7",
+        "original-11",
+        "original-14",
+        "original-18"
+      ]
+    },
+    {
+      "word": "我们",
+      "pinyin": "wǒmen",
+      "level": 2,
+      "sentences": 52,
+      "contexts": 14,
+      "ids": [
+        "original-3",
+        "original-9",
+        "original-16",
+        "pattern-18343a5c1e4209",
+        "pattern-92f2443de45ddf",
+        "pattern-dfef170b72c6dd"
+      ]
+    },
+    {
+      "word": "五",
+      "pinyin": "wǔ",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 4,
+      "ids": [
+        "pattern-b2a7fd5696fc43",
+        "pattern-288e7640d06bb7",
+        "pattern-f93422f820c80f",
+        "pattern-44de9c87f8627b",
+        "pattern-fd2d045fe269cc",
+        "pattern-db7ce7d903bf39"
+      ]
+    },
+    {
+      "word": "西瓜",
+      "pinyin": "xīguā",
+      "level": 2,
+      "sentences": 10,
+      "contexts": 4,
+      "ids": [
+        "pattern-f273658de3aae9",
+        "pattern-4ce6b0e73e6a5e",
+        "pattern-ebfff3e54a0df7",
+        "pattern-c5883a75697b56",
+        "pattern-651c92c4df55f0",
+        "pattern-04b4ceb71fec05"
+      ]
+    },
+    {
+      "word": "希望",
+      "pinyin": "xīwàng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-957722dd7c789c"
+      ]
+    },
+    {
+      "word": "洗",
+      "pinyin": "xǐ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b3b2e10ded191e"
+      ]
+    },
+    {
+      "word": "喜欢",
+      "pinyin": "xǐhuan",
+      "level": 2,
+      "sentences": 19,
+      "contexts": 4,
+      "ids": [
+        "original-20",
+        "pattern-0c638bb783a747",
+        "pattern-09d6e0f7c07612",
+        "pattern-664178536f76a9",
+        "pattern-5dde7775a169fe",
+        "pattern-b59f74f06adc78"
+      ]
+    },
+    {
+      "word": "下",
+      "pinyin": "xià",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-33556f2a09e93e",
+        "context-00c4051724d918",
+        "context-bfe08aabd4de0a",
+        "context-5935ee2babcf57"
+      ]
+    },
+    {
+      "word": "下午",
+      "pinyin": "xiàwǔ",
+      "level": 2,
+      "sentences": 45,
+      "contexts": 10,
+      "ids": [
+        "pattern-a4e1a3feef557b",
+        "pattern-23f951f40eb0c3",
+        "pattern-67cf75ef504ada",
+        "pattern-bc5607e0b7064b",
+        "pattern-ff05ee3f195867",
+        "pattern-6bbc7c83e2bae9"
+      ]
+    },
+    {
+      "word": "下雨",
+      "pinyin": "xiàyǔ",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-15",
+        "context-646704fa9e60d8"
+      ]
+    },
+    {
+      "word": "先生",
+      "pinyin": "xiānsheng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7125e05fc6c263"
+      ]
+    },
+    {
+      "word": "现在",
+      "pinyin": "xiànzài",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-df77849594c078",
+        "context-b33ac114658985"
+      ]
+    },
+    {
+      "word": "想",
+      "pinyin": "xiǎng",
+      "level": 2,
+      "sentences": 84,
+      "contexts": 8,
+      "ids": [
+        "original-4",
+        "original-11",
+        "pattern-a4e1a3feef557b",
+        "pattern-23f951f40eb0c3",
+        "pattern-0bc90c90a6a154",
+        "pattern-67cf75ef504ada"
+      ]
+    },
+    {
+      "word": "向",
+      "pinyin": "xiàng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9c5bcbc9f68d6a"
+      ]
+    },
+    {
+      "word": "小",
+      "pinyin": "xiǎo",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-4ee28daa698809",
+        "context-b96b2d1a4e4ad8",
+        "context-3e0ec3ed4e4599"
+      ]
+    },
+    {
+      "word": "小姐",
+      "pinyin": "xiǎojie",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4ee28daa698809"
+      ]
+    },
+    {
+      "word": "小时",
+      "pinyin": "xiǎoshí",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-64533dbf4bf81f"
+      ]
+    },
+    {
+      "word": "笑",
+      "pinyin": "xiào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-37d5fb788be97d"
+      ]
+    },
+    {
+      "word": "些",
+      "pinyin": "xiē",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 5,
+      "ids": [
+        "context-dd2c55eb6d86ae",
+        "context-3d8f996d8f0448",
+        "context-bf698e465bb371",
+        "context-141abb4e6cddba",
+        "context-cf4b2491148f34"
+      ]
+    },
+    {
+      "word": "写",
+      "pinyin": "xiě",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-553abcfc0596d4",
+        "context-9878ca10c51319"
+      ]
+    },
+    {
+      "word": "谢谢",
+      "pinyin": "xièxie",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-96ad9e5f5329b1"
+      ]
+    },
+    {
+      "word": "新",
+      "pinyin": "xīn",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-1da8536ccd8425",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "星期",
+      "pinyin": "xīngqī",
+      "level": 2,
+      "sentences": 46,
+      "contexts": 5,
+      "ids": [
+        "pattern-18343a5c1e4209",
+        "pattern-dfef170b72c6dd",
+        "pattern-201d5c243f694c",
+        "pattern-a7d071b07a9015",
+        "pattern-b2a7fd5696fc43",
+        "pattern-611013d0f49762"
+      ]
+    },
+    {
+      "word": "姓",
+      "pinyin": "xìng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4ee28daa698809"
+      ]
+    },
+    {
+      "word": "休息",
+      "pinyin": "xiūxi",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-33556f2a09e93e",
+        "context-b42e269129a064",
+        "context-b467cb4771c336"
+      ]
+    },
+    {
+      "word": "学生",
+      "pinyin": "xuésheng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-613b63f75fd5fb",
+        "context-17ed3ea4195f17"
+      ]
+    },
+    {
+      "word": "学习",
+      "pinyin": "xuéxí",
+      "level": 2,
+      "sentences": 6,
+      "contexts": 4,
+      "ids": [
+        "original-13",
+        "pattern-b24ce636e406aa",
+        "pattern-7f01540bc54fcc",
+        "pattern-e500c77b628f01",
+        "pattern-5dde7775a169fe",
+        "pattern-4ad7bec16fc59a"
+      ]
+    },
+    {
+      "word": "学校",
+      "pinyin": "xuéxiào",
+      "level": 2,
+      "sentences": 13,
+      "contexts": 7,
+      "ids": [
+        "original-7",
+        "pattern-dfef170b72c6dd",
+        "pattern-38e7bebb8ae7d7",
+        "pattern-98486f3ceb8cf2",
+        "pattern-80ebff064fabfe",
+        "pattern-c6fd53ca4edb78"
+      ]
+    },
+    {
+      "word": "雪",
+      "pinyin": "xuě",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-00c4051724d918"
+      ]
+    },
+    {
+      "word": "颜色",
+      "pinyin": "yánsè",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca17cd5712a67a"
+      ]
+    },
+    {
+      "word": "眼睛",
+      "pinyin": "yǎnjing",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-92a3c8f2f83cd6"
+      ]
+    },
+    {
+      "word": "羊肉",
+      "pinyin": "yángròu",
+      "level": 2,
+      "sentences": 9,
+      "contexts": 3,
+      "ids": [
+        "pattern-0443312bb6473b",
+        "pattern-e8add3be968aad",
+        "pattern-78d61b4e2154ae",
+        "pattern-11406c95d9213e",
+        "pattern-b43cb0432b800f",
+        "pattern-10d5a3f357f9c7"
+      ]
+    },
+    {
+      "word": "药",
+      "pinyin": "yào",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b42e269129a064"
+      ]
+    },
+    {
+      "word": "要",
+      "pinyin": "yào",
+      "level": 2,
+      "sentences": 34,
+      "contexts": 4,
+      "ids": [
+        "pattern-3e11702f9bfc40",
+        "pattern-72c7cf83eea442",
+        "pattern-7cf9ffcba9726e",
+        "pattern-49053dcee2f5b3",
+        "pattern-75ba1d5fb90385",
+        "pattern-fc8c188b2f24dc"
+      ]
+    },
+    {
+      "word": "也",
+      "pinyin": "yě",
+      "level": 2,
+      "sentences": 20,
+      "contexts": 5,
+      "ids": [
+        "pattern-0c638bb783a747",
+        "pattern-09d6e0f7c07612",
+        "pattern-664178536f76a9",
+        "pattern-5dde7775a169fe",
+        "pattern-b59f74f06adc78",
+        "pattern-2b32d54d0fee20"
+      ]
+    },
+    {
+      "word": "一",
+      "pinyin": "yī",
+      "level": 2,
+      "sentences": 42,
+      "contexts": 13,
+      "ids": [
+        "original-1",
+        "original-11",
+        "pattern-18343a5c1e4209",
+        "pattern-201d5c243f694c",
+        "pattern-a7d071b07a9015",
+        "pattern-8003ece66b0cda"
+      ]
+    },
+    {
+      "word": "衣服",
+      "pinyin": "yīfu",
+      "level": 2,
+      "sentences": 5,
+      "contexts": 3,
+      "ids": [
+        "original-10",
+        "context-7de1314d2d86ab",
+        "context-750da501e9099c",
+        "context-ede68ac3ed8ac0",
+        "context-52230dbc0712be"
+      ]
+    },
+    {
+      "word": "医生",
+      "pinyin": "yīshēng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b42e269129a064"
+      ]
+    },
+    {
+      "word": "医院",
+      "pinyin": "yīyuàn",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 10,
+      "ids": [
+        "original-6",
+        "pattern-201d5c243f694c",
+        "pattern-b40c96038053b5",
+        "pattern-def91dfe4b09d7",
+        "pattern-ea688e225a0444",
+        "pattern-786044805398a5"
+      ]
+    },
+    {
+      "word": "已经",
+      "pinyin": "yǐjīng",
+      "level": 2,
+      "sentences": 17,
+      "contexts": 2,
+      "ids": [
+        "original-18",
+        "pattern-5f7b1290b16498",
+        "pattern-9f63eb0ed981c7",
+        "pattern-c6e121274e6c9d",
+        "pattern-b9d27730731d26",
+        "pattern-f8718d03c3a96e"
+      ]
+    },
+    {
+      "word": "椅子",
+      "pinyin": "yǐzi",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 1,
+      "ids": [
+        "context-bfe08aabd4de0a",
+        "context-5cb66c73ca9935",
+        "context-aa4b3f4e590288"
+      ]
+    },
+    {
+      "word": "一起",
+      "pinyin": "yìqǐ",
+      "level": 2,
+      "sentences": 18,
+      "contexts": 3,
+      "ids": [
+        "original-3",
+        "pattern-116fe7c903b97a",
+        "pattern-395c2ac0727f39",
+        "pattern-eda5b56f526cbd",
+        "pattern-00180b496556e0",
+        "pattern-67488a61f2b2ff"
+      ]
+    },
+    {
+      "word": "意思",
+      "pinyin": "yìsi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-553abcfc0596d4"
+      ]
+    },
+    {
+      "word": "阴",
+      "pinyin": "yīn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9d8f57d3c6aa08"
+      ]
+    },
+    {
+      "word": "在",
+      "pinyin": "zài",
+      "level": 2,
+      "sentences": 43,
+      "contexts": 6,
+      "ids": [
+        "original-6",
+        "original-7",
+        "original-20",
+        "pattern-2942f96146fa58",
+        "pattern-a2ee398755ad04",
+        "pattern-f3f692504cc88a"
+      ]
+    },
+    {
+      "word": "因为",
+      "pinyin": "yīnwèi",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-263ecca9c86638"
+      ]
+    },
+    {
+      "word": "游泳",
+      "pinyin": "yóuyǒng",
+      "level": 2,
+      "sentences": 16,
+      "contexts": 5,
+      "ids": [
+        "pattern-5e01c25221fdcd",
+        "pattern-d78cfba12890d3",
+        "pattern-e2a20088d2d903",
+        "pattern-f93422f820c80f",
+        "pattern-a7a2a042f754eb",
+        "pattern-3ad87dbb2fd6f8"
+      ]
+    },
+    {
+      "word": "有",
+      "pinyin": "yǒu",
+      "level": 2,
+      "sentences": 21,
+      "contexts": 6,
+      "ids": [
+        "original-10",
+        "pattern-f93422f820c80f",
+        "pattern-44de9c87f8627b",
+        "pattern-56fba034b771d6",
+        "pattern-32cc4251ad264f",
+        "pattern-b2aae5faab2553"
+      ]
+    },
+    {
+      "word": "右边",
+      "pinyin": "yòubian",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-1f1b769d3c6c3d"
+      ]
+    },
+    {
+      "word": "鱼",
+      "pinyin": "yú",
+      "level": 2,
+      "sentences": 12,
+      "contexts": 4,
+      "ids": [
+        "pattern-938dffef811d3d",
+        "pattern-6bbc7c83e2bae9",
+        "pattern-a0da23c5b4f9d5",
+        "pattern-85110a9dd59b75",
+        "pattern-e8add3be968aad",
+        "pattern-ef7614024673ef"
+      ]
+    },
+    {
+      "word": "元",
+      "pinyin": "yuán",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 1,
+      "ids": [
+        "context-3d8f996d8f0448",
+        "context-8414fe71c8424b",
+        "context-f5f3811474a4e0",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "远",
+      "pinyin": "yuǎn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e552ecb5544bf0"
+      ]
+    },
+    {
+      "word": "月",
+      "pinyin": "yuè",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-79826dea122b9c",
+        "context-199793bd5754ed"
+      ]
+    },
+    {
+      "word": "运动",
+      "pinyin": "yùndòng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-12",
+        "context-7f945954b3d63f"
+      ]
+    },
+    {
+      "word": "再",
+      "pinyin": "zài",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-bf698e465bb371",
+        "context-9c5bcbc9f68d6a",
+        "context-a25097a4b831b1"
+      ]
+    },
+    {
+      "word": "再见",
+      "pinyin": "zàijiàn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7504991de8f077"
+      ]
+    },
+    {
+      "word": "早上",
+      "pinyin": "zǎoshang",
+      "level": 2,
+      "sentences": 47,
+      "contexts": 10,
+      "ids": [
+        "original-1",
+        "pattern-0bc90c90a6a154",
+        "pattern-65d1a662bf2dcf",
+        "pattern-938dffef811d3d",
+        "pattern-9062c378c27898",
+        "pattern-7f27f811cc4749"
+      ]
+    },
+    {
+      "word": "怎么",
+      "pinyin": "zěnme",
+      "level": 2,
+      "sentences": 4,
+      "contexts": 2,
+      "ids": [
+        "context-382c9e4bc2d00f",
+        "context-553abcfc0596d4",
+        "context-3a62f22d33bb1c",
+        "context-84811fd577afb6"
+      ]
+    },
+    {
+      "word": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ede68ac3ed8ac0"
+      ]
+    },
+    {
+      "word": "张",
+      "pinyin": "zhāng",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-8414fe71c8424b",
+        "context-5cb66c73ca9935"
+      ]
+    },
+    {
+      "word": "丈夫",
+      "pinyin": "zhàngfu",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a298a26e616c67"
+      ]
+    },
+    {
+      "word": "找",
+      "pinyin": "zhǎo",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8177768467cd81"
+      ]
+    },
+    {
+      "word": "这",
+      "pinyin": "zhè",
+      "level": 2,
+      "sentences": 21,
+      "contexts": 8,
+      "ids": [
+        "original-5",
+        "original-10",
+        "original-14",
+        "context-dd2c55eb6d86ae",
+        "context-4ee28daa698809",
+        "context-ff850238a080cd"
+      ]
+    },
+    {
+      "word": "这儿",
+      "pinyin": "zhèr",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-e552ecb5544bf0",
+        "context-bc8a65f0e4a9c9",
+        "context-9493933589c3c4"
+      ]
+    },
+    {
+      "word": "着",
+      "pinyin": "zhe",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-37d5fb788be97d"
+      ]
+    },
+    {
+      "word": "真",
+      "pinyin": "zhēn",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8cbc52fb2b468b"
+      ]
+    },
+    {
+      "word": "正在",
+      "pinyin": "zhèngzài",
+      "level": 2,
+      "sentences": 17,
+      "contexts": 2,
+      "ids": [
+        "original-8",
+        "pattern-b0f0f03b35ac19",
+        "pattern-0a93ff648d0ed3",
+        "pattern-b4ea096aa23a95",
+        "pattern-91ce81ff2cd683",
+        "pattern-8c24ca0d41ffd9"
+      ]
+    },
+    {
+      "word": "知道",
+      "pinyin": "zhīdao",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-553abcfc0596d4",
+        "context-3a62f22d33bb1c",
+        "context-d1f723731aa579"
+      ]
+    },
+    {
+      "word": "中国",
+      "pinyin": "Zhōngguó",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3165153e926759"
+      ]
+    },
+    {
+      "word": "中午",
+      "pinyin": "zhōngwǔ",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-0d2ca09cdacb26"
+      ]
+    },
+    {
+      "word": "住",
+      "pinyin": "zhù",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a7c3395bf0c9db"
+      ]
+    },
+    {
+      "word": "准备",
+      "pinyin": "zhǔnbèi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-18",
+        "context-141abb4e6cddba"
+      ]
+    },
+    {
+      "word": "桌子",
+      "pinyin": "zhuōzi",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-bfe08aabd4de0a",
+        "context-5cb66c73ca9935"
+      ]
+    },
+    {
+      "word": "字",
+      "pinyin": "zì",
+      "level": 2,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-553abcfc0596d4",
+        "context-df77849594c078"
+      ]
+    },
+    {
+      "word": "自行车",
+      "pinyin": "zìxíngchē",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f5f3811474a4e0"
+      ]
+    },
+    {
+      "word": "走",
+      "pinyin": "zǒu",
+      "level": 2,
+      "sentences": 6,
+      "contexts": 4,
+      "ids": [
+        "original-19",
+        "context-17ed3ea4195f17",
+        "context-3a62f22d33bb1c",
+        "context-9c5bcbc9f68d6a",
+        "context-a3fa8845fa4706",
+        "context-8e1c0fec322259"
+      ]
+    },
+    {
+      "word": "最",
+      "pinyin": "zuì",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3165153e926759"
+      ]
+    },
+    {
+      "word": "昨天",
+      "pinyin": "zuótiān",
+      "level": 2,
+      "sentences": 31,
+      "contexts": 3,
+      "ids": [
+        "pattern-5f7b1290b16498",
+        "pattern-c6e121274e6c9d",
+        "pattern-b9d27730731d26",
+        "pattern-1da730bd0b6b0f",
+        "pattern-786044805398a5",
+        "pattern-0452edbda83ca6"
+      ]
+    },
+    {
+      "word": "左边",
+      "pinyin": "zuǒbian",
+      "level": 2,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9c5bcbc9f68d6a"
+      ]
+    },
+    {
+      "word": "坐",
+      "pinyin": "zuò",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "original-9",
+        "context-50f8bb24d30e5f",
+        "context-f7c56a6631485f"
+      ]
+    },
+    {
+      "word": "做",
+      "pinyin": "zuò",
+      "level": 2,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-382c9e4bc2d00f",
+        "context-8cbc52fb2b468b",
+        "context-b467cb4771c336"
+      ]
+    },
+    {
+      "word": "阿姨",
+      "pinyin": "āyí",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9379443c83afb8"
+      ]
+    },
+    {
+      "word": "啊",
+      "pinyin": "a",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c6bb5868e0beec"
+      ]
+    },
+    {
+      "word": "矮",
+      "pinyin": "ǎi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2c8773b315177d"
+      ]
+    },
+    {
+      "word": "爱好",
+      "pinyin": "àihào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-cfbdd99bfe682e"
+      ]
+    },
+    {
+      "word": "安静",
+      "pinyin": "ānjìng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2b5aea5bab9969"
+      ]
+    },
+    {
+      "word": "把",
+      "pinyin": "bǎ",
+      "level": 3,
+      "sentences": 62,
+      "contexts": 4,
+      "ids": [
+        "original-25",
+        "pattern-b3e4e00728d50f",
+        "pattern-404c40c099403e",
+        "pattern-a60bcefceb7623",
+        "pattern-a2c3fd428fad5b",
+        "pattern-9301e82c6ae6d0"
+      ]
+    },
+    {
+      "word": "班",
+      "pinyin": "bān",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-127089fbc7636c",
+        "context-ff5fd1c88af890"
+      ]
+    },
+    {
+      "word": "搬",
+      "pinyin": "bān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3b4b019fea9862"
+      ]
+    },
+    {
+      "word": "半",
+      "pinyin": "bàn",
+      "level": 3,
+      "sentences": 8,
+      "contexts": 2,
+      "ids": [
+        "pattern-8f8c8f688f42a9",
+        "pattern-8149517c8e6b44",
+        "pattern-86d7e12c4778ec",
+        "pattern-c35e11df1294bf",
+        "pattern-35dfb0b988b0a2",
+        "pattern-dc658599f840fd"
+      ]
+    },
+    {
+      "word": "办法",
+      "pinyin": "bànfǎ",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-23",
+        "context-d0c5e3dac48824"
+      ]
+    },
+    {
+      "word": "办公室",
+      "pinyin": "bàngōngshì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-51cd03f065fe82"
+      ]
+    },
+    {
+      "word": "帮忙",
+      "pinyin": "bāngmáng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a8c7f1f4e60f02"
+      ]
+    },
+    {
+      "word": "包",
+      "pinyin": "bāo",
+      "level": 3,
+      "sentences": 20,
+      "contexts": 2,
+      "ids": [
+        "pattern-dbdc6a6ff29bf5",
+        "pattern-aab4c78d1d880b",
+        "pattern-9c7110e49a3a09",
+        "pattern-9ebc961f548145",
+        "pattern-b8deeff0f24b35",
+        "pattern-d38794486667da"
+      ]
+    },
+    {
+      "word": "饱",
+      "pinyin": "bǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-65de9cfb9f7c98"
+      ]
+    },
+    {
+      "word": "北方",
+      "pinyin": "běifāng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-5f7e8208e691f2",
+        "context-e95ad343f0bcb5"
+      ]
+    },
+    {
+      "word": "被",
+      "pinyin": "bèi",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-130ff3e1a9dae7",
+        "pattern-0f720bdf8077c1",
+        "pattern-a356a4019d2855",
+        "pattern-ff3a7eeca0e898",
+        "pattern-dbdc6a6ff29bf5",
+        "pattern-33392587ee56df"
+      ]
+    },
+    {
+      "word": "鼻子",
+      "pinyin": "bízi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca422bce165e44"
+      ]
+    },
+    {
+      "word": "比较",
+      "pinyin": "bǐjiào",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "original-23",
+        "pattern-23774176f7b533",
+        "pattern-e09f43f7d6ecbc",
+        "pattern-8ce88eb10952a0",
+        "pattern-531bc5887f6d83",
+        "pattern-f1b809937c9b88"
+      ]
+    },
+    {
+      "word": "比赛",
+      "pinyin": "bǐsài",
+      "level": 3,
+      "sentences": 11,
+      "contexts": 3,
+      "ids": [
+        "original-39",
+        "pattern-3f659ae2ed50db",
+        "pattern-21345303d7098c",
+        "pattern-86a221172130a9",
+        "pattern-6aec1fb58d4630",
+        "pattern-42b2d410e3908d"
+      ]
+    },
+    {
+      "word": "必须",
+      "pinyin": "bìxū",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-0e63191b778c2b"
+      ]
+    },
+    {
+      "word": "变化",
+      "pinyin": "biànhuà",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-62b349578f06b0"
+      ]
+    },
+    {
+      "word": "表示",
+      "pinyin": "biǎoshì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2ee230cda80c1a"
+      ]
+    },
+    {
+      "word": "表演",
+      "pinyin": "biǎoyǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f46ee7ce000013"
+      ]
+    },
+    {
+      "word": "别人",
+      "pinyin": "biérén",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-bffe814c4b6ee1"
+      ]
+    },
+    {
+      "word": "宾馆",
+      "pinyin": "bīnguǎn",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-8a8c638a9aa289",
+        "context-7c54c44af33524"
+      ]
+    },
+    {
+      "word": "冰箱",
+      "pinyin": "bīngxiāng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a6471c2bc6312a"
+      ]
+    },
+    {
+      "word": "才",
+      "pinyin": "cái",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-0c54ef2bb190c1",
+        "pattern-bf4f448cc45890",
+        "pattern-ef95ac7501ba9c",
+        "pattern-71585a6cb9d652",
+        "pattern-942c4c007984c2",
+        "pattern-a2b32e4de88bd6"
+      ]
+    },
+    {
+      "word": "菜单",
+      "pinyin": "càidān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-70afa700be7cdb"
+      ]
+    },
+    {
+      "word": "参加",
+      "pinyin": "cānjiā",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-70549615d8f885"
+      ]
+    },
+    {
+      "word": "草",
+      "pinyin": "cǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c113400b5178ee"
+      ]
+    },
+    {
+      "word": "层",
+      "pinyin": "céng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-7c54c44af33524",
+        "context-04f521547b171e"
+      ]
+    },
+    {
+      "word": "差",
+      "pinyin": "chà",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e95ad343f0bcb5"
+      ]
+    },
+    {
+      "word": "超市",
+      "pinyin": "chāoshì",
+      "level": 3,
+      "sentences": 6,
+      "contexts": 1,
+      "ids": [
+        "pattern-07b66a5185e7e4",
+        "pattern-7a28a595f34185",
+        "pattern-a52aa556f6d8f4",
+        "pattern-b72cee2de648fd",
+        "pattern-19d5c9b203a45e",
+        "pattern-f62767f525958e"
+      ]
+    },
+    {
+      "word": "衬衫",
+      "pinyin": "chènshān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-44337f1a768ff7"
+      ]
+    },
+    {
+      "word": "成绩",
+      "pinyin": "chéngjì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e8787bd941eda9"
+      ]
+    },
+    {
+      "word": "城市",
+      "pinyin": "chéngshì",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-1dad7e775bcb83",
+        "context-385d0fd63fd8b8"
+      ]
+    },
+    {
+      "word": "迟到",
+      "pinyin": "chídào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-51cd03f065fe82"
+      ]
+    },
+    {
+      "word": "出现",
+      "pinyin": "chūxiàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c113400b5178ee"
+      ]
+    },
+    {
+      "word": "厨房",
+      "pinyin": "chúfáng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-52e073a23f929b"
+      ]
+    },
+    {
+      "word": "除了",
+      "pinyin": "chúle",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-6f838f7c2117fd",
+        "pattern-fafecf86e06762",
+        "pattern-652f2615048db3",
+        "pattern-0cef4b3fd5526d",
+        "pattern-ff963114e3dbdb",
+        "pattern-2f12939fb91fa6"
+      ]
+    },
+    {
+      "word": "春",
+      "pinyin": "chūn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c113400b5178ee"
+      ]
+    },
+    {
+      "word": "词语",
+      "pinyin": "cíyǔ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-59eccea4434f6e"
+      ]
+    },
+    {
+      "word": "聪明",
+      "pinyin": "cōngming",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-a38910d826708f",
+        "context-5625896b697f65"
+      ]
+    },
+    {
+      "word": "打扫",
+      "pinyin": "dǎsǎo",
+      "level": 3,
+      "sentences": 11,
+      "contexts": 3,
+      "ids": [
+        "original-24",
+        "pattern-64f70d2c2fd2fb",
+        "pattern-955e6d50165c04",
+        "pattern-682dab56e78979",
+        "pattern-34e9b2af778fef",
+        "pattern-063ff810a99c78"
+      ]
+    },
+    {
+      "word": "打算",
+      "pinyin": "dǎsuàn",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-78f975c0e56bd2",
+        "pattern-d883bcce9c669d",
+        "pattern-5b26ecf9c9a5d3",
+        "pattern-0ffdc017779e65",
+        "pattern-315694becb93c4",
+        "pattern-154b08a5b29018"
+      ]
+    },
+    {
+      "word": "带",
+      "pinyin": "dài",
+      "level": 3,
+      "sentences": 39,
+      "contexts": 4,
+      "ids": [
+        "pattern-47ee9ca5f970ef",
+        "pattern-57ddc9502fe396",
+        "pattern-d2e6016bd73c6e",
+        "pattern-7f533a82ed221f",
+        "pattern-dfcc85b635592e",
+        "pattern-ba8c8e49177c5f"
+      ]
+    },
+    {
+      "word": "担心",
+      "pinyin": "dānxīn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-65488241b15db5"
+      ]
+    },
+    {
+      "word": "蛋糕",
+      "pinyin": "dàngāo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aff6cbd1ee00c2"
+      ]
+    },
+    {
+      "word": "当然",
+      "pinyin": "dāngrán",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-70549615d8f885"
+      ]
+    },
+    {
+      "word": "地",
+      "pinyin": "de",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c24978c2e47f25"
+      ]
+    },
+    {
+      "word": "灯",
+      "pinyin": "dēng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-52e073a23f929b",
+        "context-b3bd477f3bf0cf"
+      ]
+    },
+    {
+      "word": "低",
+      "pinyin": "dī",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d6d39fceb0de60"
+      ]
+    },
+    {
+      "word": "地方",
+      "pinyin": "dìfang",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b90434bd521144"
+      ]
+    },
+    {
+      "word": "地铁",
+      "pinyin": "dìtiě",
+      "level": 3,
+      "sentences": 13,
+      "contexts": 3,
+      "ids": [
+        "pattern-6bedd09e22eb15",
+        "pattern-3ece1671f4d391",
+        "pattern-7a5050ec65da6e",
+        "pattern-24aa44579dde87",
+        "pattern-2ffc918389ad44",
+        "pattern-aef62835948110"
+      ]
+    },
+    {
+      "word": "地图",
+      "pinyin": "dìtú",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-1dad7e775bcb83"
+      ]
+    },
+    {
+      "word": "电梯",
+      "pinyin": "diàntī",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-c8f1c756e2c0a9",
+        "context-04f521547b171e"
+      ]
+    },
+    {
+      "word": "电子邮件",
+      "pinyin": "diànzǐ yóujiàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-453f440fb0f44b"
+      ]
+    },
+    {
+      "word": "东",
+      "pinyin": "dōng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-1dad7e775bcb83"
+      ]
+    },
+    {
+      "word": "冬",
+      "pinyin": "dōng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5f7e8208e691f2"
+      ]
+    },
+    {
+      "word": "动物",
+      "pinyin": "dòngwù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5a15c310c4655f"
+      ]
+    },
+    {
+      "word": "短",
+      "pinyin": "duǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-44337f1a768ff7"
+      ]
+    },
+    {
+      "word": "段",
+      "pinyin": "duàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4c8eec2ca29a79"
+      ]
+    },
+    {
+      "word": "锻炼",
+      "pinyin": "duànliàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a25d50d15fe74a"
+      ]
+    },
+    {
+      "word": "多么",
+      "pinyin": "duōme",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c6bb5868e0beec"
+      ]
+    },
+    {
+      "word": "饿",
+      "pinyin": "è",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7f255a9979ef60"
+      ]
+    },
+    {
+      "word": "而且",
+      "pinyin": "érqiě",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-35176fb83da76a",
+        "context-5625896b697f65"
+      ]
+    },
+    {
+      "word": "耳朵",
+      "pinyin": "ěrduo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca422bce165e44"
+      ]
+    },
+    {
+      "word": "发烧",
+      "pinyin": "fāshāo",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-23e44bd12bf5ed",
+        "context-3f9ca22726e4e0"
+      ]
+    },
+    {
+      "word": "发现",
+      "pinyin": "fāxiàn",
+      "level": 3,
+      "sentences": 60,
+      "contexts": 2,
+      "ids": [
+        "pattern-0c54ef2bb190c1",
+        "pattern-bf4f448cc45890",
+        "pattern-ef95ac7501ba9c",
+        "pattern-71585a6cb9d652",
+        "pattern-942c4c007984c2",
+        "pattern-a2b32e4de88bd6"
+      ]
+    },
+    {
+      "word": "方便",
+      "pinyin": "fāngbiàn",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-23774176f7b533",
+        "pattern-e09f43f7d6ecbc",
+        "pattern-8ce88eb10952a0",
+        "pattern-531bc5887f6d83",
+        "pattern-f1b809937c9b88",
+        "pattern-61e871bef0855e"
+      ]
+    },
+    {
+      "word": "放",
+      "pinyin": "fàng",
+      "level": 3,
+      "sentences": 62,
+      "contexts": 4,
+      "ids": [
+        "pattern-b3e4e00728d50f",
+        "pattern-404c40c099403e",
+        "pattern-a60bcefceb7623",
+        "pattern-a2c3fd428fad5b",
+        "pattern-9301e82c6ae6d0",
+        "pattern-fddd1d75238e15"
+      ]
+    },
+    {
+      "word": "放心",
+      "pinyin": "fàngxīn",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-c24978c2e47f25",
+        "context-2ee230cda80c1a"
+      ]
+    },
+    {
+      "word": "分",
+      "pinyin": "fēn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-698e0c9f1e1dc2"
+      ]
+    },
+    {
+      "word": "附近",
+      "pinyin": "fùjìn",
+      "level": 3,
+      "sentences": 37,
+      "contexts": 2,
+      "ids": [
+        "pattern-16ba50017df10a",
+        "pattern-8146c1564d592f",
+        "pattern-d27067760a9845",
+        "pattern-34f02eca116f1d",
+        "pattern-0757fc46846b7a",
+        "pattern-d64b16c6f916c2"
+      ]
+    },
+    {
+      "word": "复习",
+      "pinyin": "fùxí",
+      "level": 3,
+      "sentences": 7,
+      "contexts": 2,
+      "ids": [
+        "pattern-4914e12f637877",
+        "pattern-024a01f25956c7",
+        "pattern-a3da38599b9928",
+        "pattern-0cbf0dd0b8b42b",
+        "pattern-80be0c6be04a30",
+        "pattern-ff0ac6c6b89dc7"
+      ]
+    },
+    {
+      "word": "干净",
+      "pinyin": "gānjìng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-52e073a23f929b"
+      ]
+    },
+    {
+      "word": "敢",
+      "pinyin": "gǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b90434bd521144"
+      ]
+    },
+    {
+      "word": "感冒",
+      "pinyin": "gǎnmào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23e44bd12bf5ed"
+      ]
+    },
+    {
+      "word": "刚才",
+      "pinyin": "gāngcái",
+      "level": 3,
+      "sentences": 32,
+      "contexts": 3,
+      "ids": [
+        "original-30",
+        "pattern-b3e4e00728d50f",
+        "pattern-404c40c099403e",
+        "pattern-a60bcefceb7623",
+        "pattern-a2c3fd428fad5b",
+        "pattern-9301e82c6ae6d0"
+      ]
+    },
+    {
+      "word": "跟",
+      "pinyin": "gēn",
+      "level": 3,
+      "sentences": 14,
+      "contexts": 2,
+      "ids": [
+        "pattern-4d9cdf343c8bae",
+        "pattern-c00b1601d73898",
+        "pattern-9943498abe3783",
+        "pattern-b2959b7f3c94f5",
+        "pattern-636c5bec3480da",
+        "pattern-54308ccdbba768"
+      ]
+    },
+    {
+      "word": "根据",
+      "pinyin": "gēnjù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a75d85a3549ef7"
+      ]
+    },
+    {
+      "word": "更",
+      "pinyin": "gèng",
+      "level": 3,
+      "sentences": 41,
+      "contexts": 6,
+      "ids": [
+        "original-27",
+        "pattern-c4ba0bfe379af5",
+        "pattern-ea2a340218d902",
+        "pattern-7f53b40ce9a3a6",
+        "pattern-940a8209633536",
+        "pattern-31d79bd376ac2d"
+      ]
+    },
+    {
+      "word": "公园",
+      "pinyin": "gōngyuán",
+      "level": 3,
+      "sentences": 14,
+      "contexts": 4,
+      "ids": [
+        "original-22",
+        "pattern-c4ba0bfe379af5",
+        "pattern-ea2a340218d902",
+        "pattern-7f53b40ce9a3a6",
+        "pattern-940a8209633536",
+        "pattern-31d79bd376ac2d"
+      ]
+    },
+    {
+      "word": "故事",
+      "pinyin": "gùshi",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-33",
+        "context-4c8eec2ca29a79"
+      ]
+    },
+    {
+      "word": "刮风",
+      "pinyin": "guāfēng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a9663fd39c36d7"
+      ]
+    },
+    {
+      "word": "关",
+      "pinyin": "guān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b3bd477f3bf0cf"
+      ]
+    },
+    {
+      "word": "关系",
+      "pinyin": "guānxi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9379443c83afb8"
+      ]
+    },
+    {
+      "word": "关心",
+      "pinyin": "guānxīn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e8787bd941eda9"
+      ]
+    },
+    {
+      "word": "关于",
+      "pinyin": "guānyú",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-e31cfaf7b55a1d",
+        "pattern-ecc94b2ffe9b65",
+        "pattern-062f3d6871d424",
+        "pattern-9b60d6c50b877e",
+        "pattern-8ec395ab5e3367",
+        "pattern-c27a969630e07d"
+      ]
+    },
+    {
+      "word": "国家",
+      "pinyin": "guójiā",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-20cc103708c04c"
+      ]
+    },
+    {
+      "word": "果汁",
+      "pinyin": "guǒzhī",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-11ff9126825c37"
+      ]
+    },
+    {
+      "word": "过去",
+      "pinyin": "guòqù",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-374a99101c9bb1",
+        "context-7831dccfd6bc1d",
+        "context-cf9dfb7af0b30b"
+      ]
+    },
+    {
+      "word": "还是",
+      "pinyin": "háishi",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-760ab0ed455481",
+        "pattern-2f70bd555e35e3",
+        "pattern-e0826b422d3dfb",
+        "pattern-89ef15d789c7cc",
+        "pattern-67c92413dfd72a",
+        "pattern-c3f4b9505e6aca"
+      ]
+    },
+    {
+      "word": "害怕",
+      "pinyin": "hàipà",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5fb8c8cf96e41b"
+      ]
+    },
+    {
+      "word": "河",
+      "pinyin": "hé",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-1dad7e775bcb83"
+      ]
+    },
+    {
+      "word": "黑板",
+      "pinyin": "hēibǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-59eccea4434f6e"
+      ]
+    },
+    {
+      "word": "护照",
+      "pinyin": "hùzhào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23bda9eb42c154"
+      ]
+    },
+    {
+      "word": "花",
+      "pinyin": "huā",
+      "level": 3,
+      "sentences": 33,
+      "contexts": 4,
+      "ids": [
+        "original-38",
+        "pattern-8f8c8f688f42a9",
+        "pattern-8149517c8e6b44",
+        "pattern-2e911fb55c137d",
+        "pattern-577326af8ef802",
+        "pattern-ef1dfd459892b8"
+      ]
+    },
+    {
+      "word": "花园",
+      "pinyin": "huāyuán",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4b09bfeb9f2180"
+      ]
+    },
+    {
+      "word": "画",
+      "pinyin": "huà",
+      "level": 3,
+      "sentences": 9,
+      "contexts": 2,
+      "ids": [
+        "pattern-2992fc994c3e76",
+        "pattern-57396a2bba97cf",
+        "pattern-c3465bdf9c97b8",
+        "pattern-a6b31d6695c48f",
+        "pattern-a14d2d63ce9e1d",
+        "pattern-7dc96aa68683dd"
+      ]
+    },
+    {
+      "word": "坏",
+      "pinyin": "huài",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 1,
+      "ids": [
+        "context-a6471c2bc6312a",
+        "context-52e073a23f929b",
+        "context-04f521547b171e"
+      ]
+    },
+    {
+      "word": "环境",
+      "pinyin": "huánjìng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-385d0fd63fd8b8"
+      ]
+    },
+    {
+      "word": "换",
+      "pinyin": "huàn",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-f074924cd048dd",
+        "context-44337f1a768ff7"
+      ]
+    },
+    {
+      "word": "黄",
+      "pinyin": "huáng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-f696dc360c08cc",
+        "context-d5cfc2f20746eb"
+      ]
+    },
+    {
+      "word": "会议",
+      "pinyin": "huìyì",
+      "level": 3,
+      "sentences": 10,
+      "contexts": 2,
+      "ids": [
+        "pattern-660aa3d17f1dcc",
+        "pattern-c20dc432203071",
+        "pattern-6feebbdb88db0d",
+        "pattern-b8bf5547f5da73",
+        "pattern-ca0c80b9297911",
+        "pattern-85f5ad37de4f05"
+      ]
+    },
+    {
+      "word": "或者",
+      "pinyin": "huòzhě",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-11ff9126825c37"
+      ]
+    },
+    {
+      "word": "几乎",
+      "pinyin": "jīhū",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2b5aea5bab9969"
+      ]
+    },
+    {
+      "word": "机会",
+      "pinyin": "jīhuì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d9af4e3a7bcbe6"
+      ]
+    },
+    {
+      "word": "极",
+      "pinyin": "jí",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-be2f7d8a98b2ba"
+      ]
+    },
+    {
+      "word": "记得",
+      "pinyin": "jìde",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-a8c7f1f4e60f02",
+        "context-a9663fd39c36d7"
+      ]
+    },
+    {
+      "word": "季节",
+      "pinyin": "jìjié",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-37"
+      ]
+    },
+    {
+      "word": "检查",
+      "pinyin": "jiǎnchá",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-453f440fb0f44b",
+        "context-c24978c2e47f25"
+      ]
+    },
+    {
+      "word": "简单",
+      "pinyin": "jiǎndān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-23"
+      ]
+    },
+    {
+      "word": "健康",
+      "pinyin": "jiànkāng",
+      "level": 3,
+      "sentences": 8,
+      "contexts": 2,
+      "ids": [
+        "pattern-c4ba0bfe379af5",
+        "pattern-ea2a340218d902",
+        "pattern-7f53b40ce9a3a6",
+        "pattern-940a8209633536",
+        "pattern-31d79bd376ac2d",
+        "pattern-afe6c365c2ab94"
+      ]
+    },
+    {
+      "word": "见面",
+      "pinyin": "jiànmiàn",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-2b964a1a93e423",
+        "context-7831dccfd6bc1d"
+      ]
+    },
+    {
+      "word": "讲",
+      "pinyin": "jiǎng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4c8eec2ca29a79"
+      ]
+    },
+    {
+      "word": "教",
+      "pinyin": "jiāo",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-ca487c98e73015",
+        "pattern-47a3240848442f",
+        "pattern-f3f1003339e8fe",
+        "pattern-22117cbfbcabe9",
+        "pattern-a3a4034064ed40",
+        "pattern-c0d2fcb28d85d2"
+      ]
+    },
+    {
+      "word": "脚",
+      "pinyin": "jiǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3df804de00ce1d"
+      ]
+    },
+    {
+      "word": "角",
+      "pinyin": "jiǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-22cdab4a489410"
+      ]
+    },
+    {
+      "word": "接",
+      "pinyin": "jiē",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-36d04f0519e715"
+      ]
+    },
+    {
+      "word": "街道",
+      "pinyin": "jiēdào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f074924cd048dd"
+      ]
+    },
+    {
+      "word": "结婚",
+      "pinyin": "jiéhūn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9379443c83afb8"
+      ]
+    },
+    {
+      "word": "结束",
+      "pinyin": "jiéshù",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-67d33ab3987273",
+        "pattern-41a9cde3d2f53b",
+        "pattern-660aa3d17f1dcc",
+        "pattern-1f564aa5d712c8",
+        "pattern-c20dc432203071",
+        "pattern-7c432de8189a29"
+      ]
+    },
+    {
+      "word": "节目",
+      "pinyin": "jiémù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f46ee7ce000013"
+      ]
+    },
+    {
+      "word": "节日",
+      "pinyin": "jiérì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3105a7f3c4064a"
+      ]
+    },
+    {
+      "word": "解决",
+      "pinyin": "jiějué",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-0e63191b778c2b"
+      ]
+    },
+    {
+      "word": "借",
+      "pinyin": "jiè",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e0137edacfeae9"
+      ]
+    },
+    {
+      "word": "经常",
+      "pinyin": "jīngcháng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5ebbc111b9a044"
+      ]
+    },
+    {
+      "word": "经过",
+      "pinyin": "jīngguò",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-63d43d4dbe2fa6"
+      ]
+    },
+    {
+      "word": "经理",
+      "pinyin": "jīnglǐ",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-51cd03f065fe82",
+        "context-4e3b6134e37ca6"
+      ]
+    },
+    {
+      "word": "久",
+      "pinyin": "jiǔ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2b964a1a93e423"
+      ]
+    },
+    {
+      "word": "旧",
+      "pinyin": "jiù",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 1,
+      "ids": [
+        "pattern-ae1e0c248d07e8",
+        "pattern-417b3ba69ef389",
+        "pattern-c5d4a0811856f4",
+        "pattern-b92cf417e81a24"
+      ]
+    },
+    {
+      "word": "举行",
+      "pinyin": "jǔxíng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-70549615d8f885"
+      ]
+    },
+    {
+      "word": "句子",
+      "pinyin": "jùzi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-efebe6401fbe74"
+      ]
+    },
+    {
+      "word": "决定",
+      "pinyin": "juédìng",
+      "level": 3,
+      "sentences": 32,
+      "contexts": 3,
+      "ids": [
+        "original-32",
+        "pattern-788e6fbb8fe245",
+        "pattern-2cd4920ef5f938",
+        "pattern-fba897e6dd5234",
+        "pattern-7aab168590d0ca",
+        "pattern-6f150b23d6d696"
+      ]
+    },
+    {
+      "word": "渴",
+      "pinyin": "kě",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-11ff9126825c37"
+      ]
+    },
+    {
+      "word": "可爱",
+      "pinyin": "kě'ài",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5fb8c8cf96e41b"
+      ]
+    },
+    {
+      "word": "刻",
+      "pinyin": "kè",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f2146609672977"
+      ]
+    },
+    {
+      "word": "客人",
+      "pinyin": "kèrén",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-453f440fb0f44b",
+        "context-205f5e03d86423",
+        "context-cf9dfb7af0b30b"
+      ]
+    },
+    {
+      "word": "空调",
+      "pinyin": "kōngtiáo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b3bd477f3bf0cf"
+      ]
+    },
+    {
+      "word": "口",
+      "pinyin": "kǒu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c68746dee054f6"
+      ]
+    },
+    {
+      "word": "哭",
+      "pinyin": "kū",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b3c3525def7ac5"
+      ]
+    },
+    {
+      "word": "裤子",
+      "pinyin": "kùzi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-22cdab4a489410"
+      ]
+    },
+    {
+      "word": "筷子",
+      "pinyin": "kuàizi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-70afa700be7cdb"
+      ]
+    },
+    {
+      "word": "蓝",
+      "pinyin": "lán",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-696fa8868f6c79"
+      ]
+    },
+    {
+      "word": "老",
+      "pinyin": "lǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b4ada74fe6e33c"
+      ]
+    },
+    {
+      "word": "离开",
+      "pinyin": "líkāi",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-b3bd477f3bf0cf",
+        "context-b4ada74fe6e33c"
+      ]
+    },
+    {
+      "word": "礼物",
+      "pinyin": "lǐwù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f696dc360c08cc"
+      ]
+    },
+    {
+      "word": "历史",
+      "pinyin": "lìshǐ",
+      "level": 3,
+      "sentences": 10,
+      "contexts": 3,
+      "ids": [
+        "original-26",
+        "pattern-c4b31980f24f2e",
+        "pattern-00b0b27e908822",
+        "pattern-2ef2d6af46bc6e",
+        "pattern-5c3c26d46c45ef",
+        "pattern-8216cde1b20568"
+      ]
+    },
+    {
+      "word": "脸",
+      "pinyin": "liǎn",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-3f9ca22726e4e0",
+        "context-b79eae9201086b"
+      ]
+    },
+    {
+      "word": "练习",
+      "pinyin": "liànxí",
+      "level": 3,
+      "sentences": 55,
+      "contexts": 5,
+      "ids": [
+        "original-29",
+        "original-38",
+        "original-39",
+        "pattern-520922d85d3e03",
+        "pattern-465ac41eddfd7d",
+        "pattern-4d9cdf343c8bae"
+      ]
+    },
+    {
+      "word": "辆",
+      "pinyin": "liàng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-9d7ff9130e6d89",
+        "context-205f5e03d86423"
+      ]
+    },
+    {
+      "word": "了解",
+      "pinyin": "liǎojiě",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-e8787bd941eda9",
+        "context-4aa2294b75a9ba",
+        "context-374a99101c9bb1"
+      ]
+    },
+    {
+      "word": "邻居",
+      "pinyin": "línjū",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3b4b019fea9862"
+      ]
+    },
+    {
+      "word": "楼",
+      "pinyin": "lóu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c8f1c756e2c0a9"
+      ]
+    },
+    {
+      "word": "绿",
+      "pinyin": "lǜ",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-696fa8868f6c79",
+        "context-c113400b5178ee"
+      ]
+    },
+    {
+      "word": "马",
+      "pinyin": "mǎ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5a15c310c4655f"
+      ]
+    },
+    {
+      "word": "马上",
+      "pinyin": "mǎshàng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-65488241b15db5"
+      ]
+    },
+    {
+      "word": "满意",
+      "pinyin": "mǎnyì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-373d23041f3af9"
+      ]
+    },
+    {
+      "word": "米",
+      "pinyin": "mǐ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8a8c638a9aa289"
+      ]
+    },
+    {
+      "word": "面包",
+      "pinyin": "miànbāo",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-a6471c2bc6312a",
+        "context-7f255a9979ef60"
+      ]
+    },
+    {
+      "word": "面条",
+      "pinyin": "miàntiáo",
+      "level": 3,
+      "sentences": 21,
+      "contexts": 3,
+      "ids": [
+        "pattern-cb3a052a547a1e",
+        "pattern-f129e4d149a4b9",
+        "pattern-cfa70e3ea48960",
+        "pattern-e0c6e31842bac0",
+        "pattern-30a376c1e3bc32",
+        "pattern-1f009f3f60cf6b"
+      ]
+    },
+    {
+      "word": "明白",
+      "pinyin": "míngbai",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-4c8eec2ca29a79",
+        "context-bffe814c4b6ee1"
+      ]
+    },
+    {
+      "word": "拿",
+      "pinyin": "ná",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-70afa700be7cdb",
+        "context-13c79809324392"
+      ]
+    },
+    {
+      "word": "奶奶",
+      "pinyin": "nǎinai",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8857e2103e6d9d"
+      ]
+    },
+    {
+      "word": "南",
+      "pinyin": "nán",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e95ad343f0bcb5"
+      ]
+    },
+    {
+      "word": "难",
+      "pinyin": "nán",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-36"
+      ]
+    },
+    {
+      "word": "难过",
+      "pinyin": "nánguò",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b3c3525def7ac5"
+      ]
+    },
+    {
+      "word": "年级",
+      "pinyin": "niánjí",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ff5fd1c88af890"
+      ]
+    },
+    {
+      "word": "年轻",
+      "pinyin": "niánqīng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b6ecdd9e50b7e0"
+      ]
+    },
+    {
+      "word": "鸟",
+      "pinyin": "niǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c113400b5178ee"
+      ]
+    },
+    {
+      "word": "努力",
+      "pinyin": "nǔlì",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-39",
+        "context-d9af4e3a7bcbe6"
+      ]
+    },
+    {
+      "word": "爬山",
+      "pinyin": "páshān",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-3df804de00ce1d",
+        "context-cfbdd99bfe682e"
+      ]
+    },
+    {
+      "word": "盘子",
+      "pinyin": "pánzi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-13c79809324392"
+      ]
+    },
+    {
+      "word": "胖",
+      "pinyin": "pàng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d032912fad1592"
+      ]
+    },
+    {
+      "word": "啤酒",
+      "pinyin": "píjiǔ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d20cb0bb59ed7a"
+      ]
+    },
+    {
+      "word": "葡萄",
+      "pinyin": "pútao",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c68746dee054f6"
+      ]
+    },
+    {
+      "word": "普通话",
+      "pinyin": "pǔtōnghuà",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-a38910d826708f",
+        "context-95849badc4f9b5"
+      ]
+    },
+    {
+      "word": "其实",
+      "pinyin": "qíshí",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b5ba39d5e8ac94"
+      ]
+    },
+    {
+      "word": "其他",
+      "pinyin": "qítā",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a75d85a3549ef7"
+      ]
+    },
+    {
+      "word": "骑",
+      "pinyin": "qí",
+      "level": 3,
+      "sentences": 16,
+      "contexts": 4,
+      "ids": [
+        "pattern-b36c775e064f96",
+        "pattern-74b606c717677b",
+        "pattern-e34b271e852278",
+        "pattern-65d10ac61a24e5",
+        "pattern-033c87e2aba085",
+        "pattern-5950a7df497770"
+      ]
+    },
+    {
+      "word": "铅笔",
+      "pinyin": "qiānbǐ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-efebe6401fbe74"
+      ]
+    },
+    {
+      "word": "清楚",
+      "pinyin": "qīngchu",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-e00112f4b93c8a",
+        "context-6a25346211d247",
+        "context-4aa2294b75a9ba"
+      ]
+    },
+    {
+      "word": "秋",
+      "pinyin": "qiū",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d5cfc2f20746eb"
+      ]
+    },
+    {
+      "word": "奇怪",
+      "pinyin": "qíguài",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-e92bd156b91e82",
+        "context-24aece26556f40"
+      ]
+    },
+    {
+      "word": "裙子",
+      "pinyin": "qúnzi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-696fa8868f6c79"
+      ]
+    },
+    {
+      "word": "然后",
+      "pinyin": "ránhòu",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-fada38daaabba2",
+        "pattern-3ef473577ec7ad",
+        "pattern-34fdd0726779d0",
+        "pattern-60aff728a9c0b7",
+        "pattern-fb5e08eaf21b45",
+        "pattern-21f4b34e93f208"
+      ]
+    },
+    {
+      "word": "热情",
+      "pinyin": "rèqíng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3b4b019fea9862"
+      ]
+    },
+    {
+      "word": "认为",
+      "pinyin": "rènwéi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d0c5e3dac48824"
+      ]
+    },
+    {
+      "word": "认真",
+      "pinyin": "rènzhēn",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-127089fbc7636c",
+        "context-c24978c2e47f25",
+        "context-c6bb5868e0beec",
+        "context-5625896b697f65"
+      ]
+    },
+    {
+      "word": "容易",
+      "pinyin": "róngyì",
+      "level": 3,
+      "sentences": 30,
+      "contexts": 1,
+      "ids": [
+        "pattern-4f0e4e3b06edae",
+        "pattern-ddcddb73bbcf07",
+        "pattern-b36c775e064f96",
+        "pattern-e15d7e31670fa8",
+        "pattern-b9039ddf872902",
+        "pattern-347f5b2f1457b5"
+      ]
+    },
+    {
+      "word": "如果",
+      "pinyin": "rúguǒ",
+      "level": 3,
+      "sentences": 61,
+      "contexts": 3,
+      "ids": [
+        "original-22",
+        "pattern-a17a597b1f93bd",
+        "pattern-c0500be80739dc",
+        "pattern-825913c62a5dfb",
+        "pattern-7a4374452a2256",
+        "pattern-fe82e2981294e1"
+      ]
+    },
+    {
+      "word": "伞",
+      "pinyin": "sǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a9663fd39c36d7"
+      ]
+    },
+    {
+      "word": "上网",
+      "pinyin": "shàngwǎng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5ebbc111b9a044"
+      ]
+    },
+    {
+      "word": "生气",
+      "pinyin": "shēngqì",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-212412ae3c4acf",
+        "context-36a8984ea5e72c"
+      ]
+    },
+    {
+      "word": "声音",
+      "pinyin": "shēngyīn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2b5aea5bab9969"
+      ]
+    },
+    {
+      "word": "使",
+      "pinyin": "shǐ",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-36a8984ea5e72c",
+        "context-95849badc4f9b5"
+      ]
+    },
+    {
+      "word": "世界",
+      "pinyin": "shìjiè",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-20cc103708c04c"
+      ]
+    },
+    {
+      "word": "瘦",
+      "pinyin": "shòu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d032912fad1592"
+      ]
+    },
+    {
+      "word": "舒服",
+      "pinyin": "shūfu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8857e2103e6d9d"
+      ]
+    },
+    {
+      "word": "叔叔",
+      "pinyin": "shūshu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-9379443c83afb8"
+      ]
+    },
+    {
+      "word": "树",
+      "pinyin": "shù",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-c113400b5178ee",
+        "context-d5cfc2f20746eb"
+      ]
+    },
+    {
+      "word": "数学",
+      "pinyin": "shùxué",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-127089fbc7636c"
+      ]
+    },
+    {
+      "word": "刷牙",
+      "pinyin": "shuāyá",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-070a12fa40a49b"
+      ]
+    },
+    {
+      "word": "双",
+      "pinyin": "shuāng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-f6edac7c6c5056",
+        "context-70afa700be7cdb"
+      ]
+    },
+    {
+      "word": "水平",
+      "pinyin": "shuǐpíng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a38910d826708f"
+      ]
+    },
+    {
+      "word": "司机",
+      "pinyin": "sījī",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-f074924cd048dd",
+        "context-205f5e03d86423"
+      ]
+    },
+    {
+      "word": "虽然",
+      "pinyin": "suīrán",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "original-21",
+        "pattern-760ab0ed455481",
+        "pattern-2f70bd555e35e3",
+        "pattern-e0826b422d3dfb",
+        "pattern-89ef15d789c7cc",
+        "pattern-67c92413dfd72a"
+      ]
+    },
+    {
+      "word": "太阳",
+      "pinyin": "tàiyáng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4b09bfeb9f2180"
+      ]
+    },
+    {
+      "word": "糖",
+      "pinyin": "táng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aff6cbd1ee00c2"
+      ]
+    },
+    {
+      "word": "特别",
+      "pinyin": "tèbié",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca422bce165e44"
+      ]
+    },
+    {
+      "word": "疼",
+      "pinyin": "téng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3df804de00ce1d"
+      ]
+    },
+    {
+      "word": "提高",
+      "pinyin": "tígāo",
+      "level": 3,
+      "sentences": 9,
+      "contexts": 2,
+      "ids": [
+        "pattern-f19799574787aa",
+        "pattern-fa759cb0ce8fca",
+        "pattern-0f284a35401e46",
+        "pattern-50bb6d98c4d38b",
+        "pattern-d695de31912844",
+        "pattern-12cced2a5111cd"
+      ]
+    },
+    {
+      "word": "体育",
+      "pinyin": "tǐyù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-cfbdd99bfe682e"
+      ]
+    },
+    {
+      "word": "甜",
+      "pinyin": "tián",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-aff6cbd1ee00c2",
+        "context-2d416c3b51d49f"
+      ]
+    },
+    {
+      "word": "条",
+      "pinyin": "tiáo",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 2,
+      "ids": [
+        "context-f074924cd048dd",
+        "context-1dad7e775bcb83",
+        "context-696fa8868f6c79",
+        "context-22cdab4a489410"
+      ]
+    },
+    {
+      "word": "同事",
+      "pinyin": "tóngshì",
+      "level": 3,
+      "sentences": 107,
+      "contexts": 21,
+      "ids": [
+        "pattern-4d9cdf343c8bae",
+        "pattern-ea2a340218d902",
+        "pattern-fa759cb0ce8fca",
+        "pattern-0cbf0dd0b8b42b",
+        "pattern-77bd480f675104",
+        "pattern-b72cee2de648fd"
+      ]
+    },
+    {
+      "word": "同意",
+      "pinyin": "tóngyì",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-0e63191b778c2b",
+        "context-2ee230cda80c1a"
+      ]
+    },
+    {
+      "word": "头发",
+      "pinyin": "tóufa",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b6ecdd9e50b7e0"
+      ]
+    },
+    {
+      "word": "突然",
+      "pinyin": "tūrán",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-b3c3525def7ac5",
+        "context-e92bd156b91e82"
+      ]
+    },
+    {
+      "word": "图书馆",
+      "pinyin": "túshūguǎn",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 1,
+      "ids": [
+        "pattern-e79787977803c2",
+        "pattern-09409d7835968a",
+        "pattern-c6bf43c590c2fc",
+        "pattern-ceeb424973b605"
+      ]
+    },
+    {
+      "word": "腿",
+      "pinyin": "tuǐ",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-2c8773b315177d"
+      ]
+    },
+    {
+      "word": "完成",
+      "pinyin": "wánchéng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-127089fbc7636c"
+      ]
+    },
+    {
+      "word": "碗",
+      "pinyin": "wǎn",
+      "level": 3,
+      "sentences": 5,
+      "contexts": 1,
+      "ids": [
+        "pattern-cb3a052a547a1e",
+        "pattern-f129e4d149a4b9",
+        "pattern-cfa70e3ea48960",
+        "pattern-e0c6e31842bac0",
+        "pattern-30a376c1e3bc32"
+      ]
+    },
+    {
+      "word": "万",
+      "pinyin": "wàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-dde4de790540c6"
+      ]
+    },
+    {
+      "word": "忘记",
+      "pinyin": "wàngjì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-30"
+      ]
+    },
+    {
+      "word": "为",
+      "pinyin": "wèi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-bffe814c4b6ee1"
+      ]
+    },
+    {
+      "word": "为了",
+      "pinyin": "wèile",
+      "level": 3,
+      "sentences": 61,
+      "contexts": 3,
+      "ids": [
+        "original-39",
+        "pattern-4914e12f637877",
+        "pattern-5bbe00385a9ecc",
+        "pattern-024a01f25956c7",
+        "pattern-520922d85d3e03",
+        "pattern-d631155b5359b3"
+      ]
+    },
+    {
+      "word": "位",
+      "pinyin": "wèi",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 1,
+      "ids": [
+        "context-4e3b6134e37ca6",
+        "context-cf9dfb7af0b30b"
+      ]
+    },
+    {
+      "word": "文化",
+      "pinyin": "wénhuà",
+      "level": 3,
+      "sentences": 7,
+      "contexts": 2,
+      "ids": [
+        "pattern-1e6d2c58b4f2f5",
+        "pattern-45728a586f165b",
+        "pattern-db0bd462bcf9f3",
+        "pattern-062f3d6871d424",
+        "pattern-9b60d6c50b877e",
+        "pattern-c27a969630e07d"
+      ]
+    },
+    {
+      "word": "西",
+      "pinyin": "xī",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8a8c638a9aa289"
+      ]
+    },
+    {
+      "word": "习惯",
+      "pinyin": "xíguàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a25d50d15fe74a"
+      ]
+    },
+    {
+      "word": "洗手间",
+      "pinyin": "xǐshǒujiān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-52e073a23f929b"
+      ]
+    },
+    {
+      "word": "洗澡",
+      "pinyin": "xǐzǎo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-070a12fa40a49b"
+      ]
+    },
+    {
+      "word": "夏",
+      "pinyin": "xià",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4b09bfeb9f2180"
+      ]
+    },
+    {
+      "word": "先",
+      "pinyin": "xiān",
+      "level": 3,
+      "sentences": 93,
+      "contexts": 6,
+      "ids": [
+        "original-32",
+        "pattern-fada38daaabba2",
+        "pattern-3ef473577ec7ad",
+        "pattern-34fdd0726779d0",
+        "pattern-60aff728a9c0b7",
+        "pattern-fb5e08eaf21b45"
+      ]
+    },
+    {
+      "word": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7f255a9979ef60"
+      ]
+    },
+    {
+      "word": "相同",
+      "pinyin": "xiāngtóng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-7035a35f3b09c2"
+      ]
+    },
+    {
+      "word": "相信",
+      "pinyin": "xiāngxìn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d0db06c9500cc5"
+      ]
+    },
+    {
+      "word": "像",
+      "pinyin": "xiàng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca422bce165e44"
+      ]
+    },
+    {
+      "word": "小心",
+      "pinyin": "xiǎoxīn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d0db06c9500cc5"
+      ]
+    },
+    {
+      "word": "校长",
+      "pinyin": "xiàozhǎng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-59eccea4434f6e"
+      ]
+    },
+    {
+      "word": "鞋",
+      "pinyin": "xié",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-f6edac7c6c5056"
+      ]
+    },
+    {
+      "word": "新闻",
+      "pinyin": "xīnwén",
+      "level": 3,
+      "sentences": 10,
+      "contexts": 3,
+      "ids": [
+        "pattern-f19799574787aa",
+        "pattern-fa759cb0ce8fca",
+        "pattern-0f284a35401e46",
+        "pattern-50bb6d98c4d38b",
+        "pattern-d695de31912844",
+        "pattern-12cced2a5111cd"
+      ]
+    },
+    {
+      "word": "新鲜",
+      "pinyin": "xīnxiān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-c68746dee054f6"
+      ]
+    },
+    {
+      "word": "信",
+      "pinyin": "xìn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-4aa2294b75a9ba"
+      ]
+    },
+    {
+      "word": "行李箱",
+      "pinyin": "xínglixiāng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23bda9eb42c154"
+      ]
+    },
+    {
+      "word": "兴趣",
+      "pinyin": "xìngqu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-e8787bd941eda9"
+      ]
+    },
+    {
+      "word": "熊猫",
+      "pinyin": "xióngmāo",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5a15c310c4655f"
+      ]
+    },
+    {
+      "word": "需要",
+      "pinyin": "xūyào",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-374a99101c9bb1",
+        "context-cf9dfb7af0b30b"
+      ]
+    },
+    {
+      "word": "选择",
+      "pinyin": "xuǎnzé",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-5a2eaeaf9900ae",
+        "context-bee18fc9ff097c"
+      ]
+    },
+    {
+      "word": "眼镜",
+      "pinyin": "yǎnjìng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-6a25346211d247",
+        "context-efb4717f1fd28d"
+      ]
+    },
+    {
+      "word": "要求",
+      "pinyin": "yāoqiú",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-127089fbc7636c",
+        "context-4aa2294b75a9ba"
+      ]
+    },
+    {
+      "word": "爷爷",
+      "pinyin": "yéye",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b6ecdd9e50b7e0"
+      ]
+    },
+    {
+      "word": "一定",
+      "pinyin": "yídìng",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 3,
+      "ids": [
+        "context-a8c7f1f4e60f02",
+        "context-aff6cbd1ee00c2",
+        "context-e0137edacfeae9"
+      ]
+    },
+    {
+      "word": "一共",
+      "pinyin": "yígòng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-dde4de790540c6"
+      ]
+    },
+    {
+      "word": "一会儿",
+      "pinyin": "yíhuìr",
+      "level": 3,
+      "sentences": 10,
+      "contexts": 1,
+      "ids": [
+        "pattern-963566a633fcba",
+        "pattern-cd69520c152bff",
+        "pattern-868b99f4cc5333",
+        "pattern-7e4585c812d548",
+        "pattern-1173fceb3d1b02",
+        "pattern-b339c5ee5dfc8e"
+      ]
+    },
+    {
+      "word": "一样",
+      "pinyin": "yíyàng",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-ae1e0c248d07e8",
+        "pattern-2d39e2be53cc77",
+        "pattern-635f1c8a2f4cfa",
+        "pattern-c0fbef82266ff6",
+        "pattern-bf4ae0f0eed1b6",
+        "pattern-8b415927dba3b4"
+      ]
+    },
+    {
+      "word": "以后",
+      "pinyin": "yǐhòu",
+      "level": 3,
+      "sentences": 33,
+      "contexts": 4,
+      "ids": [
+        "original-40",
+        "pattern-0c54ef2bb190c1",
+        "pattern-bf4f448cc45890",
+        "pattern-ef95ac7501ba9c",
+        "pattern-71585a6cb9d652",
+        "pattern-942c4c007984c2"
+      ]
+    },
+    {
+      "word": "以前",
+      "pinyin": "yǐqián",
+      "level": 3,
+      "sentences": 33,
+      "contexts": 4,
+      "ids": [
+        "original-27",
+        "pattern-4f0e4e3b06edae",
+        "pattern-ddcddb73bbcf07",
+        "pattern-b36c775e064f96",
+        "pattern-e15d7e31670fa8",
+        "pattern-b9039ddf872902"
+      ]
+    },
+    {
+      "word": "以为",
+      "pinyin": "yǐwéi",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b5ba39d5e8ac94"
+      ]
+    },
+    {
+      "word": "一般",
+      "pinyin": "yìbān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-373d23041f3af9"
+      ]
+    },
+    {
+      "word": "一边",
+      "pinyin": "yìbiān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-24"
+      ]
+    },
+    {
+      "word": "一直",
+      "pinyin": "yìzhí",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "original-34",
+        "context-9379443c83afb8"
+      ]
+    },
+    {
+      "word": "音乐",
+      "pinyin": "yīnyuè",
+      "level": 3,
+      "sentences": 91,
+      "contexts": 15,
+      "ids": [
+        "original-24",
+        "pattern-788e6fbb8fe245",
+        "pattern-6f150b23d6d696",
+        "pattern-8a63025638365a",
+        "pattern-0ad213a2901fc3",
+        "pattern-89ef15d789c7cc"
+      ]
+    },
+    {
+      "word": "银行",
+      "pinyin": "yínháng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8a8c638a9aa289"
+      ]
+    },
+    {
+      "word": "应该",
+      "pinyin": "yīnggāi",
+      "level": 3,
+      "sentences": 32,
+      "contexts": 3,
+      "ids": [
+        "original-38",
+        "pattern-b8bbfa43d49dc3",
+        "pattern-553d38fdd0a015",
+        "pattern-812f99521458c1",
+        "pattern-acfcfd32abf1cd",
+        "pattern-8a37308d08f78f"
+      ]
+    },
+    {
+      "word": "影响",
+      "pinyin": "yǐngxiǎng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-62b349578f06b0"
+      ]
+    },
+    {
+      "word": "用",
+      "pinyin": "yòng",
+      "level": 3,
+      "sentences": 28,
+      "contexts": 8,
+      "ids": [
+        "original-35",
+        "pattern-788e6fbb8fe245",
+        "pattern-7aab168590d0ca",
+        "pattern-46953dcc5942c4",
+        "pattern-5fa3790e03273e",
+        "pattern-0ec9f81f381143"
+      ]
+    },
+    {
+      "word": "游戏",
+      "pinyin": "yóuxì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5ebbc111b9a044"
+      ]
+    },
+    {
+      "word": "有名",
+      "pinyin": "yǒumíng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-63d43d4dbe2fa6"
+      ]
+    },
+    {
+      "word": "又",
+      "pinyin": "yòu",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-60da6a7f6ade9e",
+        "pattern-e90bb0ced8d4fe",
+        "pattern-80b98979e1d61c",
+        "pattern-136dd18fa5a679",
+        "pattern-a4de3c1e8f35b2",
+        "pattern-bc533c017a3d44"
+      ]
+    },
+    {
+      "word": "遇到",
+      "pinyin": "yùdào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-b4ada74fe6e33c"
+      ]
+    },
+    {
+      "word": "愿意",
+      "pinyin": "yuànyì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d9af4e3a7bcbe6"
+      ]
+    },
+    {
+      "word": "月亮",
+      "pinyin": "yuèliang",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-96f6947d03153c"
+      ]
+    },
+    {
+      "word": "越",
+      "pinyin": "yuè",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "pattern-571aaf43cbc755",
+        "pattern-0627f168581247",
+        "pattern-f529592877bea0",
+        "pattern-def3215ccef555",
+        "pattern-f17ecadefb7c80",
+        "pattern-14b5ef8250ef66"
+      ]
+    },
+    {
+      "word": "云",
+      "pinyin": "yún",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-96f6947d03153c"
+      ]
+    },
+    {
+      "word": "站",
+      "pinyin": "zhàn",
+      "level": 3,
+      "sentences": 3,
+      "contexts": 2,
+      "ids": [
+        "context-8a8c638a9aa289",
+        "context-36d04f0519e715",
+        "context-f46ee7ce000013"
+      ]
+    },
+    {
+      "word": "长",
+      "pinyin": "zhǎng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-ca422bce165e44"
+      ]
+    },
+    {
+      "word": "着急",
+      "pinyin": "zháojí",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-212412ae3c4acf"
+      ]
+    },
+    {
+      "word": "照顾",
+      "pinyin": "zhàogu",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8857e2103e6d9d"
+      ]
+    },
+    {
+      "word": "照片",
+      "pinyin": "zhàopiàn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-5f7e8208e691f2"
+      ]
+    },
+    {
+      "word": "照相机",
+      "pinyin": "zhàoxiàngjī",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-23bda9eb42c154"
+      ]
+    },
+    {
+      "word": "只",
+      "pinyin": "zhǐ",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-e8787bd941eda9",
+        "context-212412ae3c4acf",
+        "context-5fb8c8cf96e41b",
+        "context-2d416c3b51d49f"
+      ]
+    },
+    {
+      "word": "中间",
+      "pinyin": "zhōngjiān",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-13c79809324392"
+      ]
+    },
+    {
+      "word": "终于",
+      "pinyin": "zhōngyú",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "original-35"
+      ]
+    },
+    {
+      "word": "种",
+      "pinyin": "zhǒng",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-bee18fc9ff097c",
+        "context-2d416c3b51d49f"
+      ]
+    },
+    {
+      "word": "重要",
+      "pinyin": "zhòngyào",
+      "level": 3,
+      "sentences": 2,
+      "contexts": 2,
+      "ids": [
+        "context-59eccea4434f6e",
+        "context-d9af4e3a7bcbe6"
+      ]
+    },
+    {
+      "word": "周末",
+      "pinyin": "zhōumò",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-8857e2103e6d9d"
+      ]
+    },
+    {
+      "word": "主要",
+      "pinyin": "zhǔyào",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d0c5e3dac48824"
+      ]
+    },
+    {
+      "word": "祝",
+      "pinyin": "zhù",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-3105a7f3c4064a"
+      ]
+    },
+    {
+      "word": "注意",
+      "pinyin": "zhùyì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aa94229ddc289d"
+      ]
+    },
+    {
+      "word": "字典",
+      "pinyin": "zìdiǎn",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-a75d85a3549ef7"
+      ]
+    },
+    {
+      "word": "自己",
+      "pinyin": "zìjǐ",
+      "level": 3,
+      "sentences": 4,
+      "contexts": 3,
+      "ids": [
+        "context-5a2eaeaf9900ae",
+        "context-374a99101c9bb1",
+        "context-9d7ff9130e6d89",
+        "context-04f521547b171e"
+      ]
+    },
+    {
+      "word": "总是",
+      "pinyin": "zǒngshì",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-aa94229ddc289d"
+      ]
+    },
+    {
+      "word": "最近",
+      "pinyin": "zuìjìn",
+      "level": 3,
+      "sentences": 31,
+      "contexts": 2,
+      "ids": [
+        "original-34",
+        "pattern-571aaf43cbc755",
+        "pattern-0627f168581247",
+        "pattern-f529592877bea0",
+        "pattern-def3215ccef555",
+        "pattern-f17ecadefb7c80"
+      ]
+    },
+    {
+      "word": "作业",
+      "pinyin": "zuòyè",
+      "level": 3,
+      "sentences": 7,
+      "contexts": 2,
+      "ids": [
+        "pattern-7ed7b7798ac04f",
+        "pattern-b5dbbefa6fb8bc",
+        "pattern-98a31a01e75423",
+        "pattern-b2107b6af9fabf",
+        "pattern-95a91b78d67863",
+        "pattern-ed77023d61aacf"
+      ]
+    },
+    {
+      "word": "作用",
+      "pinyin": "zuòyòng",
+      "level": 3,
+      "sentences": 1,
+      "contexts": 1,
+      "ids": [
+        "context-d0c5e3dac48824"
+      ]
+    }
+  ]
+}
