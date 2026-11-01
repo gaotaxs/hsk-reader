@@ -1,6 +1,6 @@
 /* Increment VERSION for every release that changes any cached file.
    Install the complete release atomically; activate only after user accepts an update. */
-const VERSION='1.12.0';
+const VERSION='1.12.1';
 const CACHE_PREFIX='hsk-reader-studio-'+encodeURIComponent(new URL(self.registration.scope).pathname)+'-';
 const CACHE_NAME=CACHE_PREFIX+VERSION;
 const APP_SHELL=['./index.html', './manifest.json', './assets/app.css', './assets/vocabulary.js', './assets/app.js', './assets/pwa.js', './assets/sentences.js', './assets/sentences-context.js', './assets/sentences-hsk2.js', './assets/sentences-hsk3-0.js', './assets/sentences-hsk3-1.js', './assets/sentences-hsk3-2.js', './assets/reading-studio.js', './assets/reading-dictionary-0.js', './assets/reading-dictionary-1.js', './assets/reading-dictionary-2.js', './assets/reading-dictionary-3.js', './vendor/hanzi-writer-3.7.3.min.js', './vendor/characters.json', './vendor/READING-DICTIONARY-NOTICE.txt', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];

@@ -1,3 +1,7 @@
+## 1.12.1
+
+- Live verification found a stale update button could do nothing after another window activated the worker. It now saves current work and reloads when no worker is waiting. Added a regression; 96 checks pass.
+
 ## 1.12.0
 
 - Fixed reset progress being undone by pagehide/autosave during reload. Reset now verifies deletion, clears pending/transient state and starts a separate storage generation; stale windows cannot resurrect cleared study data. Storage failures retain prior data where rollback succeeds and report failure.

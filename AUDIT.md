@@ -16,11 +16,12 @@ Date: 1 November 2026. Scope: reset/persistence and PWA lifecycle, backup/import
 | Medium | Malformed lesson plans or restored Reader quiz/order/review indexes could break startup or practice. | Normalize plans; validate question answers, options, order indexes and sentence/word references. |
 | Medium | Grading 长 in Reader could affect the other pronunciation. | Carry contextual pinyin through details and grading to the distinct entry key. |
 | Low | Quick quiz could advance without an answer; empty decks retained stale counters. | Guard next-question actions and reset empty/finished progress labels. |
+| Medium | A stale Reload to update button could do nothing after another window activated the waiting worker. | Save current work, then reload directly when the worker is already active. |
 | Low | Due counts could remain stale after app resume. | Refresh counts on visibility/pageshow and when opening Reader options. |
 
 ## Evidence
 
-95 passing automated checks: 37 application, 16 simulated service-worker, 25 Reader and 17 lifecycle regressions. `tests/lifecycle-regression.cjs` reproduces reset, queued-save/pagehide, cold-launch, old-window and storage-failure cases using synthetic data. It also covers the related findings above. Existing suites cover dataset integrity, migrations, backup rollback, review schedules, finite sessions, safe rendering, writing data and offline-cache behavior. Desktop Chromium smoke checks cover normal navigation and Reader settings.
+96 passing automated checks: 37 application, 16 simulated service-worker, 25 Reader and 18 lifecycle regressions. `tests/lifecycle-regression.cjs` reproduces reset, queued-save/pagehide, cold-launch, old-window and storage-failure cases using synthetic data. It also covers the related findings above. Existing suites cover dataset integrity, migrations, backup rollback, review schedules, finite sessions, safe rendering, writing data and offline-cache behavior. Desktop Chromium smoke checks cover normal navigation and Reader settings.
 
 ## Limits and remaining risks
 
@@ -32,4 +33,4 @@ Date: 1 November 2026. Scope: reset/persistence and PWA lifecycle, backup/import
 
 ## Updating on iPhone
 
-Load 1.12 first: use the app's update control when offered, or Settings → Install & offline to check for an update, then reload. After the updated app opens, use Reset progress again if desired and confirm it. Reopen the PWA to verify cleared totals/history. Export a backup first if any existing progress should be retained. Do not clear all Safari website data as an update step.
+Load 1.12.1 first: use the app's update control when offered, or Settings → Install & offline to check for an update, then reload. After the updated app opens, use Reset progress again if desired and confirm it. Reopen the PWA to verify cleared totals/history. Export a backup first if any existing progress should be retained. Do not clear all Safari website data as an update step.
