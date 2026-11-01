@@ -13,10 +13,21 @@
   const uniq = arr => [...new Set(arr)];
   const keyFor = word => word;
   const DEFAULT_SETTINGS = {filter2:true,filter3:true,hideKnown:false,showPinyin:false,showEnglish:false,dark:false,ttsRate:0.85,voiceURI:'',onlineTranslate:false,autoStroke:true,readerFontSize:28,readerLineHeight:2.1,dailyGoal:10,flashSkipKnown:false};
-  const STORE = {settings:'hskReaderSettings.v01',statuses:'hskReaderStatuses.v01',lessons:'hskReaderLessons.v01',draft:'hskReaderDraft.v01',lastTab:'hskReaderLastTab.v01',translationConsent:'hskReaderTranslationConsent.v01',extras:'hskReaderStudio.v1',migration:'hskReaderPreStudioBackup.v1'};
+  const BASE_STORE = {settings:'hskReaderSettings.v01',statuses:'hskReaderStatuses.v01',lessons:'hskReaderLessons.v01',draft:'hskReaderDraft.v01',lastTab:'hskReaderLastTab.v01',translationConsent:'hskReaderTranslationConsent.v01',extras:'hskReaderStudio.v1',migration:'hskReaderPreStudioBackup.v1'};
+  // A reset starts a new storage generation. Suspended/old windows cannot resurrect it.
+  const STATE_EPOCH_KEY='hskReaderStateEpoch.v1';
+  let stateEpoch='';try{stateEpoch=localStorage.getItem(STATE_EPOCH_KEY)||'';}catch{}
+  const STORE=Object.fromEntries(Object.entries(BASE_STORE).map(([k,v])=>[k,stateEpoch?v+'::'+stateEpoch:v]));
+  let resettingStudy=false,staleStudy=false,storageWarned=false;
+  function canPersistStudy(){
+    if(resettingStudy||staleStudy)return false;
+    try{if((localStorage.getItem(STATE_EPOCH_KEY)||'')!==stateEpoch){staleStudy=true;toast('Progress changed in another window. Reopening the app…');setTimeout(()=>location.reload(),0);return false;}}catch{if(!storageWarned){storageWarned=true;setTimeout(()=>toast('Browser storage unavailable. Export a backup before closing.'),0);}return false;}
+    return true;
+  }
+  window.addEventListener('storage',e=>{if(e.key===STATE_EPOCH_KEY&&!resettingStudy){staleStudy=true;location.reload();}});
   function readJSON(key, fallback){ try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; } }
-  let storageWarned = false;
   function writeJSON(key, value){
+    if(!canPersistStudy())return false;
     try { localStorage.setItem(key, JSON.stringify(value)); return true; }
     catch { if(!storageWarned){storageWarned=true; setTimeout(()=>toast('Browser storage unavailable. Export a backup before closing.'),0);} return false; }
   }
@@ -622,12 +633,13 @@
   // ===========================
   function planFor(level){
     const k=String(level);
-    if (!lessons[k]) lessons[k] = {wordsPerDay:10,startDate:'',completedDays:0,completedDates:[],coveredWords:0,daySizes:[]};
+    if (!lessons[k]||typeof lessons[k]!=='object'||Array.isArray(lessons[k])) lessons[k] = {wordsPerDay:10,startDate:'',completedDays:0,completedDates:[],coveredWords:0,daySizes:[]};
     const plan=lessons[k],total=listForLevel(level).length;
     // Migrate v0.30 plans without losing any completed-day or vocabulary progress.
     const n=Math.max(1,Math.min(100,Math.floor(Number(plan.wordsPerDay)||10)));
+    plan.wordsPerDay=n;plan.completedDates=Array.isArray(plan.completedDates)?plan.completedDates.filter(x=>typeof x==='string').slice(0,600):[];
     plan.completedDays=Math.max(0,Math.min(600,Math.floor(Number(plan.completedDays)||0)));
-    if(!Array.isArray(plan.daySizes)||plan.daySizes.length!==plan.completedDays){
+    if(!Array.isArray(plan.daySizes)||plan.daySizes.length!==plan.completedDays||plan.daySizes.some(n=>!Number.isInteger(n)||n<0||n>100)){
       plan.daySizes=Array(plan.completedDays).fill(n);
     }
     if(plan.coveredWords==null || !Number.isFinite(Number(plan.coveredWords))){
@@ -651,7 +663,7 @@
   function resetPlan(level){
     if (!confirm(`Reset HSK ${level} lesson progress? Word statuses will stay unchanged.`)) return;
     lessons[String(level)] = {wordsPerDay:Math.max(1,Math.min(100,Math.floor(Number($('lessonDaily'+level).value)||10))),startDate:'',completedDays:0,completedDates:[],coveredWords:0,daySizes:[]};
-    saveLessons(); activeLessonLevel = Number(level); renderLessons();
+    invalidateLessonSession(level);saveLessons(); activeLessonLevel = Number(level); renderLessons();
   }
   function completeLesson(){
     const plan = planFor(activeLessonLevel), words = currentLessonWords(activeLessonLevel);
@@ -676,8 +688,9 @@
     plan.completedDays--;if(Array.isArray(plan.completedDates))plan.completedDates.pop();
     const back=(Array.isArray(plan.daySizes)&&plan.daySizes.length)?plan.daySizes.pop():Math.max(1,Number(plan.wordsPerDay)||10);
     plan.coveredWords=Math.max(0,plan.coveredWords-back);
-    saveLessons();renderLessons();toast('Returned to the previous study day.');
+    invalidateLessonSession(activeLessonLevel);saveLessons();renderLessons();toast('Returned to the previous study day.');
   }
+  function invalidateLessonSession(level){if(lessonSession?.level!==Number(level))return;lessonSession=null;deck=[];deckIndex=0;deckReviewed=[];deckFinished=false;deckLabel='';flashRevealPinyin=false;flashRevealEnglish=false;toggleFlashStrokePanel(false);renderFlash();}
   function studyLessonWords(){
     if(lessonSession&&!lessonSession.complete&&lessonSession.level===activeLessonLevel&&lessonSession.start===planFor(activeLessonLevel).coveredWords){switchTab('flashcards');renderFlash();return;}
     const words=currentLessonWords(activeLessonLevel);
@@ -891,7 +904,7 @@
     $('flashNextArrowBtn').disabled=!!lessonSession&&deckIndex===deck.length-1;
     if(finished){
       $('lessonFinishedText').textContent=lessonSession?`HSK ${lessonSession.level} · Day ${lessonSession.day} · ${deck.length} words reviewed. Your progress is saved.`:`${deck.length} words reviewed${deckLabel?' · '+deckLabel:''}. Your progress is saved.`;
-      $('flashProgress').textContent=`${deck.length} / ${deck.length} reviewed · Lesson complete`;
+      $('flashProgress').textContent=`${deck.length} / ${deck.length} reviewed · ${lessonSession?'Lesson':'Review'} complete`;
       $('flashDeckProgressFill').style.width='100%';
       $('sessionProgressText').textContent=`${deck.length} / ${deck.length} reviewed`;
       return;
@@ -900,7 +913,7 @@
     $('reviewRatingHint').textContent='How well did you recall this word?';
     $('flashTogglePinyinBtn')?.classList.toggle('active', flashRevealPinyin);
     $('flashToggleEnglishBtn')?.classList.toggle('active', flashRevealEnglish);
-    if(!v){ $('flashDeckProgressFill').style.width='0%'; $('flashFront').textContent='No matching words'; $('flashFront').classList.add('flash-card-empty'); $('flashBack').hidden=true; $('flashBack').textContent=''; $('flashProgress').textContent='Choose another deck, change filters, or mark some words Learning.'; if (!flashStrokeOpen) {$('flashStrokePanel').innerHTML=''; $('flashStrokeStatus').textContent='';} return; }
+    if(!v){ $('sessionProgressText').textContent='0 / 0 reviewed';$('flashPrevBtn').disabled=true;$('flashNextArrowBtn').disabled=true; $('flashDeckProgressFill').style.width='0%'; $('flashFront').textContent='No matching words'; $('flashFront').classList.add('flash-card-empty'); $('flashBack').hidden=true; $('flashBack').textContent=''; $('flashProgress').textContent='Choose another deck, change filters, or mark some words Learning.'; if (!flashStrokeOpen) {$('flashStrokePanel').innerHTML=''; $('flashStrokeStatus').textContent='';} return; }
     $('flashFront').classList.remove('flash-card-empty');
     const syllables=cardSyllables(v);
     $('flashFront').innerHTML=Array.from(v.word).map((ch,i)=>`<span class="han-pair"><span class="card-pinyin" aria-hidden="${!flashRevealPinyin}">${escapeHtml(syllables[i]||'')}</span><span>${escapeHtml(ch)}</span></span>`).join('');
@@ -1089,6 +1102,7 @@
     const nextExtras=data.studio?sanitizeExtras(data.studio):sanitizeExtras(extras);
     if(!data.studio)nextExtras.session=null;
     const nextText=typeof data.readerText==='string'?data.readerText:$('inputText').value;
+    if(!canPersistStudy()){toast('Reopen the app before importing a backup.');return;}
     if(!confirm('Replace the backup fields on this device? Download your current backup first if you want to keep it. Saved passages and review schedules stay unchanged when importing an older backup without those fields.'))return;
     const entries=[[STORE.settings,nextSettings],[STORE.statuses,nextStatuses],[STORE.lessons,nextLessons],[STORE.draft,nextText],[STORE.extras,nextExtras]],prior=new Map();
     try{
@@ -1100,7 +1114,7 @@
     }
     clearTimeout(readerInputTimer);++translationRequestId;$('translationBox').hidden=true;
     settings=nextSettings;statuses=nextStatuses;lessons=nextLessons;extras=nextExtras;$('inputText').value=nextText;
-    closeWordDialog();applySettingsToUI();restoreFlashSession();renderAll();renderPassages();toast('Backup imported.');
+    clearTransientStudy();applySettingsToUI();restoreFlashSession();renderAll();renderPassages();toast('Backup imported.');
   }
 
   function downloadBackup(){
@@ -1126,7 +1140,7 @@
     const lr = e.target.closest('[data-lesson-reset]'); if(lr){ resetPlan(lr.dataset.lessonReset); return; }
   });
   let undoneReaderText=null,readerInputTimer=0;
-  function saveReaderDraft(){saveExtras();const ok=writeJSON(STORE.draft,$('inputText').value);$('draftNotice').textContent=ok?'Draft saved on this device':'Not saved — export a backup';return ok;}
+  function saveReaderDraft(){if(!canPersistStudy())return false;const extrasOK=saveExtras(),draftOK=writeJSON(STORE.draft,$('inputText').value),ok=extrasOK&&draftOK;$('draftNotice').textContent=ok?'Draft saved on this device':'Not saved — export a backup';return ok;}
   function onReaderChanged(){
     ++translationRequestId;
     extras.activePassage='';
@@ -1169,7 +1183,7 @@
   $('vocabStudyResultsBtn').onclick=studyVocabResults;
   $('darkToggle').onclick = () => { settings.dark=!settings.dark; saveSettings(); applySettingsToUI(); };
   for(const area of ['flash','quiz'])$(area+'OptionsToggle').onclick=()=>{const pane=$(area+'Toolbar');pane.classList.toggle('mobile-options-open');$(area+'OptionsToggle').setAttribute('aria-expanded',String(pane.classList.contains('mobile-options-open')));};
-  $('sidebarToggle').onclick=()=>{document.body.classList.toggle('sidebar-collapsed');try{localStorage.setItem(SIDEBAR_STORE,document.body.classList.contains('sidebar-collapsed')?'1':'0');}catch{}};
+  $('sidebarToggle').onclick=()=>{document.body.classList.toggle('sidebar-collapsed');try{if(canPersistStudy())localStorage.setItem(SIDEBAR_STORE,document.body.classList.contains('sidebar-collapsed')?'1':'0');}catch{}};
   $('clearVocabSearchBtn').onclick=()=>{$('vocabSearch').value='';syncVocabSearchClear();renderVocab(true);$('vocabSearch').focus();};
   $('closeDialog').onclick = closeWordDialog; $('prevUnknownBtn').onclick = () => navigateUnknown(-1); $('nextUnknownBtn').onclick = () => navigateUnknown(1); $('wordDialog').addEventListener('cancel', e=>{e.preventDefault(); closeWordDialog();});
   $('wordDialog').addEventListener('click', e=>{
@@ -1282,12 +1296,40 @@
     catch{toast('Could not read that backup file.');}
     $('backupFileInput').value='';
   };
-  $('resetBtn').onclick=()=>{
-    if(confirm('Erase all word progress, lesson plans, settings and saved reader text in this browser? Export a backup first if needed.')){
-      [STORE.settings,STORE.statuses,STORE.lessons,STORE.draft,STORE.lastTab,STORE.translationConsent,STORE.extras,STORE.migration].forEach(k=>{try{localStorage.removeItem(k);}catch{}});
-      location.reload();
+  function clearTransientStudy(){
+    clearTimeout(readerInputTimer);++translationRequestId;stopVoice();closeWordDialog();toggleFlashStrokePanel(false);
+    window.onStudyDataReplaced?.();for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
+    undoneReaderText=null;$('undoClearBtn').hidden=true;$('translationBox').hidden=true;$('jsonBox').value='';
+    quiz={score:0,total:0,current:null,locked:false,max:0,deck:[],index:0,currentDir:'zh-en',missed:[]};
+    $('quizOptions').innerHTML='';$('quizFeedback').textContent='';$('quizNextBtn').disabled=true;$('quizRetryMissedBtn').hidden=true;$('quizPrompt').textContent='Press Start Quiz';$('quizPrompt').classList.add('quiz-idle');renderQuizScore();
+  }
+  function resetStudyProgress(){
+    if(!canPersistStudy()){toast('Reopen the app before resetting progress.');return false;}
+    const bases=[...Object.values(BASE_STORE),SIDEBAR_STORE],keys=[];
+    try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(bases.some(base=>k===base||k.startsWith(base+'::')))keys.push(k);}}catch{toast('Could not access saved progress. Nothing was reset.');return false;}
+    const prior=new Map();let priorEpoch,newEpoch,newDraft;
+    try{
+      for(const k of keys)prior.set(k,localStorage.getItem(k));priorEpoch=localStorage.getItem(STATE_EPOCH_KEY);
+      newEpoch=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);newDraft=BASE_STORE.draft+'::'+newEpoch;
+      resettingStudy=true;clearTimeout(readerInputTimer);
+      for(const k of keys)localStorage.removeItem(k);
+      localStorage.setItem(newDraft,JSON.stringify(''));
+      localStorage.setItem(STATE_EPOCH_KEY,newEpoch);
+      if(localStorage.getItem(STATE_EPOCH_KEY)!==newEpoch||localStorage.getItem(newDraft)!=='""'||keys.some(k=>localStorage.getItem(k)!==null))throw Error('Reset did not persist');
+    }catch{
+      if(!resettingStudy){toast('Could not read saved progress. Nothing was reset.');return false;}
+      let restored=true;
+      for(const [k,v] of prior)try{if(localStorage.getItem(k)!==v){if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}}catch{restored=false;}
+      try{if(newDraft)localStorage.removeItem(newDraft);if(priorEpoch==null)localStorage.removeItem(STATE_EPOCH_KEY);else localStorage.setItem(STATE_EPOCH_KEY,priorEpoch);}catch{restored=false;}
+      resettingStudy=!restored;toast(restored?'Reset could not be saved. Your previous progress was retained.':'Reset could not finish. Download your in-memory backup before closing.');return false;
     }
-  };
+    // Clearing memory as well as storage makes reload/pagehide and async callbacks harmless.
+    clearTransientStudy();settings={...DEFAULT_SETTINGS};statuses={};lessons={};extras=sanitizeExtras({});
+    deck=[];deckIndex=0;deckReviewed=[];deckFinished=false;lessonSession=null;deckLabel='';activeLessonLevel=2;
+    $('inputText').value='';$('passageTitle').value='';document.body.classList.remove('sidebar-collapsed','editor-open','focus-reading');
+    applySettingsToUI();renderAll();renderPassages();switchTab('lessons');toast('Progress reset. Reopening the app…');location.reload();return true;
+  }
+  $('resetBtn').onclick=()=>{if(confirm('Erase all word progress, lessons, reading history, review schedules, settings and saved texts on this device? Download a backup first if needed.'))resetStudyProgress();};
   if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;}
   document.addEventListener('keydown',e=>{
     if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open)return;
@@ -1349,7 +1391,7 @@
     for(const [k,v] of Object.entries(raw.srs||{}))if(validKey(k)&&v&&Number.isFinite(v.due)&&Number.isFinite(v.step))out.srs[k]={due:Math.max(0,v.due),step:Math.max(0,Math.min(5,Math.floor(v.step))),reviews:Math.max(0,Math.floor(Number(v.reviews)||0))};
     for(const [k,v] of Object.entries(raw.daily||{}).slice(-90))if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&Array.isArray(v))out.daily[k]=uniq(v.filter(validKey));
     for(const [k,v] of Object.entries(raw.writing||{}))if(Array.from(k).length===1&&isChineseChar(k)&&v)out.writing[k]={count:Math.max(0,Math.floor(Number(v.count)||0)),mistakes:Math.max(0,Math.floor(Number(v.mistakes)||0)),last:typeof v.last==='string'?v.last:''};
-    if(raw.session&&Array.isArray(raw.session.ids))out.session={ids:raw.session.ids.filter(validKey).slice(0,601),index:Math.max(0,Math.floor(Number(raw.session.index)||0)),label:String(raw.session.label||'').slice(0,80),pinyin:!!raw.session.pinyin,english:!!raw.session.english};
+    if(raw.session&&Array.isArray(raw.session.ids))out.session={ids:uniq(raw.session.ids.filter(validKey)).slice(0,601),index:Math.max(0,Math.floor(Number(raw.session.index)||0)),label:String(raw.session.label||'').slice(0,80),pinyin:!!raw.session.pinyin,english:!!raw.session.english};
     if(out.session){out.session.reviewed=uniq((Array.isArray(raw.session.reviewed)?raw.session.reviewed:[]).filter(k=>out.session.ids.includes(k)));out.session.complete=!!raw.session.complete&&out.session.reviewed.length===out.session.ids.length;}
     const lesson=raw.session?.lesson;
     if(out.session&&lesson&&[2,3].includes(lesson.level)&&Number.isInteger(lesson.start)&&lesson.start>=0&&Number.isInteger(lesson.day)&&lesson.day>0){
@@ -1368,6 +1410,11 @@
       const words=strings(p.words,30).filter(w=>/^[\u3400-\u9fff]{1,20}$/.test(w));
       const questions=(Array.isArray(p.questions)?p.questions:[]).slice(0,31).filter(q=>q&&['meaning','pinyin','zh-meaning','py-meaning','order'].includes(q.kind)&&typeof q.prompt==='string'&&Array.isArray(q.options)).map(q=>({kind:q.kind,prompt:q.prompt.slice(0,1000),target:typeof q.target==='string'?q.target.slice(0,20):'',pinyin:typeof q.pinyin==='string'?q.pinyin.slice(0,100):'',meaning:typeof q.meaning==='string'?q.meaning.slice(0,1000):'',word:typeof q.word==='string'?q.word.slice(0,1000):'',answer:Array.isArray(q.answer)?q.answer.filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,40)):[],options:q.kind==='order'?q.options.slice(0,20).filter(o=>o&&typeof o.text==='string'&&Number.isInteger(o.id)).map(o=>({text:o.text.slice(0,40),id:o.id})):uniq(q.options.filter(x=>typeof x==='string').slice(0,4).map(x=>x.slice(0,1000)))}));
       if(words.length){const cursor=Math.min(words.length,Math.max(0,Math.floor(Number(p.cursor)||0)));out.practice={mode:p.mode==='direct'?'direct':'review',source:['2','3','custom','starred'].includes(p.source)?p.source:out.source,sentenceIds:strings(p.sentenceIds,30),words,cursor,reveal:!!p.reveal,phase:['cards','quiz','summary'].includes(p.phase)?p.phase:'cards',questions,q:Math.min(Math.max(0,Math.floor(Number(p.q)||0)),Math.max(0,questions.length-1)),score:Math.max(0,Math.floor(Number(p.score)||0)),total:Math.max(0,Math.floor(Number(p.total)||0)),answered:!!p.answered,order:Array.isArray(p.order)?p.order.filter(x=>Number.isInteger(x)&&x>=0&&x<20).slice(0,20):[],feedback:typeof p.feedback==='string'?p.feedback.slice(0,1000):''};if(out.practice.phase==='quiz'&&!questions.length)out.practice.phase='summary';if(out.practice.phase==='cards'&&cursor===words.length)out.practice.phase='summary';}
+    }
+    if(out.reviewSession){const validIds=new Set([...((typeof READING_SENTENCES!=='undefined')?READING_SENTENCES.map(s=>s.id):[]),...(out.custom.match(/[^。！？!?\n]+[。！？!?]?/g)||[]).filter(s=>s.trim()).map(s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return 'custom-'+String(h>>>0);})].filter(Boolean));out.reviewSession.ids=out.reviewSession.ids.filter(id=>validIds.has(id));if(!out.reviewSession.ids.length)out.reviewSession=null;else out.reviewSession.index=Math.min(out.reviewSession.index,out.reviewSession.ids.length-1);}
+    if(out.practice){const p=out.practice;const known=word=>BY_WORD.has(word)||(typeof READING_DICTIONARY!=='undefined'&&Object.hasOwn(READING_DICTIONARY,word));p.words=p.words.filter(known);p.cursor=Math.min(p.cursor,p.words.length);
+      p.questions=p.questions.filter(q=>q.kind==='order'?q.answer.length>=3&&q.answer.length===q.options.length&&q.answer.slice().sort().join('\0')===q.options.map(o=>o.text).sort().join('\0'):q.options.length>=2&&q.options.includes(q.word)&&known(q.target||q.word));
+      p.q=Math.min(p.q,Math.max(0,p.questions.length-1));const q=p.questions[p.q];p.order=uniq(p.order.filter(i=>q?.kind==='order'&&i<q.options.length));if(p.phase==='quiz'&&!q)p.phase='summary';if(!p.words.length)out.practice=null;
     }
     return out;
   }
@@ -1459,9 +1506,10 @@
     },200);});
     // Disable drawing-surface page gestures only, retaining scrolling elsewhere.
     document.addEventListener('touchmove',e=>{if(e.target.closest('.trace-mode .stroke-char'))e.preventDefault();},{passive:false});
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDaily();else stopVoice();});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&canPersistStudy()){renderDaily();window.refreshReadingStudio?.();}else stopVoice();});
   }
 
+  window.addEventListener('pageshow',()=>{if(canPersistStudy()){renderDaily();window.refreshReadingStudio?.();}});
   settings=normalizeSettings(settings);
   syncSidebarState();applySettingsToUI();flashDeckLimit();quizCountLimit();restoreFlashSession();renderAll();renderPassages();syncVocabSearchClear();refreshDeviceProbe();
   bindStudioControls();

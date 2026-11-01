@@ -1,3 +1,11 @@
+## 1.12.0
+
+- Fixed reset progress being undone by pagehide/autosave during reload. Reset now verifies deletion, clears pending/transient state and starts a separate storage generation; stale windows cannot resurrect cleared study data. Storage failures retain prior data where rollback succeeds and report failure.
+- Update activation waits for both Reader state and draft saves. Imports close obsolete quiz/writing dialogs and cancel pending work.
+- Resetting or undoing a lesson invalidates its active card session. Duplicate restored deck IDs, malformed lesson plans and invalid Reader quiz/review state are repaired.
+- Reader grading distinguishes the two pronunciations of 长. Unanswered quick quizzes cannot advance; due counts refresh when returning to the app.
+- Added 17 lifecycle regressions; 95 automated checks pass. See AUDIT.md for findings and verification limits.
+
 ## 1.11.0
 
 - Added 192 original everyday-context sentences: totals are 421 HSK 2 and 1,181 HSK 3. Exact-token audit covers all 601 study entries at least once in their matching track; 203 have three or more examples, with remaining low-frequency entries explicitly reported.

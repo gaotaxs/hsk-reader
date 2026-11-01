@@ -19,7 +19,7 @@
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
     if(reloading)location.reload();else refresh();
   });
-  update.onclick=()=>{if(!registration?.waiting)return;if(!saveReaderDraft()){toast('Export your backup before updating; local saving is unavailable.');return;}saveExtras();reloading=true;registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});};
+  update.onclick=()=>{if(!registration?.waiting)return;if(!saveReaderDraft()){toast('Export your backup before updating; local saving is unavailable.');return;}if(!saveExtras()){toast('Export your backup before updating; local saving is unavailable.');return;}reloading=true;registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});};
   document.getElementById('checkUpdateBtn').onclick=async()=>{
     if(!navigator.onLine){toast('Reconnect to check for updates.');return;}
     try{await registration?.update();waiting();toast(registration?.waiting?'Reload to install the downloaded update.':'Update check requested. A button appears when a new version is ready.');}catch{toast('Could not check for updates. Try again when connected.');}
