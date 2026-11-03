@@ -136,10 +136,12 @@ const ReadingStudio=(()=>{
   }
   function move(delta,mark=false){
     const list=sentences(),r=data();if(!list.length)return;
-    const sentence=current(),newRead=mark&&!r.reviewSession&&!r.read.includes(sentence.id);
+    const sentence=current();
+    const newExposure=!r.reviewSession&&(mark||delta>0)&&!r.read.includes(sentence.id)&&!(r.quizSeen?.[r.source]||[]).includes(sentence.id);
     let showQuiz=false;
     if(mark){r.read=uniq([...r.read,sentence.id]);scheduleSentence(sentence.id,!!r.reviewSession);}
-    if(newRead){
+    if(newExposure){
+      r.quizSeen ||= {};r.quizSeen[r.source] ||= [];r.quizSeen[r.source].push(sentence.id);
       const check=cadence();check.words+=wordCount(sentence);
       if(check.words>=check.target){
         check.words-=check.target;
@@ -152,10 +154,11 @@ const ReadingStudio=(()=>{
     selectedWord='';translationOpen=false;save();render();
     if(showQuiz)setupQuiz(true);
   }
-  function unquizzed(){const r=data(),covered=r.quizCovered?.[r.source]||[];return sentences().filter(s=>r.read.includes(s.id)&&!covered.includes(s.id));}
+  function unquizzed(){const r=data(),covered=r.quizCovered?.[r.source]||[],seen=new Set([...(r.quizSeen?.[r.source]||[]),...r.read]);return sentences().filter(s=>seen.has(s.id)&&!covered.includes(s.id));}
   function recentBlock(){
     const pending=unquizzed(),r=data();
-    const read=sentences().filter(s=>r.read.includes(s.id)),pool=pending.length?pending:read;
+    const seen=new Set([...(r.quizSeen?.[r.source]||[]),...r.read]);
+    const read=sentences().filter(s=>seen.has(s.id)),pool=pending.length?pending:read;
     const target=Math.max(10,Math.min(30,Number(r.quizWordInterval)||20));
     const recent=[];let words=0;
     for(let i=pool.length-1;i>=0&&words<target;i--){
