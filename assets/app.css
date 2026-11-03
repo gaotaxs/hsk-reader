@@ -127,3 +127,12 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 @media(max-width:720px){.sidebar-nav{grid-template-columns:repeat(7,minmax(0,1fr))}.side-label,.sidebar-collapsed .side-label{font-size:8px}.workspace-intro h2{font-size:22px}.workspace-intro p{font-size:12px}.workspace-page .reading-text-tools-heading{gap:8px}.workspace-page .reading-text-tools-heading button{width:100%}.workspace-page .reading-text-tools-heading .small{font-size:12px}.workspace-credits{padding:14px}}
 
 .reading-reinforcement-options{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.reading-reinforcement-options>select{width:100%}.reading-reinforcement-options h3{font-size:16px;margin:20px 0 4px}#readingExitReview{min-height:36px;padding:6px 10px;font-size:12px}
+
+/* A word remains one definition target; syllable hints have independent controls. */
+.sentence-unit{display:inline-flex;align-items:flex-end;white-space:nowrap;vertical-align:bottom;line-height:1.35;margin:0 2px}
+.sentence-paragraph{line-height:2.5;overflow-wrap:normal;word-break:normal}
+.sentence-unit .sentence-token{margin:0!important;vertical-align:bottom}
+.sentence-punctuation{display:inline-block;font:inherit;line-height:1.35;padding-bottom:5px}
+.reading-hint-row{position:absolute;bottom:calc(100% + 2px);left:0;width:100%;display:grid;grid-template-columns:repeat(var(--reading-columns),minmax(0,1fr));gap:3px;height:25px}
+.reading-hint-row .reading-pinyin-toggle{position:static;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;grid-template-columns:none}
+@media(max-width:600px){.reading-hint-row{height:22px;gap:2px}.sentence-unit{margin:0 1px}}

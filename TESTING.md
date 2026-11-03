@@ -96,3 +96,7 @@ Desktop Chromium additionally loaded this release, navigated Reader and Settings
 ## 1.12.2 pinyin grading
 
 97 checks pass: 37 application, 16 service-worker, 25 Reader and 19 lifecycle. Reader tests verify that hiding pinyin marks Known, both changes appear in backups, and revealing preserves Known. A contextual 长 regression verifies only zhǎng is marked when hiding that pronunciation. Global display preferences do not grade vocabulary.
+
+## 1.12.3 reader typesetting and per-character hints
+
+98 checks pass (37 application, 16 service-worker, 26 Reader, 19 lifecycle). The new regression covers independent 面/条 hints, Known only when both are hidden, persistence, compound definition/translation and punctuation grouping. Chromium at 390×844 displayed the reported sentence with 。 attached to 好吃 on its line; word and punctuation bounds shared the same top and bottom. Tapping 面 hid only miàn, leaving tiáo visible. Physical iPhone typography remains unverified.

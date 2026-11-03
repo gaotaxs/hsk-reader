@@ -108,5 +108,14 @@ test('A quiz miss schedules vocabulary and relevant sentences; review uses that 
  const restored=run('sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');assert.equal(restored.reviewSession.reason,'missed vocabulary');assert.ok(restored.wordReview[word]);
  $('readingExitReview').click();assert.equal(run('extras.reading.reviewSession'),null);
 });
+test('Compound syllables toggle independently while definition and punctuation stay grouped',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='面条。';extras.reading.positions.custom=0;extras.reading.pinyin='always';statuses['面条']='new';ReadingStudio.render()`);
+ const hints=w.document.querySelectorAll('[data-r-word="面条"]');assert.equal(hints.length,2);assert.equal(w.document.querySelectorAll('[data-r-definition="面条"]').length,1);
+ hints[0].click();assert.equal(run(`ReadingStudio.hintsVisible('面条','miàn tiáo',0)`),false);assert.equal(run(`ReadingStudio.hintsVisible('面条','miàn tiáo',1)`),true);assert.equal(run(`statusOf('面条')`),'new');
+ click('[data-r-word="面条"][data-r-index="1"]');assert.equal(run(`statusOf('面条')`),'known');click('[data-r-word="面条"][data-r-index="0"]');assert.equal(run(`statusOf('面条')`),'known');assert.equal(run(`ReadingStudio.hintsVisible('面条','miàn tiáo',1)`),false);
+ const restored=run('sanitizeExtras(getBackup().studio).reading');assert.equal(restored.hiddenPinyin['面条::hint::0'],false);assert.equal(restored.hiddenPinyin['面条::hint::1'],true);
+ const unit=w.document.querySelector('[data-r-definition="面条"]').closest('.sentence-unit');assert.equal(unit.querySelector('.sentence-punctuation').textContent,'。');
+ click('[data-r-definition="面条"]');assert.equal($('readingWordHeading').textContent,'面条');assert.match($('readingWordMeaning').textContent,/noodle/);$('readingWordClose').click();
+});
 test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('reader').classList.contains('active'),true);assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
 console.log(count+' reading workflow checks passed');dom.window.close();

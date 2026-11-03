@@ -1,3 +1,8 @@
+## 1.12.3
+
+- Reader punctuation stays on the Chinese text baseline and wraps with the preceding word.
+- Each character has its own pinyin toggle; compound words remain one definition/translation target. Hiding every syllable marks the compound Known; showing a hint does not demote it. Existing whole-word hint preferences remain supported.
+
 ## 1.12.2
 
 - Hiding a word’s pinyin in Reader also marks its contextual dictionary entry Known. Revealing pinyin again keeps the Known status. Global Hide all remains a display preference. Added persistence and polyphonic grading coverage.
