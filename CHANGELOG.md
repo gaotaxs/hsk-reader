@@ -1,3 +1,9 @@
+## 1.13.2
+
+- Wrapped sentence rows share one left edge within a centred text block. Matching pinyin/Chinese column gaps and token insets centre each syllable over its character.
+- Word pull uses elastic visual travel capped at 12px, retaining the deliberate 34px finger threshold. Increased row spacing protects the next row’s hints; the return bounce is limited to 2px above baseline.
+- Removed the remaining inset border from Known/ready words in both themes; only the subtle blue fill remains.
+
 ## 1.13.1
 
 - Known words use a faint light-blue cell fill and subtle inset border instead of a green outline, with a corresponding dark-theme tint.

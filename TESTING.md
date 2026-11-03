@@ -118,3 +118,7 @@ At Chromium 390×844, the reported sentence wraps as 你星期五有 / 时间游
 ## 1.13.1 baseline and word-only movement
 
 102 automated checks pass: 37 application, 16 service-worker, 30 Reader, 19 lifecycle. The gesture regression verifies that only the Chinese button receives a drag transform, while the token containing the pinyin does not. A new balancing check covers row count, order and orphan avoidance. Chromium 390×844 checks show identical word Y coordinates within each row of both reported sentences: 咖啡 aligns with its neighbours; 我已经准备好 / 明天的考试了。 uses two separate rows with no overlapping hints. A real drag marks 咖啡 Known, returns it to its row, and shows the light-blue fill with no green outline. Physical Safari/PWA testing remains unverified.
+
+## 1.13.2 aligned blocks and bounded pulls
+
+102 automated checks pass. The word-pull regression now verifies a 45px pointer movement produces only 12px of visual movement, with no token/pinyin transform. Chromium 390×844 shows both lines of 我已经准备好 / 明天的考试了。 at X=85px, with identical word baselines within each line. Before the final 1px inset adjustment, syllable/character centres differed by only 0.5px; the adjustment matches the hint grid to the Chinese content width. Row spacing leaves clearance below a fully pulled first-row word before the next hint row. Known/ready styling removes outlines and box shadows in both themes. Physical iPhone/iPad PWA checks remain unverified.

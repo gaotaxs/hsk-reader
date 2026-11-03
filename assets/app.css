@@ -158,3 +158,10 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 .sentence-line{display:flex;flex-wrap:nowrap;justify-content:center;align-items:flex-end;flex:none;width:100%}.sentence-line>.sentence-unit{flex:none;align-items:flex-end}.sentence-line .reading-word-button{transition:background-color .18s,box-shadow .18s}
 @media(max-width:600px){.sentence-card .sentence-paragraph{gap:30px}}
 @media(prefers-reduced-motion:reduce){.sentence-line .reading-word-button{transition:none}}
+
+/* A shared left edge and matching syllable/character columns keep rows readable. */
+.sentence-line{justify-content:flex-start;max-width:100%}.sentence-card .sentence-paragraph{gap:42px}.sentence-line .reading-word-button{column-gap:3px}
+.sentence-token.token-known .reading-word-button,.sentence-token.word-pull-ready .reading-word-button,[data-theme=dark] .sentence-token.token-known .reading-word-button,[data-theme=dark] .sentence-token.word-pull-ready .reading-word-button{border:0;outline:0;box-shadow:none}
+@media(max-width:600px){.sentence-card .sentence-paragraph{gap:40px}.sentence-line .reading-word-button{column-gap:2px}}
+
+.sentence-line .reading-hint-row{left:1px;width:calc(100% - 2px)}
