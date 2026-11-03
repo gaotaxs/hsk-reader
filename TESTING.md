@@ -108,3 +108,9 @@ Desktop Chromium additionally loaded this release, navigated Reader and Settings
 ## 1.12.5 stable reader card and tap pinyin
 
 99 automated checks pass. The Reader interaction regression now verifies native click toggling, truthful button labels, unchanged grading, preserved pinned syllables and reset on sentence navigation. At a Chromium 390×844 iframe viewport, short and wrapped sentences used the same 514px card height and footer Y coordinate (586.58px), including after translation reveal. Card dimensions depend on viewport size, not sentence length; overflow scrolls inside reserved content areas. The mobile long-press interaction has been removed. Physical iOS PWA validation remains outstanding.
+
+## 1.13.0 Reader gestures and line balance
+
+101 automated checks pass (37 application, 16 service-worker, 29 Reader, 19 lifecycle). Gesture regressions cover short pulls, pointer cancellation, successful compound-word grading and backups, Undo, accidental definition-click suppression, horizontal navigation, first-sentence bounds and unchanged read history. The contextual 长 regression now grades by word pull and verifies only zhǎng is Known. Pinyin tests verify that hint toggling no longer grades words.
+
+At Chromium 390×844, the reported sentence wraps as 你星期五有 / 时间游泳吗？; words and closing punctuation remain intact. A real browser pointer drag graded 游泳 and showed Undo with the count changing to 1 Known; a horizontal drag advanced to the next sentence without marking it read. These are mouse/pointer and CSS viewport checks, not physical iPhone/iPad PWA validation. Sentence text uses balanced wrapping and reduces font size down to 18px for constrained space; unusually long pasted sentences may exceed the static view and should be read with the explicit passage view.

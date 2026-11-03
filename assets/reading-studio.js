@@ -47,14 +47,17 @@ const ReadingStudio=(()=>{
     const units=[];for(const seg of segments(sentence.zh,sentence.py)){if(/^[，。！？、；：,.!?;:）》」』】”’]+$/u.test(seg.text)&&units.length)units[units.length-1]+=`<span class="sentence-punctuation">${escapeHtml(seg.text)}</span>`;else units.push(wordHTML(seg));}
     return units.map(html=>`<span class="sentence-unit">${html}</span>`).join('');
   }
+  function fitSentence(){const canvas=$('sentenceCanvas');canvas.style.fontSize='';if(data().mode!=='sentence'||!canvas.clientHeight)return;let size=parseFloat(getComputedStyle(canvas).fontSize);while(canvas.scrollHeight>canvas.clientHeight+1&&size>18){size-=1;canvas.style.fontSize=size+'px';}}
   function vocabWords(list=[current()]){return uniq(list.filter(Boolean).flatMap(s=>segments(s.zh,s.py).filter(x=>x.v).map(x=>x.text)));}
   function currentHint(word){const s=current();return s?segments(s.zh,s.py).find(t=>t.text===word)?.py||'':'';}
   function rstatus(word,next,pyHint=''){const key=definition(word,pyHint||currentHint(word))?.key||word;if(resolveEntry(key))setStatus(key,next);else{data().labels[key]=next;save();}render();}
   function toggleStar(list,value){const a=data()[list];data()[list]=a.includes(value)?a.filter(x=>x!==value):[...a,value];save();render();}
   function render(){
     if(!root)return;const r=data(),list=sentences(),index=position(),sentence=list[index];
-    const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();}
+    const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
     $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').textContent=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
+    updateGestureNotice();
+    $('sentenceCanvas').dataset.mode=r.mode;
     $('readingResumePractice').textContent=r.practice?.mode==='direct'&&r.practice.phase==='quiz'?'Resume quiz':'Quick quiz';
     for(const level of [2,3])$('readingSource').querySelector(`[value="${level}"]`).textContent=`HSK ${level} practice · ${READING_SENTENCES.filter(x=>x.level===level).length.toLocaleString()} sentences`;
     $('readingSource').value=r.source;$('readingPinyinMode').value=r.pinyin;$('readingSentenceInterval').value=String(interval());$('readingQuizCount').value=String(r.quizCount||10);$('readingQuizType').value=r.quizType||'mixed';
@@ -71,6 +74,7 @@ const ReadingStudio=(()=>{
     $('readingStarSentence').disabled=!sentence;$('readingStarSentence').textContent=r.starSentences.includes(sentence?.id)?'★ Saved':'☆ Save sentence';
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
     $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
+    fitSentence();
     const trans=$('sentenceTranslation');trans.hidden=!sentence;
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
@@ -87,7 +91,7 @@ const ReadingStudio=(()=>{
     $('readingIntervalProgress').textContent=`${pending.length} / ${interval()} sentences towards your next quiz · ${Math.max(0,interval()-pending.length)} to go`;
     $('readingCheckpoint').hidden=!due;
     $('readingCheckpointTitle').textContent=completed===list.length?'Reading complete. Put it into practice.':`${pending.length} sentences read. Ready for a quick quiz?`;
-    $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Hiding every syllable marks the word Known.';
+    $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Pull a Chinese word down and release to mark Known. Swipe left or right for the next or previous phrase.';
   }
   function vocabRow(word,selected=false){const sentence=current(),hint=sentence?segments(sentence.zh,sentence.py).find(t=>t.text===word)?.py||'':'',v=definition(word,hint),known=status(word,hint)==='known';return `<div class="reading-vocab-row ${selected?'selected-word':''}"><div><strong lang="zh-Hans">${escapeHtml(word)}</strong><span>${escapeHtml(v.pinyin)}</span><p>${escapeHtml(v.english)}</p></div><div class="reading-word-actions"><button data-r-speak="${escapeHtml(word)}" aria-label="Hear ${escapeHtml(word)}">Listen</button><button data-r-star="${escapeHtml(word)}" aria-label="${data().starWords.includes(word)?'Unsave':'Save'} ${escapeHtml(word)}">${data().starWords.includes(word)?'★':'☆'}</button><button data-r-status="${escapeHtml(word)}" data-r-next="${known?'learning':'known'}">${known?'Revisit':'✓ Known'}</button></div></div>`;}
   const SENTENCE_DAYS=[1,3,7,14,30];
@@ -182,14 +186,27 @@ const ReadingStudio=(()=>{
     $('readingWordHeading').textContent=word;$('readingWordPronunciation').textContent=v.pinyin;$('readingWordMeaning').textContent=v.english;$('readingWordState').textContent=status(word,pyHint);
     const dialog=$('readingWordDialog');if(!dialog.open)dialog.showModal();renderDetailsWriting();
   }
+  let drag=null,suppressClickUntil=0,lastKnown=null,undoTimer=0;
+  function cancelDrag(){if(drag?.token){drag.token.style.transform='';drag.token.classList.remove('word-pull-ready');}drag=null;}
+  function markWordKnown(word,py,offset=0){const previous=status(word,py);lastKnown={word,py,previous};clearTimeout(undoTimer);rstatus(word,'known',py);const button=[...$('sentenceCanvas').querySelectorAll('[data-r-definition]')].find(el=>el.dataset.rDefinition===word&&el.dataset.rPronunciation===py);if(button&&!matchMedia('(prefers-reduced-motion: reduce)').matches)button.animate?.([{transform:`translateY(${offset}px)`},{transform:'translateY(-8px)',offset:.65},{transform:'translateY(0)'}],{duration:330,easing:'cubic-bezier(.2,.8,.3,1)'});undoTimer=setTimeout(()=>{lastKnown=null;updateGestureNotice();},8000);}
+  function updateGestureNotice(){const notice=$('readingGestureNotice');notice.hidden=!lastKnown;if(lastKnown)$('readingGestureText').textContent=lastKnown.word+' marked Known';}
+  function bindSentenceGestures(){const canvas=$('sentenceCanvas');
+    canvas.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;cancelDrag();suppressClickUntil=0;const button=e.target.closest('[data-r-definition]');drag={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,axis:'',button,token:button?.closest('.sentence-token')};(button||canvas).setPointerCapture?.(e.pointerId);});
+    canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.dx=e.clientX-drag.x;drag.dy=e.clientY-drag.y;const x=Math.abs(drag.dx),y=Math.abs(drag.dy);if(!drag.axis&&Math.max(x,y)>10)drag.axis=x>y*1.25?'horizontal':drag.button&&drag.dy>0&&y>x*1.25?'word':'cancel';if(drag.axis){e.preventDefault();suppressClickUntil=Date.now()+450;}if(drag.axis==='word'){drag.token.style.transform=`translateY(${Math.min(56,Math.max(0,drag.dy))}px)`;drag.token.classList.toggle('word-pull-ready',drag.dy>=34);}});
+    const finish=(e,cancelled=false)=>{if(!drag||drag.id!==e.pointerId)return;const d=drag;cancelDrag();d.token?.classList.remove('word-pull-ready');if(cancelled)return;if(d.axis==='horizontal'&&Math.abs(d.dx)>=55&&Math.abs(d.dx)>Math.abs(d.dy)*1.25){e.preventDefault();move(d.dx<0?1:-1);}else if(d.axis==='word'&&d.dy>=34&&Math.abs(d.dx)<d.dy*.7){e.preventDefault();markWordKnown(d.button.dataset.rDefinition,d.button.dataset.rPronunciation,Math.min(56,d.dy));}};
+    canvas.addEventListener('pointerup',e=>finish(e));canvas.addEventListener('pointercancel',e=>finish(e,true));canvas.addEventListener('lostpointercapture',e=>finish(e,true));canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopPropagation();}},true);
+    window.addEventListener('blur',cancelDrag);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDrag();});
+    $('readingGestureUndo').onclick=()=>{if(!lastKnown)return;const old=lastKnown;lastKnown=null;clearTimeout(undoTimer);rstatus(old.word,old.previous,old.py);};
+  }
   function bind(){
+    bindSentenceGestures();
     const peekButton=$('readingPeek');
     peekButton.onclick=()=>setPeek(!peek);
     peekButton.oncontextmenu=e=>e.preventDefault();
     window.addEventListener('blur',()=>{if(peek)setPeek(false);});document.addEventListener('visibilitychange',()=>{if(document.hidden&&peek)setPeek(false);});
     root.addEventListener('click',e=>{
       const details=e.target.closest('[data-r-definition]');if(details){showDetails(details.dataset.rDefinition,details.dataset.rPronunciation);return;}
-      const token=e.target.closest('[data-r-word]');if(token){const word=token.dataset.rWord,index=Number(token.dataset.rIndex),py=token.dataset.rPronunciation,chars=Array.from(word);if(!Number.isInteger(index)||index<0||index>=chars.length)return;selectedWord=word;const key=hintKey(word,index),hiding=hintsVisible(word,py,index);if(hiding)revealedHints.delete(key);else revealedHints.add(key);data().hiddenPinyin[key]=hiding;const allHidden=chars.every((_,i)=>data().hiddenPinyin[hintKey(word,i)]===true);data().hiddenPinyin[word]=allHidden;save();if(hiding&&allHidden)rstatus(word,'known',py);else render();return;}
+      const token=e.target.closest('[data-r-word]');if(token){const word=token.dataset.rWord,index=Number(token.dataset.rIndex),py=token.dataset.rPronunciation,chars=Array.from(word);if(!Number.isInteger(index)||index<0||index>=chars.length)return;selectedWord=word;const key=hintKey(word,index),hiding=hintsVisible(word,py,index);if(hiding)revealedHints.delete(key);else revealedHints.add(key);data().hiddenPinyin[key]=hiding;data().hiddenPinyin[word]=chars.every((_,i)=>data().hiddenPinyin[hintKey(word,i)]===true);save();render();return;}
       const known=e.target.closest('[data-r-status]');if(known){rstatus(known.dataset.rStatus,known.dataset.rNext);return;}
       const star=e.target.closest('[data-r-star]');if(star){toggleStar('starWords',star.dataset.rStar);return;}
       const speak=e.target.closest('[data-r-speak]');if(speak)speakChinese(speak.dataset.rSpeak);
@@ -244,9 +261,9 @@ const ReadingStudio=(()=>{
       if(e.target.closest('#readingPracticeContinue')){if(p.cursor<p.words.length){p.phase='cards';save();renderPractice();}else{dialog.close();render();}}
     };
   }
-  window.onStudyDataReplaced=()=>{peek=false;hintContext='';revealedHints.clear();translationOpen=false;selectedWord='';quizSetup=null;localPracticeOptions=[];detailWord='';++detailGeneration;cancelWriters(detailWriters);detailWriters=[];for(const id of ['readingPracticeDialog','readingWordDialog','readingOptions'])if($(id).open)$(id).close();$('readingPracticeBody').innerHTML='';};
+  window.onStudyDataReplaced=()=>{cancelDrag();lastKnown=null;clearTimeout(undoTimer);peek=false;hintContext='';revealedHints.clear();translationOpen=false;selectedWord='';quizSetup=null;localPracticeOptions=[];detailWord='';++detailGeneration;cancelWriters(detailWriters);detailWriters=[];for(const id of ['readingPracticeDialog','readingWordDialog','readingOptions'])if($(id).open)$(id).close();$('readingPracticeBody').innerHTML='';};
   if(!data().order)setOrder('balanced');
   data().sentenceReview ||= {};let addedSchedule=false;for(const id of data().read)if(!data().sentenceReview[id]){data().sentenceReview[id]={step:0,due:Date.now()};addedSchedule=true;}if(addedSchedule)save();
-  bind();window.refreshReadingStudio=render;render();
+  bind();window.refreshReadingStudio=render;render();if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>fitSentence()).observe($('sentenceCanvas'));
   return {segments,definition,current,sentences,render,startPractice,hintsVisible,showDetails,setupQuiz,startSentenceReview,orderedLevel};
 })();

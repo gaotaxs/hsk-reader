@@ -1,3 +1,9 @@
+## 1.13.0
+
+- Added downward word-pull grading: 34px threshold, direction locking, cancellation, spring-back animation, persistent green Known outline and an eight-second Undo action. Compound words and contextual pronunciations use shared app statuses.
+- Horizontal phrase swipes navigate with a 55px threshold and preserve unread progress. Tap still opens definitions; pointer drags suppress accidental popup clicks. Pinyin toggles no longer grade vocabulary.
+- Sentence view is static with native balanced line wrapping and font fitting for longer phrases. Card dimensions remain fixed; explicit passage view retains its longer-text reading behavior. Reduced-motion preferences skip the bounce animation.
+
 ## 1.12.5
 
 - Replaced press-and-hold pinyin with a native tap toggle: Show pinyin / Hide pinyin. New sentences still begin concealed; individual hint pins and explicit Known grading remain separate.
