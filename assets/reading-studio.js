@@ -82,7 +82,7 @@ const ReadingStudio=(()=>{
     $('readingBar').style.width=(sessionFraction*100)+'%';
     $('readingBar').parentElement.setAttribute('aria-valuenow',String(checkpoint.words));
     $('readingBar').parentElement.setAttribute('aria-valuemax',String(checkpoint.target));
-    $('readingProgressText').textContent=checkpoint.words+' / '+checkpoint.target+' words to next quiz';
+    $('readingProgressText').textContent=checkpoint.words+' / '+checkpoint.target+' words to quiz';
     $('readingPrev').disabled=!index;$('readingNext').disabled=index>=list.length-1;
     $('readingMarkNext').disabled=!sentence;$('readingListen').disabled=!sentence;
     $('readingStarSentence').disabled=!sentence;$('readingStarSentence').textContent=r.starSentences.includes(sentence?.id)?'★ Saved':'☆ Save sentence';
@@ -123,7 +123,7 @@ const ReadingStudio=(()=>{
     for(const s of candidates)if(chosen.length<10&&!chosen.includes(s))chosen.push(s);
     r.reviewSession={ids:chosen.map(s=>s.id),index:0,reason:missed?'missed vocabulary':'earlier sentences'};$('readingOptions').close();save();render();
   }
-  function wordCount(sentence){return segments(sentence.zh,sentence.py).filter(token=>token.v).length;}
+  function wordCount(sentence){return segments(sentence.zh,sentence.py).filter(token=>token.v||Array.from(token.text).some(isChineseChar)).length;}
   function randomCheckpoint(){
     const base=Math.min(30,Math.max(10,Math.round(Number(data().quizWordInterval)||20)));
     const variance=Math.max(2,Math.round(base*.2));
@@ -226,10 +226,10 @@ const ReadingStudio=(()=>{
       await ensureHanziWriter();const results=await Promise.all(chars.map(async ch=>{try{await localCharacterLoader(ch);return ch;}catch{return null;}}));
       if(!valid())return;
       const supported=results.filter(Boolean),missing=chars.filter(ch=>!supported.includes(ch));
-      $('readingWordWritingNote').textContent=missing.length?`Writing data is not bundled for: ${missing.join('、')}.`:'Trace inside the character pad. Finish one character to move to the next.';
+      $('readingWordWritingNote').textContent=missing.length?`Writing data is not bundled for: ${missing.join('、')}.`:'Trace each stroke to continue.';
       if(!supported.length){panel.textContent='Writing data is not available for this word.';state.textContent='';return;}
       const viewportHeight=window.visualViewport?.height||window.innerHeight;
-      const padSize=Math.max(170,Math.min(288,window.innerWidth-100,viewportHeight-480));
+      const padSize=Math.max(168,Math.min(272,window.innerWidth-116,Math.round(viewportHeight*.3)));
       detailWriters=renderStrokeSurfaces({panel,status:state,wrap:panel.closest('.stroke-panel'),chars:supported,prefix:'readingWordStroke',traceMode:true,startQuiz:true,valid,guideVisible:detailGuide,padSize});
     }catch{if(valid()){state.textContent='Writing practice unavailable';panel.textContent='Please check the offline files in Settings.';}}
   }
