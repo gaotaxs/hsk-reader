@@ -1,3 +1,9 @@
+## 1.14.0
+
+- Slimmed hidden-pinyin masks to 15px on compact screens / 16px on larger screens while retaining the full tap target. Replaced night-mode sage Known fills with a pale icy blue.
+- Moved Known/Unknown feedback and Undo to a dedicated fixed-height row outside the translation area, so translation reveal/pinning cannot move it.
+- Increased default Chinese and pinyin sizes modestly. Added measured syllable-width protection and responsive paired font fitting so longer sentences remain legible without overlap. Very narrow screens use a taller fixed card to retain the static sentence pane.
+
 ## 1.13.4
 
 - Changed the night-mode Known-word fill to a soft sage green against the navy background. Day-mode blue fills and border-free styling remain unchanged.

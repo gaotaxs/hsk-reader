@@ -126,3 +126,11 @@ At Chromium 390×844, the reported sentence wraps as 你星期五有 / 时间游
 ## 1.13.3 Reader controls and reversible grading
 
 104 automated checks pass: 37 application, 16 service-worker, 32 Reader, 19 lifecycle. New checks cover pulling a Known compound to Unknown, removing the Known class, Undo back to Known, and accessible icon/pin state. Existing contextual-pronunciation and global backup/status checks pass. Chromium 390×844 exercised eye reveal, active pin and pinyin reveal; computed pinyin is 12px and token bottom border is 0px. The physical iOS PWA remains unverified.
+
+## 1.14.0 slimmer masks, fixed feedback and corpus sweep
+
+105 automated regression checks pass (37 application, 16 service-worker, 33 Reader, 19 lifecycle). The new DOM check verifies the feedback slot sits outside translation flow. A real pointer grade followed by translation reveal measured feedback at Y=550.58px in both states at 390×844.
+
+The full 1,602-sentence bank passed 12,816 Chromium layout cases: 320×568, 390×844, 768×1024 and 1280×800, each with hidden/light and visible/dark hints. Guards reject hidden/unmeasurable panes. Checks cover pane overflow, word clipping, row alignment, top hint clearance and pinyin exceeding its column. All four viewports returned zero failures. Test-only entry points use the actual sentence data, segmenter, markup and fitting functions. Results are in tests/layout-audit-results.json.
+
+Default Chinese is modestly larger (up to 30.81px at 390px wide, 38px on larger screens); long sentences scale Chinese/pinyin together when needed. Font ranges are reported in the JSON. Very narrow 320px screens use a taller 580px fixed card, so the outer main area can scroll while the sentence pane remains static. This is a Chromium geometry sweep and visual spot-check, not physical iPhone/iPad or OS accessibility-text-size certification.

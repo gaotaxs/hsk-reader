@@ -1,0 +1,72 @@
+{
+  "release": "1.14.0",
+  "sentence_count": 1602,
+  "rendered_cases": 12816,
+  "cases": [
+    {
+      "viewport": [
+        320,
+        568
+      ],
+      "cases": 3204,
+      "failures": 0,
+      "chinese_px": [
+        18,
+        28
+      ]
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "cases": 3204,
+      "failures": 0,
+      "chinese_px": [
+        21,
+        30.81
+      ]
+    },
+    {
+      "viewport": [
+        768,
+        1024
+      ],
+      "cases": 3204,
+      "failures": 0,
+      "chinese_px": [
+        35,
+        38
+      ]
+    },
+    {
+      "viewport": [
+        1280,
+        800
+      ],
+      "cases": 3204,
+      "failures": 0,
+      "chinese_px": [
+        30,
+        38
+      ]
+    }
+  ],
+  "checks": [
+    "Measurable visible reading pane",
+    "Vertical and horizontal overflow",
+    "Word bounds within pane",
+    "Words on the same row share a baseline",
+    "Pinyin top clearance",
+    "Visible pinyin fits its column"
+  ],
+  "states": [
+    "hidden hints / light theme",
+    "visible hints / dark theme"
+  ],
+  "method": "Chromium iframe viewports; test-only entry point renders each real sentence through production segmentation, word markup and responsive layout fitting. Does not certify physical iOS Safari or OS text scaling.",
+  "feedback_y_at_390": {
+    "translation_hidden": 550.578125,
+    "translation_visible": 550.578125
+  }
+}

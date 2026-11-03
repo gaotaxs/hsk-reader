@@ -176,3 +176,18 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 [data-theme=dark] .sentence-translation #readingTranslateToggle[aria-pressed=true],[data-theme=dark] .sentence-translation #readingPinTranslation[aria-pressed=true]{background:#69a7ed38;color:#b3d5ff}
 .sentence-translation button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.sentence-translation #readingPinTranslation[aria-pressed=true] svg{fill:currentColor;fill-opacity:.16}
 @media(max-width:600px){.sentence-line .reading-pinyin-toggle{font-size:12px;height:26px;min-height:26px;line-height:26px}.sentence-line .reading-hint-row{height:26px}.sentence-card .sentence-paragraph{gap:44px}}
+
+/* Slim visual masks retain generous touch targets. */
+.sentence-card>.sentence-canvas{font-size:38px}.sentence-line .reading-pinyin-toggle{font-size:15px;position:relative}.sentence-line .reading-pinyin-toggle.pinyin-masked,.sentence-line .reading-pinyin-toggle.pinyin-masked:hover{background:transparent!important}
+.sentence-line .reading-pinyin-toggle.pinyin-masked::before{content:"";position:absolute;left:0;right:0;top:50%;height:16px;transform:translateY(-50%);border-radius:3px;background:#e5e8e5;pointer-events:none}
+[data-theme=dark] .sentence-line .reading-pinyin-toggle.pinyin-masked::before{background:#344d6d}
+[data-theme=dark] .sentence-token.token-known .reading-word-button,[data-theme=dark] .sentence-token.word-pull-ready .reading-word-button{background:#c8e5ff45}
+.sentence-card{grid-template-rows:auto 4px minmax(0,1fr) 100px 28px auto;gap:8px}.reading-feedback-slot{height:28px;min-width:0;display:flex;justify-content:center;align-items:center}.reading-feedback-slot .reading-gesture-notice{white-space:nowrap;max-width:100%;min-width:0;font-size:12px;gap:8px}.reading-feedback-slot #readingGestureText{overflow:hidden;text-overflow:ellipsis}.sentence-card>.sentence-translation{padding:4px 0}
+@media(max-width:720px){.sentence-card>.sentence-canvas{font-size:clamp(28px,7.9vw,34px)}.sentence-line .reading-pinyin-toggle{font-size:13px}.sentence-line .reading-pinyin-toggle.pinyin-masked::before{height:15px}}
+
+@media(max-width:360px){.sentence-card{height:580px}}
+
+.sentence-line .reading-pinyin-toggle{bottom:auto;left:auto;top:auto}
+
+.sentence-line .reading-pinyin-toggle{font-size:var(--reader-hint-size,15px)}
+@media(max-width:720px){.sentence-line .reading-pinyin-toggle{font-size:var(--reader-hint-size,13px)}}
