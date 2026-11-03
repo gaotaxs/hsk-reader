@@ -435,8 +435,8 @@
     writers.forEach(w=>{ try{if(visible) w.showOutline();else w.hideOutline();}catch{} });
     syncTraceButtons(area,true,visible);
   }
-  function renderStrokeSurfaces({panel,status,wrap,chars,prefix,traceMode,startQuiz,valid,guideVisible}){
-    const size=traceMode?getTracePadSize():128;
+  function renderStrokeSurfaces({panel,status,wrap,chars,prefix,traceMode,startQuiz,valid,guideVisible,padSize}){
+    const size=traceMode?(Number.isFinite(padSize)?padSize:getTracePadSize()):128;
     const padding=traceMode?12:8;
     if(wrap) wrap.classList.toggle('trace-mode',traceMode);
     let loaded=0;
@@ -461,7 +461,7 @@
       if(!valid()) return;
       if(!traceMode){status.textContent='';return;}
       const mistakes=errors.reduce((a,b)=>a+b,0);
-      status.textContent=`${done.size}/${chars.length} characters complete · ${mistakes} mistakes`;
+      status.textContent=prefix==='readingWordStroke'?`${done.size}/${chars.length} written · ${mistakes} mistakes`:`${done.size}/${chars.length} characters complete · ${mistakes} mistakes`;
       if(done.size===chars.length) toast(`Tracing complete: ${chars.length} character${chars.length===1?'':'s'}!`);
     };
     chars.forEach((ch,i)=>{
@@ -1404,7 +1404,18 @@
   function sanitizeReading(raw){
     const strings=(v,n=10000)=>Array.isArray(v)?uniq(v.filter(s=>typeof s==='string'&&s.length<=100).slice(0,n)):[];
     const map=(v,check)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).filter(([k,x])=>k.length<=100&&check(x)).slice(0,10000)):{};
-    const out={source:['2','3','custom','starred'].includes(raw.source)?raw.source:'2',positions:map(raw.positions,x=>Number.isInteger(x)&&x>=0&&x<10000),hiddenPinyin:map(raw.hiddenPinyin,x=>typeof x==='boolean'),starWords:strings(raw.starWords),starSentences:strings(raw.starSentences),labels:map(raw.labels,x=>['new','learning','known'].includes(x)),read:strings(raw.read,5000),mode:raw.mode==='passage'?'passage':'sentence',pinyin:['always','never'].includes(raw.pinyin)?raw.pinyin:'adaptive',pin:!!raw.pin,every:raw.every===10?10:5,sentenceInterval:Math.min(30,Math.max(10,Math.round(Number(raw.sentenceInterval)||10))),quizCount:[5,10,15,20,30].includes(raw.quizCount)?raw.quizCount:10,quizType:['meaning','pinyin','zh-meaning','py-meaning'].includes(raw.quizType)?raw.quizType:'mixed',order:['balanced','original'].includes(raw.order)?raw.order:'',sentenceReview:map(raw.sentenceReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.step)&&x.step>=-1&&x.step<=4),wordReview:map(raw.wordReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.misses)&&x.misses>0),reviewSession:raw.reviewSession&&Array.isArray(raw.reviewSession.ids)?{ids:strings(raw.reviewSession.ids,10),index:Math.min(9,Math.max(0,Math.floor(Number(raw.reviewSession.index)||0))),reason:raw.reviewSession.reason==='missed vocabulary'?'missed vocabulary':'earlier sentences'}:null,quizCovered:map(raw.quizCovered,x=>Array.isArray(x)&&x.length<=5000&&x.every(s=>typeof s==='string'&&s.length<=100)),custom:typeof raw.custom==='string'?raw.custom.slice(0,200000):'',dismissedCheckpoint:strings(raw.dismissedCheckpoint,1000),practice:null};
+    const out={source:['2','3','custom','starred'].includes(raw.source)?raw.source:'2',positions:map(raw.positions,x=>Number.isInteger(x)&&x>=0&&x<10000),hiddenPinyin:map(raw.hiddenPinyin,x=>typeof x==='boolean'),starWords:strings(raw.starWords),starSentences:strings(raw.starSentences),labels:map(raw.labels,x=>['new','learning','known'].includes(x)),read:strings(raw.read,5000),mode:raw.mode==='passage'?'passage':'sentence',pinyin:['always','never'].includes(raw.pinyin)?raw.pinyin:'adaptive',pin:!!raw.pin,every:raw.every===10?10:5,sentenceInterval:Math.min(30,Math.max(10,Math.round(Number(raw.sentenceInterval)||10))),quizWordInterval:Math.min(30,Math.max(10,Math.round(Number(raw.quizWordInterval)||20))),quizCount:[5,10,15,20,30].includes(raw.quizCount)?raw.quizCount:10,quizType:['meaning','pinyin','zh-meaning','py-meaning'].includes(raw.quizType)?raw.quizType:'mixed',order:['balanced','original'].includes(raw.order)?raw.order:'',sentenceReview:map(raw.sentenceReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.step)&&x.step>=-1&&x.step<=4),wordReview:map(raw.wordReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.misses)&&x.misses>0),reviewSession:raw.reviewSession&&Array.isArray(raw.reviewSession.ids)?{ids:strings(raw.reviewSession.ids,10),index:Math.min(9,Math.max(0,Math.floor(Number(raw.reviewSession.index)||0))),reason:raw.reviewSession.reason==='missed vocabulary'?'missed vocabulary':'earlier sentences'}:null,quizCovered:map(raw.quizCovered,x=>Array.isArray(x)&&x.length<=5000&&x.every(s=>typeof s==='string'&&s.length<=100)),custom:typeof raw.custom==='string'?raw.custom.slice(0,200000):'',dismissedCheckpoint:strings(raw.dismissedCheckpoint,1000),practice:null};
+    out.quizSeen={};
+    if(raw.quizSeen&&typeof raw.quizSeen==='object'&&!Array.isArray(raw.quizSeen)){
+      for(const key of ['2','3','custom','starred'])if(Array.isArray(raw.quizSeen[key]))out.quizSeen[key]=strings(raw.quizSeen[key],5000);
+    }
+    out.quizCadence={};
+    if(raw.quizCadence&&typeof raw.quizCadence==='object'&&!Array.isArray(raw.quizCadence)){
+      for(const key of ['2','3','custom','starred']){
+        const record=raw.quizCadence[key];
+        if(record&&Number.isInteger(record.words)&&record.words>=0&&record.words<100&&Number.isInteger(record.target)&&record.target>=8&&record.target<=40)out.quizCadence[key]={words:record.words,target:record.target};
+      }
+    }
     const p=raw.practice;
     if(p&&Array.isArray(p.words)){
       const words=strings(p.words,30).filter(w=>/^[\u3400-\u9fff]{1,20}$/.test(w));

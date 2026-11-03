@@ -191,3 +191,49 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 
 .sentence-line .reading-pinyin-toggle{font-size:var(--reader-hint-size,15px)}
 @media(max-width:720px){.sentence-line .reading-pinyin-toggle{font-size:var(--reader-hint-size,13px)}}
+
+
+/* November 2026: consistent PWA brand placement and compact reading practice. */
+.header-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.header-brand>.header-identity{min-width:0}
+.header-brand-mark{display:none;width:38px;height:38px;flex:0 0 38px;object-fit:cover;border-radius:10px}
+.brand-glyph.brand-mark{display:block;object-fit:cover;background:transparent;width:42px;height:42px;padding:0;border-radius:11px}
+#readingProgressText{font-size:11px;font-weight:650;color:var(--accent);white-space:nowrap}
+.sentence-card>.progressbar{height:6px}
+.sentence-card{grid-template-rows:auto 6px minmax(0,1fr) 100px 28px auto}
+#readingCheckpoint[hidden]{display:none!important}
+.reading-word-dialog .stroke-panel{margin-top:12px;padding:12px}
+.reading-word-dialog .stroke-panel>.row{gap:6px}
+.reading-word-dialog .stroke-grid{margin-top:8px}
+.reading-word-dialog .stroke-progress-label{margin-top:4px;min-height:19px;font-size:11px}
+.reading-word-dialog .trace-step-nav{max-width:100%;gap:8px;margin-bottom:5px}
+.reading-word-dialog .trace-step-nav>button{min-height:35px;padding:5px 9px;font-size:12px}
+.reading-word-dialog .trace-step-count{font-size:12px;white-space:nowrap}
+.reading-word-dialog .reading-word-writing-actions{margin:9px 0 4px;gap:8px}
+.reading-word-dialog .reading-word-writing-actions button{min-height:39px;padding:7px 12px;font-size:13px}
+.reading-word-dialog #readingWordWritingNote{margin:4px 0 0;line-height:1.35;font-size:11px}
+@media(max-width:720px){
+  .header-brand-mark{display:block}
+  .header-brand{gap:9px}
+  .reading-word-dialog{width:min(460px,calc(100vw - 22px));max-height:calc(100dvh - 18px);height:fit-content;padding:24px 14px 12px;border-radius:22px;overflow-y:auto}
+  .reading-word-dialog .reading-practice-close{z-index:1;top:5px;right:7px}
+  .reading-word-dialog .reading-word-hero{margin-bottom:11px;padding:0 32px}
+  .reading-word-dialog .reading-word-hero h2{font-size:clamp(32px,10vw,47px);line-height:1.15;margin:0 0 5px}
+  .reading-word-dialog .reading-word-hero p{margin:3px auto;line-height:1.35;font-size:14px}
+  .reading-word-dialog .reading-word-hero #readingWordMeaning{font-size:16px}
+  .reading-word-dialog .reading-word-hero .pill{margin-top:3px}
+  .reading-word-dialog .reading-rating button{min-height:40px;padding:7px 4px;font-size:12px}
+  .reading-word-dialog .stroke-panel{margin-top:10px;padding:10px}
+  .reading-word-dialog .stroke-panel>.row strong{font-size:15px}
+  .reading-word-dialog .stroke-panel>.row .small{font-size:10px}
+  .reading-word-dialog .stroke-grid{margin-top:8px}
+  .reading-word-dialog .trace-step-nav{margin-bottom:4px}
+  #readingProgressText{font-size:10px}
+  .sentence-card>.row:first-child{column-gap:8px;row-gap:3px}
+}
+@media(max-height:670px) and (max-width:720px){
+ .reading-word-dialog .reading-word-hero{margin-bottom:7px}
+ .reading-word-dialog .reading-word-hero h2{font-size:36px}
+ .reading-word-dialog .stroke-panel{padding:8px}
+ .reading-word-dialog #readingWordWritingNote{display:none}
+}
