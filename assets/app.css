@@ -136,3 +136,6 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 .reading-hint-row{position:absolute;bottom:calc(100% + 2px);left:0;width:100%;display:grid;grid-template-columns:repeat(var(--reading-columns),minmax(0,1fr));gap:3px;height:25px}
 .reading-hint-row .reading-pinyin-toggle{position:static;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;grid-template-columns:none}
 @media(max-width:600px){.reading-hint-row{height:22px;gap:2px}.sentence-unit{margin:0 1px}}
+
+#readingPeek{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;font-size:12px;padding:9px 10px;white-space:nowrap}#readingPeek[aria-pressed=true]{background:var(--hsk2-bg);border-color:var(--accent)}
+@media(max-width:600px){.reading-navigation{gap:4px;flex-wrap:wrap}.reading-navigation #readingPeek{font-size:11px;padding:8px}.reading-navigation .primary{padding-left:10px;padding-right:10px}}

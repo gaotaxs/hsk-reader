@@ -1,3 +1,9 @@
+## 1.12.4
+
+- Sentences open with pinyin concealed. Hold Pinyin with a pointer or Space/Enter to peek at unfamiliar hints; release, cancellation, lost focus or navigation ends the peek.
+- Individual hint taps pin syllables for the current sentence. Default concealment and temporary peeks never grade words. Explicitly hiding every syllable retains the Known action and contextual pronunciation handling.
+- Saved hint preferences determine temporary peeks; existing Known statuses are preserved. Updated settings labels explain peek behavior.
+
 ## 1.12.3
 
 - Reader punctuation stays on the Chinese text baseline and wraps with the preceding word.

@@ -100,3 +100,7 @@ Desktop Chromium additionally loaded this release, navigated Reader and Settings
 ## 1.12.3 reader typesetting and per-character hints
 
 98 checks pass (37 application, 16 service-worker, 26 Reader, 19 lifecycle). The new regression covers independent 面/条 hints, Known only when both are hidden, persistence, compound definition/translation and punctuation grouping. Chromium at 390×844 displayed the reported sentence with 。 attached to 好吃 on its line; word and punctuation bounds shared the same top and bottom. Tapping 面 hid only miàn, leaving tiáo visible. Physical iPhone typography remains unverified.
+
+## 1.12.4 Chinese-first reader
+
+99 checks pass: 37 application, 16 service-worker, 27 Reader, 19 lifecycle. Reader checks cover concealed entry, pointer cancellation/release, keyboard hold/release, no grading during peeks, pinned syllables surviving peek release, concealment after sentence navigation and explicit hide-to-Known behavior. Existing compound and contextual pronunciation regressions remain in place.
