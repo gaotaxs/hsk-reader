@@ -1,3 +1,7 @@
+## 1.12.2
+
+- Hiding a word’s pinyin in Reader also marks its contextual dictionary entry Known. Revealing pinyin again keeps the Known status. Global Hide all remains a display preference. Added persistence and polyphonic grading coverage.
+
 ## 1.12.1
 
 - Live verification found a stale update button could do nothing after another window activated the worker. It now saves current work and reloads when no worker is waiting. Added a regression; 96 checks pass.

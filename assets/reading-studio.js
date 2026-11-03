@@ -176,7 +176,7 @@ const ReadingStudio=(()=>{
   function bind(){
     root.addEventListener('click',e=>{
       const details=e.target.closest('[data-r-definition]');if(details){showDetails(details.dataset.rDefinition,details.dataset.rPronunciation);return;}
-      const token=e.target.closest('[data-r-word]');if(token){const word=token.dataset.rWord;selectedWord=word;data().hiddenPinyin[word]=hintsVisible(word,token.dataset.rPronunciation);if(data().pinyin!=='adaptive')data().pinyin='adaptive';save();render();return;}
+      const token=e.target.closest('[data-r-word]');if(token){const word=token.dataset.rWord;selectedWord=word;const hiding=hintsVisible(word,token.dataset.rPronunciation);data().hiddenPinyin[word]=hiding;if(data().pinyin!=='adaptive')data().pinyin='adaptive';save();if(hiding)rstatus(word,'known',token.dataset.rPronunciation);else render();return;}
       const known=e.target.closest('[data-r-status]');if(known){rstatus(known.dataset.rStatus,known.dataset.rNext);return;}
       const star=e.target.closest('[data-r-star]');if(star){toggleStar('starWords',star.dataset.rStar);return;}
       const speak=e.target.closest('[data-r-speak]');if(speak)speakChinese(speak.dataset.rSpeak);

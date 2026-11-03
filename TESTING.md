@@ -92,3 +92,7 @@ See README deployment smoke checks and LIMITATIONS.md before describing this as 
 1 November 2026: **96 automated checks pass**: 37 application, 16 service-worker, 25 Reader and 18 new lifecycle checks. Run `npm test --prefix tests` from the app directory after installing the test dependencies. Lifecycle tests use actual app code and synthetic storage; they cover cold launches after reset, queued/pagehide saves, old-window writes, cancellation, partial deletion rollback, snapshot/marker failures, repeated reset, stale-window guards, update-save failures, import popup cleanup, lesson invalidation, malformed state, duplicate decks, polyphonic grading and unanswered quiz locking.
 
 Desktop Chromium additionally loaded this release, navigated Reader and Settings, and checked the Reader options dialog. Reset itself was verified in the synthetic lifecycle harness rather than by deleting real browser progress. Physical iPhone Home Screen PWA installation, OS suspension, storage eviction, Apple Pencil and device audio remain unverified. See AUDIT.md for the scoped findings and limitations.
+
+## 1.12.2 pinyin grading
+
+97 checks pass: 37 application, 16 service-worker, 25 Reader and 19 lifecycle. Reader tests verify that hiding pinyin marks Known, both changes appear in backups, and revealing preserves Known. A contextual 长 regression verifies only zhǎng is marked when hiding that pronunciation. Global display preferences do not grade vocabulary.
