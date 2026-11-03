@@ -127,7 +127,7 @@ const ReadingStudio=(()=>{
   function randomCheckpoint(){
     const base=Math.min(30,Math.max(10,Math.round(Number(data().quizWordInterval)||20)));
     const variance=Math.max(2,Math.round(base*.2));
-    return base+Math.floor(Math.random()*(variance*2+1))-variance;
+    return Math.max(10,Math.min(30,base+Math.floor(Math.random()*(variance*2+1))-variance));
   }
   function cadence(source=data().source){
     const r=data();r.quizCadence ||= {};
