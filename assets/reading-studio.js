@@ -47,7 +47,15 @@ const ReadingStudio=(()=>{
     const units=[];for(const seg of segments(sentence.zh,sentence.py)){if(/^[，。！？、；：,.!?;:）》」』】”’]+$/u.test(seg.text)&&units.length)units[units.length-1]+=`<span class="sentence-punctuation">${escapeHtml(seg.text)}</span>`;else units.push(wordHTML(seg));}
     return units.map(html=>`<span class="sentence-unit">${html}</span>`).join('');
   }
-  function fitSentence(){const canvas=$('sentenceCanvas');canvas.style.fontSize='';if(data().mode!=='sentence'||!canvas.clientHeight)return;let size=parseFloat(getComputedStyle(canvas).fontSize);while(canvas.scrollHeight>canvas.clientHeight+1&&size>18){size-=1;canvas.style.fontSize=size+'px';}}
+  function balancedBreaks(widths,limit){
+    const greedy=[];let start=0,sum=0;for(let i=0;i<widths.length;i++){if(i>start&&sum+widths[i]>limit){greedy.push(i);start=i;sum=0;}sum+=widths[i];}greedy.push(widths.length);
+    const count=greedy.length;if(count===1||widths.length>80)return greedy;
+    const target=widths.reduce((a,b)=>a+b,0)/count,memo=new Map();
+    function solve(from,lines){if(!lines)return from===widths.length?{cost:0,ends:[]}:null;const key=from+':'+lines;if(memo.has(key))return memo.get(key);let best=null,width=0;for(let end=from+1;end<=widths.length-lines+1;end++){width+=widths[end-1];if(width>limit&&end>from+1)break;const tail=solve(end,lines-1);if(tail){const cost=(width-target)**2+tail.cost;if(!best||cost<best.cost)best={cost,ends:[end,...tail.ends]};}}memo.set(key,best);return best;}return solve(0,count)?.ends||greedy;
+  }
+  function layoutSentences(){const canvas=$('sentenceCanvas');if(!canvas.clientWidth)return;for(const p of canvas.querySelectorAll('.sentence-paragraph')){const units=[...p.querySelectorAll('.sentence-unit')];if(!units.length)continue;const measure=document.createElement('span');measure.className='sentence-line';measure.style.width='max-content';measure.append(...units);p.replaceChildren(measure);const widths=units.map(el=>{const css=getComputedStyle(el);return el.getBoundingClientRect().width+parseFloat(css.marginLeft)+parseFloat(css.marginRight);});const ends=balancedBreaks(widths,canvas.clientWidth-2);p.replaceChildren();let start=0;for(const end of ends){const row=document.createElement('span');row.className='sentence-line';row.append(...units.slice(start,end));p.append(row);start=end;}}}
+  function fitSentence(){const canvas=$('sentenceCanvas');canvas.style.fontSize='';layoutSentences();if(data().mode!=='sentence'||!canvas.clientHeight)return;let size=parseFloat(getComputedStyle(canvas).fontSize);while(canvas.scrollHeight>canvas.clientHeight+1&&size>18){size-=1;canvas.style.fontSize=size+'px';layoutSentences();}}
+
   function vocabWords(list=[current()]){return uniq(list.filter(Boolean).flatMap(s=>segments(s.zh,s.py).filter(x=>x.v).map(x=>x.text)));}
   function currentHint(word){const s=current();return s?segments(s.zh,s.py).find(t=>t.text===word)?.py||'':'';}
   function rstatus(word,next,pyHint=''){const key=definition(word,pyHint||currentHint(word))?.key||word;if(resolveEntry(key))setStatus(key,next);else{data().labels[key]=next;save();}render();}
@@ -187,12 +195,12 @@ const ReadingStudio=(()=>{
     const dialog=$('readingWordDialog');if(!dialog.open)dialog.showModal();renderDetailsWriting();
   }
   let drag=null,suppressClickUntil=0,lastKnown=null,undoTimer=0;
-  function cancelDrag(){if(drag?.token){drag.token.style.transform='';drag.token.classList.remove('word-pull-ready');}drag=null;}
+  function cancelDrag(){if(drag?.token){drag.button.style.transform='';drag.token.classList.remove('word-pull-ready');}drag=null;}
   function markWordKnown(word,py,offset=0){const previous=status(word,py);lastKnown={word,py,previous};clearTimeout(undoTimer);rstatus(word,'known',py);const button=[...$('sentenceCanvas').querySelectorAll('[data-r-definition]')].find(el=>el.dataset.rDefinition===word&&el.dataset.rPronunciation===py);if(button&&!matchMedia('(prefers-reduced-motion: reduce)').matches)button.animate?.([{transform:`translateY(${offset}px)`},{transform:'translateY(-8px)',offset:.65},{transform:'translateY(0)'}],{duration:330,easing:'cubic-bezier(.2,.8,.3,1)'});undoTimer=setTimeout(()=>{lastKnown=null;updateGestureNotice();},8000);}
   function updateGestureNotice(){const notice=$('readingGestureNotice');notice.hidden=!lastKnown;if(lastKnown)$('readingGestureText').textContent=lastKnown.word+' marked Known';}
   function bindSentenceGestures(){const canvas=$('sentenceCanvas');
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;cancelDrag();suppressClickUntil=0;const button=e.target.closest('[data-r-definition]');drag={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,axis:'',button,token:button?.closest('.sentence-token')};(button||canvas).setPointerCapture?.(e.pointerId);});
-    canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.dx=e.clientX-drag.x;drag.dy=e.clientY-drag.y;const x=Math.abs(drag.dx),y=Math.abs(drag.dy);if(!drag.axis&&Math.max(x,y)>10)drag.axis=x>y*1.25?'horizontal':drag.button&&drag.dy>0&&y>x*1.25?'word':'cancel';if(drag.axis){e.preventDefault();suppressClickUntil=Date.now()+450;}if(drag.axis==='word'){drag.token.style.transform=`translateY(${Math.min(56,Math.max(0,drag.dy))}px)`;drag.token.classList.toggle('word-pull-ready',drag.dy>=34);}});
+    canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.dx=e.clientX-drag.x;drag.dy=e.clientY-drag.y;const x=Math.abs(drag.dx),y=Math.abs(drag.dy);if(!drag.axis&&Math.max(x,y)>10)drag.axis=x>y*1.25?'horizontal':drag.button&&drag.dy>0&&y>x*1.25?'word':'cancel';if(drag.axis){e.preventDefault();suppressClickUntil=Date.now()+450;}if(drag.axis==='word'){drag.button.style.transform=`translateY(${Math.min(56,Math.max(0,drag.dy))}px)`;drag.token.classList.toggle('word-pull-ready',drag.dy>=34);}});
     const finish=(e,cancelled=false)=>{if(!drag||drag.id!==e.pointerId)return;const d=drag;cancelDrag();d.token?.classList.remove('word-pull-ready');if(cancelled)return;if(d.axis==='horizontal'&&Math.abs(d.dx)>=55&&Math.abs(d.dx)>Math.abs(d.dy)*1.25){e.preventDefault();move(d.dx<0?1:-1);}else if(d.axis==='word'&&d.dy>=34&&Math.abs(d.dx)<d.dy*.7){e.preventDefault();markWordKnown(d.button.dataset.rDefinition,d.button.dataset.rPronunciation,Math.min(56,d.dy));}};
     canvas.addEventListener('pointerup',e=>finish(e));canvas.addEventListener('pointercancel',e=>finish(e,true));canvas.addEventListener('lostpointercapture',e=>finish(e,true));canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopPropagation();}},true);
     window.addEventListener('blur',cancelDrag);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDrag();});
@@ -265,5 +273,5 @@ const ReadingStudio=(()=>{
   if(!data().order)setOrder('balanced');
   data().sentenceReview ||= {};let addedSchedule=false;for(const id of data().read)if(!data().sentenceReview[id]){data().sentenceReview[id]={step:0,due:Date.now()};addedSchedule=true;}if(addedSchedule)save();
   bind();window.refreshReadingStudio=render;render();if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>fitSentence()).observe($('sentenceCanvas'));
-  return {segments,definition,current,sentences,render,startPractice,hintsVisible,showDetails,setupQuiz,startSentenceReview,orderedLevel};
+  return {segments,definition,current,sentences,render,startPractice,hintsVisible,showDetails,setupQuiz,startSentenceReview,orderedLevel,balancedBreaks};
 })();

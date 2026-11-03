@@ -150,3 +150,11 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 @media(max-width:600px){.sentence-card{height:clamp(380px,calc(100dvh - 330px),540px);gap:10px;grid-template-rows:auto 4px minmax(0,1fr) 124px auto}.sentence-card>.sentence-canvas{padding-top:27px;padding-bottom:8px}}
 
 .sentence-paragraph{text-wrap:balance}.sentence-card>.sentence-canvas[data-mode=sentence]{overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.sentence-canvas .reading-word-button,.sentence-canvas .sentence-token{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}.sentence-token.token-known .reading-word-button{outline:2px solid #3b966f;outline-offset:1px;border-radius:5px}.sentence-token.word-pull-ready .reading-word-button{outline:2px solid #3b966f;background:#3b966f22}.reading-gesture-notice{display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;color:var(--accent)}.reading-gesture-notice[hidden]{display:none}.reading-gesture-notice button{padding:2px 8px;min-height:28px}.sentence-card{position:relative}
+
+/* Known words use a quiet cell fill, without a prominent outline. */
+.sentence-token.token-known .reading-word-button,.sentence-token.word-pull-ready .reading-word-button{outline:0;box-shadow:inset 0 0 0 1px #91bde455;background:#dceeff80;border-radius:3px}
+[data-theme=dark] .sentence-token.token-known .reading-word-button,[data-theme=dark] .sentence-token.word-pull-ready .reading-word-button{background:#76ade524;box-shadow:inset 0 0 0 1px #83b4e342}
+.sentence-token:hover{background:transparent}.sentence-card .sentence-paragraph{display:flex;flex-direction:column;align-items:center;gap:34px;line-height:1.35;text-wrap:initial}
+.sentence-line{display:flex;flex-wrap:nowrap;justify-content:center;align-items:flex-end;flex:none;width:100%}.sentence-line>.sentence-unit{flex:none;align-items:flex-end}.sentence-line .reading-word-button{transition:background-color .18s,box-shadow .18s}
+@media(max-width:600px){.sentence-card .sentence-paragraph{gap:30px}}
+@media(prefers-reduced-motion:reduce){.sentence-line .reading-word-button{transition:none}}

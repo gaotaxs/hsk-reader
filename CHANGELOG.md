@@ -1,3 +1,9 @@
+## 1.13.1
+
+- Known words use a faint light-blue cell fill and subtle inset border instead of a green outline, with a corresponding dark-theme tint.
+- Pulling moves only the Chinese word button; pinyin stays anchored above its original position.
+- Replaced inline line-breaking with measured, balanced flex rows. Each row aligns Chinese words on the same baseline with reserved spacing for the next row’s pinyin. Compound words and punctuation remain intact.
+
 ## 1.13.0
 
 - Added downward word-pull grading: 34px threshold, direction locking, cancellation, spring-back animation, persistent green Known outline and an eight-second Undo action. Compound words and contextual pronunciations use shared app statuses.
