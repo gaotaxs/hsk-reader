@@ -86,8 +86,13 @@ const ReadingStudio=(()=>{
     const trans=$('sentenceTranslation');trans.hidden=!sentence;
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
-    $('readingTranslateToggle').textContent=translationOpen||r.pin?'Hide translation':'Reveal translation';
-    $('readingPinTranslation').textContent=r.pin?'Unpin translation':'Pin translation';$('readingPinTranslation').setAttribute('aria-pressed',String(r.pin));
+    const translationVisible=translationOpen||r.pin;
+    const eye=$('readingTranslateToggle'),pin=$('readingPinTranslation');
+    eye.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>${translationVisible?'<path d="m3 3 18 18"/>':''}</svg>`;
+    eye.setAttribute('aria-label',translationVisible?'Hide translation':'Reveal translation');eye.title=translationVisible?'Hide translation':'Reveal translation';eye.setAttribute('aria-pressed',String(translationVisible));
+    pin.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6l3 3v3H5v-3l3-3V3Z"/><path d="M12 15v6"/></svg>';
+    pin.setAttribute('aria-label',r.pin?'Unpin translation':'Pin translation');pin.title=r.pin?'Unpin translation':'Pin translation';pin.setAttribute('aria-pressed',String(r.pin));
+
     const words=vocabWords(),unknown=words.filter(w=>status(w,currentHint(w))!=='known'),display=unknown.filter(w=>!selectedWord||w!==selectedWord);
     $('readingWordCount').textContent=`${unknown.length} to learn · ${words.length-unknown.length} known`;
     const chosen=selectedWord&&definition(selectedWord);
@@ -99,7 +104,7 @@ const ReadingStudio=(()=>{
     $('readingIntervalProgress').textContent=`${pending.length} / ${interval()} sentences towards your next quiz · ${Math.max(0,interval()-pending.length)} to go`;
     $('readingCheckpoint').hidden=!due;
     $('readingCheckpointTitle').textContent=completed===list.length?'Reading complete. Put it into practice.':`${pending.length} sentences read. Ready for a quick quiz?`;
-    $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Pull a Chinese word down and release to mark Known. Swipe left or right for the next or previous phrase.';
+    $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Pull a Chinese word down and release to toggle Known or Unknown. Swipe left or right for the next or previous phrase.';
   }
   function vocabRow(word,selected=false){const sentence=current(),hint=sentence?segments(sentence.zh,sentence.py).find(t=>t.text===word)?.py||'':'',v=definition(word,hint),known=status(word,hint)==='known';return `<div class="reading-vocab-row ${selected?'selected-word':''}"><div><strong lang="zh-Hans">${escapeHtml(word)}</strong><span>${escapeHtml(v.pinyin)}</span><p>${escapeHtml(v.english)}</p></div><div class="reading-word-actions"><button data-r-speak="${escapeHtml(word)}" aria-label="Hear ${escapeHtml(word)}">Listen</button><button data-r-star="${escapeHtml(word)}" aria-label="${data().starWords.includes(word)?'Unsave':'Save'} ${escapeHtml(word)}">${data().starWords.includes(word)?'★':'☆'}</button><button data-r-status="${escapeHtml(word)}" data-r-next="${known?'learning':'known'}">${known?'Revisit':'✓ Known'}</button></div></div>`;}
   const SENTENCE_DAYS=[1,3,7,14,30];
@@ -196,8 +201,8 @@ const ReadingStudio=(()=>{
   }
   let drag=null,suppressClickUntil=0,lastKnown=null,undoTimer=0;
   function cancelDrag(){if(drag?.token){drag.button.style.transform='';drag.token.classList.remove('word-pull-ready');}drag=null;}
-  function markWordKnown(word,py,offset=0){const previous=status(word,py);lastKnown={word,py,previous};clearTimeout(undoTimer);rstatus(word,'known',py);const button=[...$('sentenceCanvas').querySelectorAll('[data-r-definition]')].find(el=>el.dataset.rDefinition===word&&el.dataset.rPronunciation===py);if(button&&!matchMedia('(prefers-reduced-motion: reduce)').matches)button.animate?.([{transform:`translateY(${offset}px)`},{transform:'translateY(-2px)',offset:.65},{transform:'translateY(0)'}],{duration:330,easing:'cubic-bezier(.2,.8,.3,1)'});undoTimer=setTimeout(()=>{lastKnown=null;updateGestureNotice();},8000);}
-  function updateGestureNotice(){const notice=$('readingGestureNotice');notice.hidden=!lastKnown;if(lastKnown)$('readingGestureText').textContent=lastKnown.word+' marked Known';}
+  function markWordKnown(word,py,offset=0){const previous=status(word,py),next=previous==='known'?'new':'known';lastKnown={word,py,previous,next};clearTimeout(undoTimer);rstatus(word,next,py);const button=[...$('sentenceCanvas').querySelectorAll('[data-r-definition]')].find(el=>el.dataset.rDefinition===word&&el.dataset.rPronunciation===py);if(button&&!matchMedia('(prefers-reduced-motion: reduce)').matches)button.animate?.([{transform:`translateY(${offset}px)`},{transform:'translateY(-2px)',offset:.65},{transform:'translateY(0)'}],{duration:330,easing:'cubic-bezier(.2,.8,.3,1)'});undoTimer=setTimeout(()=>{lastKnown=null;updateGestureNotice();},8000);}
+  function updateGestureNotice(){const notice=$('readingGestureNotice');notice.hidden=!lastKnown;if(lastKnown)$('readingGestureText').textContent=lastKnown.word+(lastKnown.next==='known'?' marked Known':' marked Unknown');}
   function bindSentenceGestures(){const canvas=$('sentenceCanvas');
     canvas.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;cancelDrag();suppressClickUntil=0;const button=e.target.closest('[data-r-definition]');drag={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,axis:'',button,token:button?.closest('.sentence-token')};(button||canvas).setPointerCapture?.(e.pointerId);});
     canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.dx=e.clientX-drag.x;drag.dy=e.clientY-drag.y;const x=Math.abs(drag.dx),y=Math.abs(drag.dy);if(!drag.axis&&Math.max(x,y)>10)drag.axis=x>y*1.25?'horizontal':drag.button&&drag.dy>0&&y>x*1.25?'word':'cancel';if(drag.axis){e.preventDefault();suppressClickUntil=Date.now()+450;}if(drag.axis==='word'){drag.button.style.transform=`translateY(${Math.min(12,Math.max(0,drag.dy)*.28)}px)`;drag.token.classList.toggle('word-pull-ready',drag.dy>=34);}});

@@ -122,3 +122,7 @@ At Chromium 390×844, the reported sentence wraps as 你星期五有 / 时间游
 ## 1.13.2 aligned blocks and bounded pulls
 
 102 automated checks pass. The word-pull regression now verifies a 45px pointer movement produces only 12px of visual movement, with no token/pinyin transform. Chromium 390×844 shows both lines of 我已经准备好 / 明天的考试了。 at X=85px, with identical word baselines within each line. Before the final 1px inset adjustment, syllable/character centres differed by only 0.5px; the adjustment matches the hint grid to the Chinese content width. Row spacing leaves clearance below a fully pulled first-row word before the next hint row. Known/ready styling removes outlines and box shadows in both themes. Physical iPhone/iPad PWA checks remain unverified.
+
+## 1.13.3 Reader controls and reversible grading
+
+104 automated checks pass: 37 application, 16 service-worker, 32 Reader, 19 lifecycle. New checks cover pulling a Known compound to Unknown, removing the Known class, Undo back to Known, and accessible icon/pin state. Existing contextual-pronunciation and global backup/status checks pass. Chromium 390×844 exercised eye reveal, active pin and pinyin reveal; computed pinyin is 12px and token bottom border is 0px. The physical iOS PWA remains unverified.

@@ -1,3 +1,10 @@
+## 1.13.3
+
+- Increased Reader pinyin to 12px on compact screens and 14px on larger screens, with matching hint height and row clearance.
+- Translation uses accessible eye and pin icon buttons with clear active states, eliminating long/unbalanced pin labels.
+- Strengthened the blue Known fill in both themes and removed the curved token underlines.
+- Downward pulls now toggle Known ↔ Unknown for the contextual word entry; Undo restores the previous status. Pinyin toggles remain display-only.
+
 ## 1.13.2
 
 - Wrapped sentence rows share one left edge within a centred text block. Matching pinyin/Chinese column gaps and token insets centre each syllable over its character.
