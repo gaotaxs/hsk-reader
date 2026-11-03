@@ -4,7 +4,7 @@ const ReadingStudio=(()=>{
   const orderedCache=new Map();
   let translationOpen=false,selectedWord='',localPracticeOptions=[],quizSetup=null;
   let peek=false,hintContext='',revealedHints=new Set();
-  const data=()=>extras.reading ||= {source:'2',positions:{},hiddenPinyin:{},starWords:[],starSentences:[],labels:{},read:[],mode:'sentence',pinyin:'adaptive',pin:false,every:5,sentenceInterval:10,quizCount:10,quizType:'mixed',quizCovered:{},order:'balanced',sentenceReview:{},wordReview:{},reviewSession:null,custom:'',practice:null};
+  const data=()=>extras.reading ||= {source:'2',positions:{},hiddenPinyin:{},starWords:[],starSentences:[],labels:{},read:[],mode:'sentence',pinyin:'adaptive',pin:false,every:5,sentenceInterval:10,quizWordInterval:20,quizCadence:{},quizCount:10,quizType:'mixed',quizCovered:{},order:'balanced',sentenceReview:{},wordReview:{},reviewSession:null,custom:'',practice:null};
   const save=()=>saveExtras();
   const status=(word,pyHint='')=>{const key=definition(word,pyHint)?.key||word;return resolveEntry(key)?statusOf(key):(data().labels[key]||'new');};
   const definition=(word,pyHint='')=>{if(word==='只'&&pyHint==='zhī')return{word,pinyin:'zhī',english:'classifier for animals and some objects',key:'只::zhī'};const v=word==='长'?resolveEntry((pyHint|| (data().source==='3'?'zhǎng':'cháng')).includes('zhǎng')?'长::zhǎng':'长::cháng'):resolveEntry(word),d=READING_DICTIONARY[word];return v?{word,pinyin:cardSyllables(v).join(' '),english:v.english,key:entryKey(v)}:d?{word,pinyin:d[0],english:d[1],key:word}:null;};
@@ -69,7 +69,7 @@ const ReadingStudio=(()=>{
     $('sentenceCanvas').dataset.mode=r.mode;
     $('readingResumePractice').textContent=r.practice?.mode==='direct'&&r.practice.phase==='quiz'?'Resume quiz':'Quick quiz';
     for(const level of [2,3])$('readingSource').querySelector(`[value="${level}"]`).textContent=`HSK ${level} practice · ${READING_SENTENCES.filter(x=>x.level===level).length.toLocaleString()} sentences`;
-    $('readingSource').value=r.source;$('readingPinyinMode').value=r.pinyin;$('readingSentenceInterval').value=String(interval());$('readingQuizCount').value=String(r.quizCount||10);$('readingQuizType').value=r.quizType||'mixed';
+    $('readingSource').value=r.source;$('readingPinyinMode').value=r.pinyin;$('readingWordInterval').value=String(r.quizWordInterval||20);$('readingQuizCount').value=String(r.quizCount||10);$('readingQuizType').value=r.quizType||'mixed';
     $('readingOrder').value=r.order||'balanced';
     const now=Date.now(),dueCount=Object.entries(r.sentenceReview||{}).filter(([id,v])=>v.due<=now&&r.read.includes(id)).length,misses=Object.keys(r.wordReview||{}).length;
     $('readingReviewSummary').textContent=`${dueCount} sentences due · ${misses} words to revisit`;$('readingReviewEarlier').disabled=!r.read.length;$('readingReviewMissed').disabled=!misses;
@@ -77,7 +77,12 @@ const ReadingStudio=(()=>{
     $('readingMode').textContent=r.mode==='sentence'?'Passage view · 10 sentences':'Sentence view';
     const completed=list.filter(x=>r.read.includes(x.id)).length;
     $('readingPosition').textContent=list.length?r.reviewSession?`Review ${index+1} / ${list.length} · ${r.reviewSession.reason}`:`${index+1} / ${list.length} sentences · ${completed} read`:'No sentences yet';
-    $('readingBar').style.width=list.length?`${(r.reviewSession?index:completed)/list.length*100}%`:'0%';
+    const checkpoint=cadence();
+    const sessionFraction=Math.min(1,checkpoint.words/Math.max(1,checkpoint.target));
+    $('readingBar').style.width=(sessionFraction*100)+'%';
+    $('readingBar').parentElement.setAttribute('aria-valuenow',String(checkpoint.words));
+    $('readingBar').parentElement.setAttribute('aria-valuemax',String(checkpoint.target));
+    $('readingProgressText').textContent=checkpoint.words+' / '+checkpoint.target+' words to next quiz';
     $('readingPrev').disabled=!index;$('readingNext').disabled=index>=list.length-1;
     $('readingMarkNext').disabled=!sentence;$('readingListen').disabled=!sentence;
     $('readingStarSentence').disabled=!sentence;$('readingStarSentence').textContent=r.starSentences.includes(sentence?.id)?'★ Saved':'☆ Save sentence';
@@ -101,10 +106,8 @@ const ReadingStudio=(()=>{
     if(chosen)$('readingSelectedWord').innerHTML=vocabRow(selectedWord,true);
     $('readingVocab').innerHTML=display.map(w=>vocabRow(w)).join('')||'<p class="small">You know the listed vocabulary in this sentence.</p>';
     $('readingReviewWords').disabled=!vocabWords(visible).some(w=>status(w)!=='known'||r.starWords.includes(w));
-    const pending=unquizzed(),due=!r.reviewSession&&pending.length>0&&(pending.length>=interval()||completed===list.length)&&!r.dismissedCheckpoint?.includes(r.source+':'+completed);
-    $('readingIntervalProgress').textContent=`${pending.length} / ${interval()} sentences towards your next quiz · ${Math.max(0,interval()-pending.length)} to go`;
-    $('readingCheckpoint').hidden=!due;
-    $('readingCheckpointTitle').textContent=completed===list.length?'Reading complete. Put it into practice.':`${pending.length} sentences read. Ready for a quick quiz?`;
+    $('readingIntervalProgress').textContent=checkpoint.words+' / '+checkpoint.target+' words towards your next quiz. The target varies between check-ins.';
+    $('readingCheckpoint').hidden=true;
     $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Pull a Chinese word down and release to toggle Known or Unknown. Swipe left or right for the next or previous phrase.';
   }
   function vocabRow(word,selected=false){const sentence=current(),hint=sentence?segments(sentence.zh,sentence.py).find(t=>t.text===word)?.py||'':'',v=definition(word,hint),known=status(word,hint)==='known';return `<div class="reading-vocab-row ${selected?'selected-word':''}"><div><strong lang="zh-Hans">${escapeHtml(word)}</strong><span>${escapeHtml(v.pinyin)}</span><p>${escapeHtml(v.english)}</p></div><div class="reading-word-actions"><button data-r-speak="${escapeHtml(word)}" aria-label="Hear ${escapeHtml(word)}">Listen</button><button data-r-star="${escapeHtml(word)}" aria-label="${data().starWords.includes(word)?'Unsave':'Save'} ${escapeHtml(word)}">${data().starWords.includes(word)?'★':'☆'}</button><button data-r-status="${escapeHtml(word)}" data-r-next="${known?'learning':'known'}">${known?'Revisit':'✓ Known'}</button></div></div>`;}
@@ -120,22 +123,56 @@ const ReadingStudio=(()=>{
     for(const s of candidates)if(chosen.length<10&&!chosen.includes(s))chosen.push(s);
     r.reviewSession={ids:chosen.map(s=>s.id),index:0,reason:missed?'missed vocabulary':'earlier sentences'};$('readingOptions').close();save();render();
   }
-  function move(delta,mark=false){const list=sentences(),r=data();if(!list.length)return;const sentence=current();if(mark){r.read=uniq([...r.read,sentence.id]);scheduleSentence(sentence.id,!!r.reviewSession);}
+  function wordCount(sentence){return segments(sentence.zh,sentence.py).filter(token=>token.v).length;}
+  function randomCheckpoint(){
+    const base=Math.min(30,Math.max(10,Math.round(Number(data().quizWordInterval)||20)));
+    const variance=Math.max(2,Math.round(base*.2));
+    return base+Math.floor(Math.random()*(variance*2+1))-variance;
+  }
+  function cadence(source=data().source){
+    const r=data();r.quizCadence ||= {};
+    if(!r.quizCadence[source]){r.quizCadence[source]={words:0,target:randomCheckpoint()};save();}
+    return r.quizCadence[source];
+  }
+  function move(delta,mark=false){
+    const list=sentences(),r=data();if(!list.length)return;
+    const sentence=current(),newRead=mark&&!r.reviewSession&&!r.read.includes(sentence.id);
+    let showQuiz=false;
+    if(mark){r.read=uniq([...r.read,sentence.id]);scheduleSentence(sentence.id,!!r.reviewSession);}
+    if(newRead){
+      const check=cadence();check.words+=wordCount(sentence);
+      if(check.words>=check.target){
+        check.words-=check.target;
+        check.target=randomCheckpoint();
+        showQuiz=true;
+      }
+    }
     if(r.reviewSession){if(mark&&position()===list.length-1){r.reviewSession=null;toast('Review complete. Your reading place is saved.');}else r.reviewSession.index=Math.max(0,Math.min(list.length-1,position()+delta));}
-    else r.positions[r.source]=Math.max(0,Math.min(list.length-1,position()+delta));selectedWord='';translationOpen=false;save();render();}
-  const interval=()=>Math.min(30,Math.max(10,Number(data().sentenceInterval)||10));
+    else r.positions[r.source]=Math.max(0,Math.min(list.length-1,position()+delta));
+    selectedWord='';translationOpen=false;save();render();
+    if(showQuiz)setupQuiz(true);
+  }
   function unquizzed(){const r=data(),covered=r.quizCovered?.[r.source]||[];return sentences().filter(s=>r.read.includes(s.id)&&!covered.includes(s.id));}
-  function recentBlock(){const pending=unquizzed();if(pending.length)return pending.slice(-interval());const r=data(),read=sentences().filter(s=>r.read.includes(s.id));return read.length?read.slice(-interval()):[current()].filter(Boolean);}
+  function recentBlock(){
+    const pending=unquizzed(),r=data();
+    const read=sentences().filter(s=>r.read.includes(s.id)),pool=pending.length?pending:read;
+    const target=Math.max(10,Math.min(30,Number(r.quizWordInterval)||20));
+    const recent=[];let words=0;
+    for(let i=pool.length-1;i>=0&&words<target;i--){
+      recent.unshift(pool[i]);words+=Math.max(1,wordCount(pool[i]));
+    }
+    return recent.length?recent:[current()].filter(Boolean);
+  }
   function startPractice(){
     quizSetup=null;const r=data(),pool=vocabWords(recentBlock()).filter(w=>status(w)!=='known'||r.starWords.includes(w));
     if(!pool.length){toast('No unfamiliar or saved words in this reading block. Try Quick quiz to include known words.');return;}
     r.practice={words:pool.slice(0,30),cursor:0,reveal:false,phase:'cards',questions:[],q:0,score:0,total:0,answered:false,order:[],feedback:''};save();openPractice();
   }
-  function setupQuiz(){
+  function setupQuiz(automatic=false){
     const block=recentBlock();localPracticeOptions=vocabWords(block);
     quizSetup={source:data().source,ids:block.map(s=>s.id)};
     const dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();
-    $('readingPracticeBody').innerHTML=`<h2 class="reading-quiz-heading">Quick quiz</h2><p class="small reading-quiz-subtitle">All ${localPracticeOptions.length} words from this ${block.length}-sentence block are included. Questions are sampled from the full vocabulary.</p><div class="reading-quiz-settings"><div><label for="readingSetupCount">Maximum questions</label><select id="readingSetupCount">${[5,10,15,20,30].map(n=>`<option value="${n}" ${n===(data().quizCount||10)?'selected':''}>${n}</option>`).join('')}</select></div><div><label for="readingSetupType">Quiz type</label><select id="readingSetupType"><option value="mixed">Mixed · all question types</option><option value="meaning">English → Chinese</option><option value="pinyin">Pinyin → Chinese</option><option value="zh-meaning">Chinese → English</option><option value="py-meaning">Pinyin → English</option></select></div></div><label class="reading-order-setting"><input id="readingSetupOrder" type="checkbox" checked> Include sentence order</label><div class="reading-quiz-footer"><p class="small">All covered words included</p><button class="primary" id="readingQuizStart" ${localPracticeOptions.length?'':'disabled'}>Start quiz →</button></div>`;
+    $('readingPracticeBody').innerHTML=`<h2 class="reading-quiz-heading">${automatic===true?'Time for a quick check':'Quick quiz'}</h2><p class="small reading-quiz-subtitle">Review words from your last ${block.length} sentences. Questions are sampled from ${localPracticeOptions.length} different words you have read.</p><div class="reading-quiz-settings"><div><label for="readingSetupCount">Maximum questions</label><select id="readingSetupCount">${[5,10,15,20,30].map(n=>`<option value="${n}" ${n===(data().quizCount||10)?'selected':''}>${n}</option>`).join('')}</select></div><div><label for="readingSetupType">Quiz type</label><select id="readingSetupType"><option value="mixed">Mixed · all question types</option><option value="meaning">English → Chinese</option><option value="pinyin">Pinyin → Chinese</option><option value="zh-meaning">Chinese → English</option><option value="py-meaning">Pinyin → English</option></select></div></div><label class="reading-order-setting"><input id="readingSetupOrder" type="checkbox" checked> Include sentence order</label><div class="reading-quiz-footer"><button id="readingQuizLater" type="button">Not now</button><button class="primary" id="readingQuizStart" ${localPracticeOptions.length?'':'disabled'}>Start quiz →</button></div>`;
     $('readingSetupType').value=data().quizType||'mixed';
   }
   function launchQuiz(){
@@ -191,7 +228,9 @@ const ReadingStudio=(()=>{
       const supported=results.filter(Boolean),missing=chars.filter(ch=>!supported.includes(ch));
       $('readingWordWritingNote').textContent=missing.length?`Writing data is not bundled for: ${missing.join('、')}.`:'Trace inside the character pad. Finish one character to move to the next.';
       if(!supported.length){panel.textContent='Writing data is not available for this word.';state.textContent='';return;}
-      detailWriters=renderStrokeSurfaces({panel,status:state,wrap:panel.closest('.stroke-panel'),chars:supported,prefix:'readingWordStroke',traceMode:true,startQuiz:true,valid,guideVisible:detailGuide});
+      const viewportHeight=window.visualViewport?.height||window.innerHeight;
+      const padSize=Math.max(170,Math.min(288,window.innerWidth-100,viewportHeight-480));
+      detailWriters=renderStrokeSurfaces({panel,status:state,wrap:panel.closest('.stroke-panel'),chars:supported,prefix:'readingWordStroke',traceMode:true,startQuiz:true,valid,guideVisible:detailGuide,padSize});
     }catch{if(valid()){state.textContent='Writing practice unavailable';panel.textContent='Please check the offline files in Settings.';}}
   }
   function showDetails(word,pyHint=''){
@@ -232,7 +271,7 @@ const ReadingStudio=(()=>{
     $('readingOptionsToggle').onclick=()=>{render();settingsDialog.showModal();};$('readingSettingsClose').onclick=()=>settingsDialog.close();
     let settingsBackdrop=false;const settingsOutside=e=>{const b=settingsDialog.getBoundingClientRect();return e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom;};
     settingsDialog.onpointerdown=e=>{settingsBackdrop=e.target===settingsDialog&&settingsOutside(e);};settingsDialog.onclick=e=>{if(settingsBackdrop&&e.target===settingsDialog&&settingsOutside(e))settingsDialog.close();settingsBackdrop=false;};
-    $('readingSentenceInterval').onchange=e=>{data().sentenceInterval=Math.min(30,Math.max(10,Math.round(Number(e.target.value)||10)));save();render();};
+    $('readingWordInterval').onchange=e=>{data().quizWordInterval=Math.min(30,Math.max(10,Math.round(Number(e.target.value)||20)));cadence().target=randomCheckpoint();save();render();};
     $('readingQuizCount').onchange=e=>{data().quizCount=Number(e.target.value);save();};
     $('readingQuizType').onchange=e=>{data().quizType=e.target.value;save();};
     $('readingMode').onclick=()=>{data().mode=data().mode==='sentence'?'passage':'sentence';save();render();};
@@ -243,7 +282,7 @@ const ReadingStudio=(()=>{
     $('readingPinTranslation').onclick=()=>{data().pin=!data().pin;save();render();};
     $('readingUseCustom').onclick=()=>{data().reviewSession=null;data().custom=$('inputText').value.slice(0,200000);data().source='custom';data().positions.custom=0;selectedWord='';save();render();switchTab('reader');root.scrollIntoView({behavior:'smooth',block:'start'});};
     $('readingReviewWords').onclick=startPractice;$('readingCheckpointStart').onclick=setupQuiz;
-    $('readingCheckpointDismiss').onclick=()=>{const r=data(),n=sentences().filter(x=>r.read.includes(x.id)).length;r.dismissedCheckpoint=uniq([...(r.dismissedCheckpoint||[]),r.source+':'+n]);save();render();};
+    $('readingCheckpointDismiss').onclick=()=>{$('readingCheckpoint').hidden=true;};
     $('readingResumePractice').onclick=()=>{quizSetup=null;if(data().practice?.mode==='direct'&&data().practice.phase==='quiz')openPractice();else setupQuiz();};
     const detail=$('readingWordDialog');
     $('readingWordClose').onclick=()=>detail.close();detail.addEventListener('close',()=>{++detailGeneration;cancelWriters(detailWriters);detailWriters=[];});
@@ -259,6 +298,7 @@ const ReadingStudio=(()=>{
     dialog.onpointerdown=e=>{backdrop=e.target===dialog&&outside(e);};dialog.addEventListener('click',e=>{if(backdrop&&e.target===dialog&&outside(e))dialog.close();backdrop=false;});
     
     $('readingPracticeBody').onclick=e=>{
+      if(e.target.closest('#readingQuizLater')){quizSetup=null;dialog.close();return;}
       if(e.target.closest('#readingQuizStart')){launchQuiz();return;}
       if(quizSetup)return;
       const p=data().practice;if(!p)return;
