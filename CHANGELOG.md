@@ -1,3 +1,8 @@
+## 1.12.5
+
+- Replaced press-and-hold pinyin with a native tap toggle: Show pinyin / Hide pinyin. New sentences still begin concealed; individual hint pins and explicit Known grading remain separate.
+- Sentence cards use a viewport-sized fixed frame with reserved translation space. Longer sentences, passages and translations scroll within their areas instead of moving the footer or resizing the card.
+
 ## 1.12.4
 
 - Sentences open with pinyin concealed. Hold Pinyin with a pointer or Space/Enter to peek at unfamiliar hints; release, cancellation, lost focus or navigation ends the peek.

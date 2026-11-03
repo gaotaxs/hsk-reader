@@ -54,7 +54,7 @@ const ReadingStudio=(()=>{
   function render(){
     if(!root)return;const r=data(),list=sentences(),index=position(),sentence=list[index];
     const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();}
-    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').disabled=!sentence;
+    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').textContent=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
     $('readingResumePractice').textContent=r.practice?.mode==='direct'&&r.practice.phase==='quiz'?'Resume quiz':'Quick quiz';
     for(const level of [2,3])$('readingSource').querySelector(`[value="${level}"]`).textContent=`HSK ${level} practice · ${READING_SENTENCES.filter(x=>x.level===level).length.toLocaleString()} sentences`;
     $('readingSource').value=r.source;$('readingPinyinMode').value=r.pinyin;$('readingSentenceInterval').value=String(interval());$('readingQuizCount').value=String(r.quizCount||10);$('readingQuizType').value=r.quizType||'mixed';
@@ -87,7 +87,7 @@ const ReadingStudio=(()=>{
     $('readingIntervalProgress').textContent=`${pending.length} / ${interval()} sentences towards your next quiz · ${Math.max(0,interval()-pending.length)} to go`;
     $('readingCheckpoint').hidden=!due;
     $('readingCheckpointTitle').textContent=completed===list.length?'Reading complete. Put it into practice.':`${pending.length} sentences read. Ready for a quick quiz?`;
-    $('readingPinyinNote').textContent='Try the Chinese first. Hold Pinyin to peek, or tap a shaded block to keep one syllable visible. Tap the Chinese word for its definition. Hiding every syllable marks the word Known.';
+    $('readingPinyinNote').textContent='Try the Chinese first. Tap Show pinyin for hints, or tap a shaded block for one syllable. Tap the Chinese word for its definition. Hiding every syllable marks the word Known.';
   }
   function vocabRow(word,selected=false){const sentence=current(),hint=sentence?segments(sentence.zh,sentence.py).find(t=>t.text===word)?.py||'':'',v=definition(word,hint),known=status(word,hint)==='known';return `<div class="reading-vocab-row ${selected?'selected-word':''}"><div><strong lang="zh-Hans">${escapeHtml(word)}</strong><span>${escapeHtml(v.pinyin)}</span><p>${escapeHtml(v.english)}</p></div><div class="reading-word-actions"><button data-r-speak="${escapeHtml(word)}" aria-label="Hear ${escapeHtml(word)}">Listen</button><button data-r-star="${escapeHtml(word)}" aria-label="${data().starWords.includes(word)?'Unsave':'Save'} ${escapeHtml(word)}">${data().starWords.includes(word)?'★':'☆'}</button><button data-r-status="${escapeHtml(word)}" data-r-next="${known?'learning':'known'}">${known?'Revisit':'✓ Known'}</button></div></div>`;}
   const SENTENCE_DAYS=[1,3,7,14,30];
@@ -184,14 +184,9 @@ const ReadingStudio=(()=>{
   }
   function bind(){
     const peekButton=$('readingPeek');
-    peekButton.onpointerdown=e=>{if(e.button!==0)return;e.preventDefault();peekButton.setPointerCapture?.(e.pointerId);setPeek(true);};
-    const endPeek=()=>{if(peek)setPeek(false);};
-    peekButton.onpointerup=endPeek;peekButton.onpointercancel=endPeek;peekButton.onlostpointercapture=endPeek;
-    peekButton.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)setPeek(true);}};
-    peekButton.onkeyup=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();endPeek();}};
-    peekButton.onclick=e=>{if(e.detail===0)setPeek(!peek);};
-    peekButton.oncontextmenu=e=>e.preventDefault();peekButton.onblur=endPeek;
-    window.addEventListener('pointerup',endPeek);window.addEventListener('blur',endPeek);document.addEventListener('visibilitychange',()=>{if(document.hidden)endPeek();});
+    peekButton.onclick=()=>setPeek(!peek);
+    peekButton.oncontextmenu=e=>e.preventDefault();
+    window.addEventListener('blur',()=>{if(peek)setPeek(false);});document.addEventListener('visibilitychange',()=>{if(document.hidden&&peek)setPeek(false);});
     root.addEventListener('click',e=>{
       const details=e.target.closest('[data-r-definition]');if(details){showDetails(details.dataset.rDefinition,details.dataset.rPronunciation);return;}
       const token=e.target.closest('[data-r-word]');if(token){const word=token.dataset.rWord,index=Number(token.dataset.rIndex),py=token.dataset.rPronunciation,chars=Array.from(word);if(!Number.isInteger(index)||index<0||index>=chars.length)return;selectedWord=word;const key=hintKey(word,index),hiding=hintsVisible(word,py,index);if(hiding)revealedHints.delete(key);else revealedHints.add(key);data().hiddenPinyin[key]=hiding;const allHidden=chars.every((_,i)=>data().hiddenPinyin[hintKey(word,i)]===true);data().hiddenPinyin[word]=allHidden;save();if(hiding&&allHidden)rstatus(word,'known',py);else render();return;}

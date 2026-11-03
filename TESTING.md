@@ -104,3 +104,7 @@ Desktop Chromium additionally loaded this release, navigated Reader and Settings
 ## 1.12.4 Chinese-first reader
 
 99 checks pass: 37 application, 16 service-worker, 27 Reader, 19 lifecycle. Reader checks cover concealed entry, pointer cancellation/release, keyboard hold/release, no grading during peeks, pinned syllables surviving peek release, concealment after sentence navigation and explicit hide-to-Known behavior. Existing compound and contextual pronunciation regressions remain in place.
+
+## 1.12.5 stable reader card and tap pinyin
+
+99 automated checks pass. The Reader interaction regression now verifies native click toggling, truthful button labels, unchanged grading, preserved pinned syllables and reset on sentence navigation. At a Chromium 390×844 iframe viewport, short and wrapped sentences used the same 514px card height and footer Y coordinate (586.58px), including after translation reveal. Card dimensions depend on viewport size, not sentence length; overflow scrolls inside reserved content areas. The mobile long-press interaction has been removed. Physical iOS PWA validation remains outstanding.
