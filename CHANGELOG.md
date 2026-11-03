@@ -1,3 +1,7 @@
+## 1.13.4
+
+- Changed the night-mode Known-word fill to a soft sage green against the navy background. Day-mode blue fills and border-free styling remain unchanged.
+
 ## 1.13.3
 
 - Increased Reader pinyin to 12px on compact screens and 14px on larger screens, with matching hint height and row clearance.

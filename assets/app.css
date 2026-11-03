@@ -170,7 +170,7 @@ dialog.flash-stroke-shell{padding:16px 20px}.flash-stroke-shell .stroke-head{min
 .sentence-line .reading-pinyin-toggle{font-size:14px;height:28px;min-height:28px;line-height:28px}.sentence-line .reading-hint-row{height:28px}.sentence-card .sentence-paragraph{gap:46px}
 .sentence-line .sentence-token{border:0!important;border-radius:0;padding-bottom:5px!important}.sentence-line .sentence-token:hover{border:0!important}
 .sentence-token.token-known .reading-word-button,.sentence-token.word-pull-ready .reading-word-button{background:#b9dcff99}
-[data-theme=dark] .sentence-token.token-known .reading-word-button,[data-theme=dark] .sentence-token.word-pull-ready .reading-word-button{background:#69a7ed42}
+[data-theme=dark] .sentence-token.token-known .reading-word-button,[data-theme=dark] .sentence-token.word-pull-ready .reading-word-button{background:#a9ddba66}
 .sentence-translation #readingTranslateToggle,.sentence-translation #readingPinTranslation{display:inline-flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;min-height:40px;padding:8px;border:0;box-shadow:none;border-radius:9px;color:var(--muted);background:transparent}
 .sentence-translation #readingTranslateToggle[aria-pressed=true],.sentence-translation #readingPinTranslation[aria-pressed=true]{background:#b9dcff66;color:#245f97}
 [data-theme=dark] .sentence-translation #readingTranslateToggle[aria-pressed=true],[data-theme=dark] .sentence-translation #readingPinTranslation[aria-pressed=true]{background:#69a7ed38;color:#b3d5ff}
