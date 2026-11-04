@@ -36,23 +36,20 @@ test('Reader controls live in a settings dialog and sentence vocabulary starts c
 });
 test('Pinyin hint choices survive backup sanitization',()=>{const r=run('sanitizeExtras(extras).reading');assert.ok(Object.keys(r.hiddenPinyin).length);assert.equal(r.source,'2')});
 test('Sentence translation is initially hidden, reveals and can be pinned',()=>{assert.equal($('readingTranslationText').hidden,true);$('readingTranslateToggle').click();assert.equal($('readingTranslationText').hidden,false);$('readingPinTranslation').click();$('readingMarkNext').click();assert.equal($('readingTranslationText').hidden,false)});
-test('Reader progress bar shows word progress before the next quiz',()=>{
- run('extras.reading.quizCadence["2"]={words:0,target:20};ReadingStudio.render()');
- assert.equal(parseFloat($('readingBar').style.width),0);
- $('readingMarkNext').click();
- assert.ok(parseFloat($('readingBar').style.width)>0);
- assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),run('extras.reading.quizCadence["2"].words'));
- assert.ok($('readingProgressText').textContent.includes('words to quiz'));
+test('Reader progress shows overall read sentences independently of quiz cadence',()=>{
+ run('extras.reading.read=[];extras.reading.quizSeen={};extras.reading.quizCadence={};extras.reading.positions["2"]=0;ReadingStudio.render()');
+ assert.equal(parseFloat($('readingBar').style.width),0);$('readingMarkNext').click();
+ assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
+ assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuemax')),421);
+ assert.ok(Math.abs(parseFloat($('readingBar').style.width)-100/421)<.001);
+ assert.match($('readingProgressText').textContent,/1 \/ 20 sentences to quiz/);
 });
-test('An approximately twenty-word checkpoint automatically opens the quick quiz',()=>{
- run('extras.reading.quizCadence["2"]={words:19,target:20};ReadingStudio.render()');
+test('Exactly twenty sentences trigger a quiz with all vocabulary eligible',()=>{
+ for(let i=1;i<19;i++)$('readingMarkNext').click();assert.equal($('readingPracticeDialog').open,false);
  $('readingMarkNext').click();assert.equal($('readingPracticeDialog').open,true);
- assert.equal($('readingCheckpoint').hidden,true);
- assert.ok(run('extras.reading.quizCadence["2"].target')>=10);
- assert.ok(run('extras.reading.quizCadence["2"].target')<=30);
  assert.ok($('readingQuizStart'));assert.equal($('readingCardReveal'),null);
- assert.ok($('readingPracticeBody').textContent.includes('Questions are sampled from'));
- assert.ok($('readingQuizLater'));
+ assert.match($('readingPracticeBody').textContent,/last 20 sentences/);
+ assert.ok(run('extras.reading.quizSeen["2"].length')===20);
 });
 test('Not now defers the quiz without marking untested words as reviewed',()=>{
  const covered=run('extras.reading.quizCovered["2"]?.length||0');
@@ -83,27 +80,13 @@ test('Reader quiz and selected vocabulary survive backup round-trip',()=>{
 test('Completing a quiz covers its reading sentences and keeps a live progress bar',()=>{
  const p=run('extras.reading.practice'),covered=run('extras.reading.quizCovered["2"]');
  assert.equal(covered.length,p.sentenceIds.length);assert.equal($('readingCheckpoint').hidden,true);
- assert.ok($('readingIntervalProgress').textContent.includes('words towards your next quiz'));
+ assert.ok($('readingIntervalProgress').textContent.includes('sentences towards your next quiz'));
 });
-test('Saved variable quiz cadence supports all 10 to 30-word intervals',()=>{
- $('readingPracticeClose').click();$('readingOptionsToggle').click();assert.equal($('readingOptions').open,true);
- for(const n of [10,17,20,30]){
-  $('readingWordInterval').value=n;$('readingWordInterval').dispatchEvent(new w.Event('change'));
-  assert.equal(run('sanitizeExtras(extras).reading.quizWordInterval'),n);
-  assert.ok(run('extras.reading.quizCadence["2"].target')>=10);
-  assert.ok(run('extras.reading.quizCadence["2"].target')<=30);
- }
- $('readingWordInterval').value=100;$('readingWordInterval').dispatchEvent(new w.Event('change'));
- assert.equal(run('extras.reading.quizWordInterval'),30);
- $('readingWordInterval').value=1;$('readingWordInterval').dispatchEvent(new w.Event('change'));
- assert.equal(run('extras.reading.quizWordInterval'),10);
- $('readingWordInterval').value=20;$('readingWordInterval').dispatchEvent(new w.Event('change'));
- $('readingSettingsClose').click();
-});
-test('Word-quiz cadence and partial progress survive sanitization',()=>{
- const r=run('sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');
- assert.equal(r.quizWordInterval,20);
- assert.deepEqual(r.quizCadence['2'],run('extras.reading.quizCadence["2"]'));
+test('Sentence intervals and partial progress survive sanitization',()=>{
+ $('readingPracticeClose').click();$('readingOptionsToggle').click();
+ for(const n of [10,20,30]){$('readingWordInterval').value=n;$('readingWordInterval').dispatchEvent(new w.Event('change'));assert.equal(run('sanitizeExtras(extras).reading.sentenceInterval'),n);assert.equal(run('extras.reading.quizCadence["2"].target'),n);}
+ $('readingWordInterval').value=20;$('readingWordInterval').dispatchEvent(new w.Event('change'));$('readingSettingsClose').click();
+ const r=run('sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');assert.equal(r.cadenceUnit,'sentences');assert.equal(r.sentenceInterval,20);assert.deepEqual(r.quizCadence['2'],run('extras.reading.quizCadence["2"]'));
  assert.deepEqual(r.quizSeen['2'],run('extras.reading.quizSeen["2"]'));
 });
 test('A 30-question direct quiz survives backup and resumes without flashcards',()=>{
@@ -180,4 +163,26 @@ test('Horizontal phrase swipes preserve unread state and clamp at the first sent
 test('Balanced word rows avoid an orphan final unit and preserve order',()=>{const ends=Array.from(run('ReadingStudio.balancedBreaks([30,60,30,30,60,60,60],300)'));assert.equal(ends.length,2);assert.ok(ends[0]<=5);assert.equal(ends[1],7);assert.deepEqual(Array.from(run('ReadingStudio.balancedBreaks([30,60,30],300)')),[3]);});
 test('Word feedback occupies a dedicated slot outside translation flow',()=>{assert.equal($('readingGestureNotice').closest('.reading-feedback-slot').parentElement.classList.contains('sentence-card'),true);assert.equal($('readingGestureNotice').closest('#sentenceTranslation'),null);});
 test('Custom pasted text opens as sentences without losing the original draft',()=>{$('readingPracticeClose').click();$('inputText').value='我们一起学习。明天去公园。';$('readingUseCustom').click();assert.equal(run('ReadingStudio.sentences().length'),2);assert.equal($('readingSource').value,'custom');assert.equal($('reader').classList.contains('active'),true);assert.equal($('inputText').value,'我们一起学习。明天去公园。')});
+test('Pinyin pointer taps never capture or retarget the hint button',()=>{
+ run(`extras.reading.source='2';extras.reading.reviewSession=null;ReadingStudio.render()`);
+ const hint=w.document.querySelector('[data-r-word]');let captured=false;$('sentenceCanvas').setPointerCapture=()=>{captured=true};
+ const e=new w.Event('pointerdown',{bubbles:true,cancelable:true});Object.assign(e,{pointerId:22,button:0,isPrimary:true,clientX:100,clientY:100});hint.dispatchEvent(e);assert.equal(captured,false);hint.click();assert.equal(w.document.querySelector('[data-r-word]').getAttribute('aria-pressed'),'true');
+});
+test('Quiz exit and resume preserve track, sentence, arrows and all eligible words',()=>{
+ run(`extras.reading.source='2';extras.reading.positions['2']=25;extras.reading.practice=null;extras.reading.read=ReadingStudio.orderedLevel(2).slice(0,20).map(s=>s.id);extras.reading.quizSeen={};extras.reading.quizCovered={};ReadingStudio.render()`);
+ const id=run('ReadingStudio.current().id');$('readingResumePractice').click();$('readingSetupCount').value='5';$('readingSetupOrder').checked=false;$('readingQuizStart').click();
+ assert.equal(run('extras.reading.practice.sentenceIds.length'),20);assert.ok(run('extras.reading.practice.words.length')>5);assert.equal(run('extras.reading.practice.questions.length'),5);
+ const p=run('extras.reading.practice'),q=p.questions[0];click('[data-reading-answer="'+q.options.findIndex(x=>x!==q.word)+'"]');
+ assert.ok(w.document.querySelector('[data-reading-answer].wrong'));assert.ok(w.document.querySelector('[data-reading-answer].correct'));assert.match($('readingPracticeBody').textContent,/Answer:/);assert.ok($('readingQuestionNext').querySelector('svg'));
+ $('readingPracticeClose').click();assert.equal(run('ReadingStudio.current().id'),id);assert.equal(run('ReadingStudio.sentences().length'),421);assert.equal($('readingNext').disabled,false);
+ $('readingResumePractice').click();assert.ok(w.document.querySelector('[data-reading-answer].wrong'));$('readingPracticeClose').click();$('readingNext').click();assert.notEqual(run('ReadingStudio.current().id'),id);
+ const restored=run('sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');assert.ok(restored.practice.words.length>5);assert.equal(restored.practice.selectedAnswer,p.selectedAnswer);
+});
+test('Navigation, progress and vocabulary status controls have the requested structure',()=>{
+ assert.equal(w.document.querySelector('[data-tab]').dataset.tab,'reader');assert.equal($('progressSummary').closest('section').id,'lessons');assert.equal($('writingSummary').closest('section').id,'lessons');
+ assert.ok($('settings').querySelectorAll('.settings-grid>details').length>=6);assert.equal($('vocabTable').querySelector('.status-chip'),null);assert.ok($('vocabTable').querySelector('[data-status="new"] svg'));
+});
+test('A stale review list or numeric track never leaves a preset reader empty',()=>{
+ run(`extras.reading.source=2;extras.reading.reviewSession={ids:['obsolete-sentence'],index:0};ReadingStudio.render()`);assert.equal(run('ReadingStudio.sentences().length'),421);assert.equal(run('extras.reading.reviewSession'),null);assert.equal($('readingNext').disabled,false);
+});
 console.log(count+' reading workflow checks passed');dom.window.close();

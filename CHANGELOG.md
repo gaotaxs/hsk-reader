@@ -1,3 +1,13 @@
+## 1.15.0
+
+- Reader is first and opens by default. Removed decorative headings, eyebrow copy and slogans while retaining accessible page names.
+- Lesson starts/resumes the matching flashcard plan and displays the correct level and card count. Study totals, daily review and writing progress now live on Lessons.
+- Pinyin buttons no longer enter pointer capture; taps reveal individual syllables without grading. Quiz close/resume restores the reading place, invalid legacy track types normalize, and stale review IDs cannot leave the preset reader empty.
+- Reader progress measures read sentences across the selected track. Quick quizzes default to blocks of 20 sentences (10/20/30 configurable), with all vocabulary eligible and question count configured separately. Old word-based cadence migrates without removing read history or word progress.
+- Vocabulary filters, count and search stay above the scrolling rows. Known/learning rows use themed fills; status pills are removed and reset uses an accessible icon.
+- Settings use compact disclosure groups. The reader uses a centered gear icon. Quiz landing no longer shows an empty score card; fixed quiz shells reserve feedback space, enlarge choices, highlight incorrect and correct answers, and place the next arrow alongside feedback.
+- Root npm test now runs the complete tests directory. Expanded regression coverage for pointer targeting, sentence cadence, vocabulary pools, quiz return/resume, and lesson navigation. Cache version: 1.15.0.
+
 ## 1.14.0
 
 - Slimmed hidden-pinyin masks to 15px on compact screens / 16px on larger screens while retaining the full tap target. Replaced night-mode sage Known fills with a pale icy blue.
