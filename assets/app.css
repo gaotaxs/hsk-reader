@@ -288,3 +288,7 @@ body:has(#vocab.active) .app-main{height:calc(100dvh - 65px);overflow:hidden;pad
 .reading-vocab-content{display:flow-root;overflow-anchor:none}.reading-vocabulary>summary .disclosure-chevron{transition:transform 230ms cubic-bezier(.22,.68,0,1)}
 @media(prefers-reduced-motion:reduce){.reading-vocabulary>summary .disclosure-chevron{transition:none}}
 .reading-vocabulary>summary[aria-expanded=false] .disclosure-chevron{transform:rotate(0)}.reading-vocabulary>summary[aria-expanded=true] .disclosure-chevron{transform:rotate(180deg)}
+
+/* Reader popup actions and status placement. */
+.reading-word-dialog .reading-word-hero{grid-template-columns:max-content minmax(0,1fr) auto}.reading-word-dialog .reading-word-hero #readingWordState{justify-self:end;align-self:start;margin-top:4px}
+#readingWordDialog .reading-rating button{display:flex;align-items:center;justify-content:center;gap:7px}#readingWordDialog .reading-rating button svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
