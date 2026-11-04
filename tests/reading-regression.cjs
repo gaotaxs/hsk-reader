@@ -201,4 +201,7 @@ test('Word guide metadata is beside the word and vocabulary has a separate scrol
  assert.ok($('readingWordMeaning').closest('.reading-word-info'));assert.equal($('readingWordHeading').parentElement,$('readingWordMeaning').closest('.reading-word-hero'));assert.ok($('readingVocab').closest('.reading-vocab-content'));
  const css=fs.readFileSync('assets/app.css','utf8');assert.ok(css.includes('height:var(--sentence-frame-height'));assert.ok(css.includes('.reading-vocabulary[open] .reading-vocab-content'));assert.ok($('flashGuideWord'));assert.ok($('flashGuidePinyin'));
 });
+test('Reader popup places status at the right and supplies accessible listen and learning icons',()=>{
+ assert.equal($('readingWordState').parentElement.className,'reading-word-hero');assert.equal($('readingWordState').previousElementSibling.className,'reading-word-info');assert.ok($('readingWordListen').querySelector('svg'));assert.equal($('readingWordListen').textContent,'');assert.match($('readingWordListen').getAttribute('aria-label'),/Listen/);assert.ok($('readingWordLearning').querySelector('svg'));assert.equal($('readingWordLearning').textContent,'Learning');
+});
 console.log(count+' reading workflow checks passed');dom.window.close();
