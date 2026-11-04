@@ -65,7 +65,7 @@ const ReadingStudio=(()=>{
   function render(){
     if(!root)return;const r=data(),list=sentences(),index=position(),sentence=list[index];
     const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
-    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle">ā</text></svg>';$('readingPeek').setAttribute('aria-label',peek?'Hide pinyin':'Show pinyin');$('readingPeek').title=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
+    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="10" text-anchor="middle">pīn</text><text x="12" y="21" text-anchor="middle">yīn</text></svg>';$('readingPeek').setAttribute('aria-label',peek?'Hide pinyin':'Show pinyin');$('readingPeek').title=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
     updateGestureNotice();
     $('sentenceCanvas').dataset.mode=r.mode;
     $('readingResumePractice').textContent=r.practice?.mode==='direct'&&r.practice.phase==='quiz'?'Resume quiz':'Quick quiz';
@@ -74,22 +74,23 @@ const ReadingStudio=(()=>{
     $('readingOrder').value=r.order||'balanced';
     const now=Date.now(),dueCount=Object.entries(r.sentenceReview||{}).filter(([id,v])=>v.due<=now&&r.read.includes(id)).length,misses=Object.keys(r.wordReview||{}).length;
     $('readingReviewSummary').textContent=`${dueCount} sentences due · ${misses} words to revisit`;$('readingReviewEarlier').disabled=!r.read.length;$('readingReviewMissed').disabled=!misses;
-    $('readingExitReview').hidden=!r.reviewSession;$('readingMarkNext').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 7 7-7 7m8-14 7 7-7 7"/></svg>';$('readingMarkNext').setAttribute('aria-label',r.reviewSession?'Mark reviewed and next sentence':'Mark read and next sentence');$('readingMarkNext').title=r.reviewSession?'Reviewed & next':'Read & next';
+    $('readingExitReview').hidden=!r.reviewSession;$('readingMarkNext').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L20 5"/></svg>';$('readingMarkNext').setAttribute('aria-label',r.reviewSession?'Mark reviewed and next sentence':'Mark read and next sentence');$('readingMarkNext').title=r.reviewSession?'Reviewed & next':'Read & next';
     $('readingMode').textContent=r.mode==='sentence'?'Passage view · 10 sentences':'Sentence view';
     const completed=list.filter(x=>r.read.includes(x.id)).length;
-    $('readingPosition').textContent=list.length?r.reviewSession?`Review ${index+1} / ${list.length} · ${r.reviewSession.reason}`:`${index+1} / ${list.length} sentences · ${completed} read`:'No sentences yet';
+    $('readingPosition').textContent=list.length?r.reviewSession?`Review ${index+1} of ${list.length}`:`Sentence ${index+1} of ${list.length}`:'No sentences yet';
+    const readState=$('readingReadState'),isRead=!!sentence&&r.read.includes(sentence.id);readState.textContent=sentence?(isRead?'✓ Read':'Unread'):'';readState.dataset.read=String(isRead);
     const checkpoint=cadence();
     $('readingBar').style.width=(list.length?completed/list.length*100:0)+'%';
     $('readingBar').parentElement.setAttribute('aria-valuenow',String(completed));
     $('readingBar').parentElement.setAttribute('aria-valuemax',String(list.length));
-    $('readingProgressText').textContent=checkpoint.sentences+' / '+checkpoint.target+' sentences to quiz';
+    $('readingProgressText').textContent=`${completed} / ${list.length} read · ${checkpoint.sentences} / ${checkpoint.target} to quiz`;
     $('readingPrev').disabled=!index;$('readingNext').disabled=index>=list.length-1;
     $('readingMarkNext').disabled=!sentence;$('readingListen').disabled=!sentence;
     const saveSentence=$('readingStarSentence'),saved=r.starSentences.includes(sentence?.id);saveSentence.disabled=!sentence;saveSentence.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg>';saveSentence.setAttribute('aria-pressed',String(saved));saveSentence.setAttribute('aria-label',saved?'Unsave sentence':'Save sentence');saveSentence.title=saved?'Unsave sentence':'Save sentence';
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
     $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
     fitSentence();
-    const trans=$('sentenceTranslation');trans.hidden=!sentence||!(translationOpen||r.pin);
+    const trans=$('sentenceTranslation');trans.hidden=!sentence;
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
     const translationVisible=translationOpen||r.pin;
@@ -128,17 +129,20 @@ const ReadingStudio=(()=>{
   function cadence(source=data().source){
     const r=data();r.quizCadence ||= {};
     if(r.cadenceUnit!=='sentences'){r.quizCadence={};r.sentenceInterval=20;r.cadenceUnit='sentences';}
-    if(!r.quizCadence[source]||!Number.isInteger(r.quizCadence[source].sentences))r.quizCadence[source]={sentences:0,target:randomCheckpoint()};
+    if(r.quizCadence[source]&&!Number.isInteger(r.quizCadence[source].sentences))delete r.quizCadence[source];
+    if(r.quizCountBasis!=='read'){r.quizCadence={};r.quizCountBasis='read';}
+    if(!r.quizCadence[source]){const ids=new Set((source==='custom'?customSentences():source==='starred'?[...READING_SENTENCES,...customSentences()].filter(s=>r.starSentences.includes(s.id)):orderedLevel(source)).map(s=>s.id));const count=uniq(r.read).filter(id=>ids.has(id)&&!(r.quizCovered?.[source]||[]).includes(id)).length;r.quizCadence[source]={sentences:count%randomCheckpoint(),target:randomCheckpoint()};}
     return r.quizCadence[source];
   }
   function move(delta,mark=false){
     const list=sentences(),r=data();if(!list.length)return;
     const sentence=current();
-    const newExposure=!r.reviewSession&&(mark||delta>0)&&!r.read.includes(sentence.id)&&!(r.quizSeen?.[r.source]||[]).includes(sentence.id);
+    const newExposure=!r.reviewSession&&mark&&!r.read.includes(sentence.id);
     let showQuiz=false;
+    if(!r.reviewSession&&(mark||delta>0)){r.quizSeen ||= {};r.quizSeen[r.source]=uniq([...(r.quizSeen[r.source]||[]),sentence.id]);}
     if(mark){r.read=uniq([...r.read,sentence.id]);scheduleSentence(sentence.id,!!r.reviewSession);}
     if(newExposure){
-      r.quizSeen ||= {};r.quizSeen[r.source] ||= [];r.quizSeen[r.source].push(sentence.id);
+      r.quizSeen ||= {};r.quizSeen[r.source] ||= [];r.quizSeen[r.source]=uniq([...r.quizSeen[r.source],sentence.id]);
       const check=cadence();check.sentences++;
       if(check.sentences>=check.target){
         check.sentences-=check.target;
@@ -154,7 +158,7 @@ const ReadingStudio=(()=>{
   function unquizzed(){const r=data(),covered=r.quizCovered?.[r.source]||[],seen=new Set([...(r.quizSeen?.[r.source]||[]),...r.read]);return sentences().filter(s=>seen.has(s.id)&&!covered.includes(s.id));}
   function recentBlock(){
     const r=data(),byId=new Map(sentences().map(s=>[s.id,s]));
-    const ids=uniq([...r.read,...(r.quizSeen?.[r.source]||[])]).filter(id=>byId.has(id));
+    const ids=uniq(r.read).filter(id=>byId.has(id));
     const pending=ids.filter(id=>!(r.quizCovered?.[r.source]||[]).includes(id));
     return (pending.length?pending:ids).slice(-randomCheckpoint()).map(id=>byId.get(id)).filter(Boolean).concat(ids.length?[]:[current()].filter(Boolean));
   }
