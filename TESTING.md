@@ -1,3 +1,11 @@
+# Release verification — 1.15.7
+
+125 automated checks pass: 37 application, 16 service-worker, 49 reader workflow, and 23 lifecycle. JavaScript syntax and CSS parsing pass. Reader regressions cover compact accessible icons, saved read state, unique marked-read counts, quiz cadence, pinyin behaviour, fixed completion control order, quiz return, saved progress and vocabulary disclosure animation.
+
+Chinese uses a constant 34px across sentences and viewports, with 13px pinyin. Longer text expands the card and outer reader scrolls; no automatic font reduction is used. The line balancer preserves the greedy minimum number of lines, word groups and trailing punctuation, using the full available column up to 720px. Reserved scrollbar space keeps the column origin stable when content height changes. Translation remains in a fixed 88px slot.
+
+The corpus sweep renders all 1,602 sentences with hints hidden/light and visible/dark at 320×700, 402×874, 768×1024 and 1280×800 (12,816 cases). Results and font ranges are recorded in tests/layout-audit-results.json. This is Chromium viewport testing; physical iPhone 16 Pro Safari/PWA and iOS accessibility text sizing remain unverified. No production study data was cleared.
+
 # Release verification — 1.15.2
 
 116 checks pass (37 core, 16 service-worker, 41 reader workflow, 22 lifecycle). Added asynchronous animation tests for opening/closing, rapid reversal/cancellation, and reduced motion. JavaScript syntax and CSS parsing pass. Browser rendering remains unverified because the browser runtime is unavailable.

@@ -1,3 +1,10 @@
+## 1.15.7
+
+- Read sentences use a soft green card tint in both themes. Position, read total and quiz cadence share one compact line; the quiz shortcut is a clipboard icon.
+- Fixed the mobile header actions consuming the full header width and pushing the theme button offscreen. Header controls retain fixed sizes and safe-area padding.
+- Added a path-based á/文 pinyin icon, speaker press border, and permanently filled/bordered previous and next controls. Translation is centred in its reserved slot.
+- Sentences share a consistent left edge and available text column. Wrapping keeps words and punctuation together and balances the minimum row count. Chinese stays at 34px for every sentence; longer sentences grow the card rather than reducing type.
+
 ## 1.15.6
 
 - Reader shows current-sentence Read/Unread state and separates sentence position from track read totals. Quiz cadence now counts newly marked-read sentences, not forward browsing; existing cadence migrates from saved read history without clearing progress.

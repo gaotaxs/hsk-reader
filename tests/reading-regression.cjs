@@ -42,7 +42,7 @@ test('Reader progress shows overall read sentences independently of quiz cadence
  assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
  assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuemax')),421);
  assert.ok(Math.abs(parseFloat($('readingBar').style.width)-100/421)<.001);
- assert.match($('readingProgressText').textContent,/1 \/ 20 to quiz/);
+ assert.match($('readingProgressText').textContent,/1\/20 quiz/);
 });
 test('Exactly twenty sentences trigger a quiz with all vocabulary eligible',()=>{
  for(let i=1;i<19;i++)$('readingMarkNext').click();assert.equal($('readingPracticeDialog').open,false);
@@ -212,7 +212,7 @@ test('Reader controls use the header and a compact accessible icon rail',()=>{
 });
 test('Read state distinguishes position from unique read totals and quiz counts only marked sentences',()=>{
  run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。再见。';extras.reading.positions.custom=0;extras.reading.reviewSession=null;extras.reading.read=[];extras.reading.quizSeen={};extras.reading.quizCadence={};extras.reading.quizCountBasis='read';ReadingStudio.render()`);
- assert.equal($('readingReadState').textContent,'Unread');$('readingNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),0);assert.equal(run('extras.reading.read.length'),0);$('readingMarkNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);$('readingPrev').click();assert.equal($('readingReadState').textContent,'✓ Read');assert.equal($('readingPosition').textContent,'Sentence 2 of 3');assert.match($('readingProgressText').textContent,/1 \/ 3 read/);$('readingMarkNext').click();assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);
+ assert.equal($('readingReadState').getAttribute('aria-label'),'Sentence unread');$('readingNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),0);assert.equal(run('extras.reading.read.length'),0);$('readingMarkNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);$('readingPrev').click();assert.equal($('readingReadState').getAttribute('aria-label'),'Sentence already read');assert.equal($('readingPosition').textContent,'2/3');assert.match($('readingProgressText').textContent,/1 read/);$('readingMarkNext').click();assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);
 });
 test('Completion check is centred among the five tools and translation slot remains present',()=>{
  const buttons=[...w.document.querySelectorAll('.reading-navigation>button')].map(b=>b.id);assert.equal(buttons[3],'readingMarkNext');assert.ok($('readingMarkNext').querySelector('svg path').getAttribute('d').includes('L20 5'));run('extras.reading.pin=false;ReadingStudio.render()');$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);
@@ -222,5 +222,8 @@ test('Adaptive pinyin shows Learning words and keeps Known words hidden',()=>{
 });
 test('Legacy browse counters migrate from read history without losing completed sentences',()=>{
  run(`extras.reading.source='2';extras.reading.positions['2']=0;extras.reading.reviewSession=null;extras.reading.read=ReadingStudio.orderedLevel(2).slice(0,3).map(s=>s.id);extras.reading.quizCovered={'2':[extras.reading.read[0]]};extras.reading.quizCadence={'2':{sentences:19,target:20}};extras.reading.quizCountBasis='';ReadingStudio.render()`);assert.equal(run('extras.reading.read.length'),3);assert.equal(run('extras.reading.quizCadence["2"].sentences'),2);assert.equal(run('sanitizeExtras(getBackup().studio).reading.quizCountBasis'),'read');assert.equal(run('sanitizeExtras(getBackup().studio).reading.quizCadence["2"].sentences'),2);
+});
+test('Read tint and compact header icons preserve accessible actions',()=>{
+ assert.equal($('readingReadState').textContent,'');assert.ok($('readingResumePractice').querySelector('svg'));assert.equal($('readingResumePractice').textContent,'');assert.match($('readingResumePractice').getAttribute('aria-label'),/quiz/);assert.equal($('readingPeek').querySelectorAll('svg text').length,0);assert.ok($('readingPeek').querySelector('svg path'));
 });
 console.log(count+' reading workflow checks passed');dom.window.close();
