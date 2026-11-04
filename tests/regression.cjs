@@ -64,7 +64,7 @@ test('Lesson progress is derived from known words and study opens correct level'
  a.renderAll();const known=a.getDeck('3').filter(v=>a.statusOf(a.entryKey(v))==='known').length;
  assert.equal($('lessonMeter3').getAttribute('aria-valuenow'),String(Math.round(known/298*100)));
  w.document.querySelector('[data-start-lesson="3"]').click();assert.equal(a.currentCard().level,3);
- assert.equal(a.eval('deckLabel'),'HSK 3 lesson');
+ assert.equal(a.eval('deckLabel'),'HSK 3 lesson');assert.equal($('flashcards').classList.contains('active'),true);assert.equal($('flashLevel').value,'3');assert.equal(Number($('flashDeckCount').value),a.eval('deck.length'));
 });
 test('Lesson completes once at 10/10, persists after reload, and updates next day',()=>{
  a.eval('lessonSession=null');const before=a.planFor(2).coveredWords,day=a.planFor(2).completedDays;

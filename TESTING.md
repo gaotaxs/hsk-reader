@@ -1,3 +1,15 @@
+# Release verification — 1.15.0
+
+Run `npm test` from the repository root (install the optional jsdom dependency first). The root command delegates to the full suite in tests/.
+
+Automated release coverage: core vocabulary/application checks, service-worker cache lifecycle checks, reader workflow checks, and cross-window/reset/import lifecycle checks. Tests use synthetic data and preserve the exact original 601 vocabulary records and 1,602 sentences.
+
+New regressions verify a 20-sentence quiz interval rather than a word count, all covered vocabulary remaining eligible independently of the question limit, overall sentence progress, separate pinyin pointer targets, incorrect/correct answer feedback, saved quiz state, reader track and position after exit/resume, recovery from stale review IDs, and lesson launch level/count. HTML ID uniqueness, settings nesting, JavaScript syntax and CSS parsing are also checked.
+
+Browser QA limitation for this release: the supplied browser runtime was unavailable. Automated DOM/state tests do not verify actual phone/iPad rendering, touch hardware or iOS standalone PWA behaviour. Those remain unverified. No production browser storage was cleared or replaced.
+
+## Previous verification history
+
 # Regression report — HSK Reader 1.0
 
 Completed 30 October 2026. Tests were run against the supplied application after the redesign, using synthetic progress data. No real user browser data was available in the source ZIP.

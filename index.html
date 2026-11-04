@@ -22,8 +22,8 @@
     <div class="wrap">
       <div class="topbar">
         <div class="header-brand"><img class="brand-mark header-brand-mark" src="./icon-192.png" alt="" aria-hidden="true"><div class="header-identity">
-          <div class="header-kicker">HSK READER <span aria-hidden="true">/</span> <span id="pageKicker">A LITTLE CHINESE, EVERY DAY</span></div>
-          <div class="header-title-row"><h1 id="pageTitle">Reader</h1></div>
+          <span id="pageKicker" hidden></span>
+          <div class="header-title-row sr-only"><h1 id="pageTitle">Reader</h1></div>
         </div></div>
         <div class="header-actions"><span id="connectionStatus" class="connection-status" role="status" hidden>Offline</span><button id="updateAppBtn" class="primary" hidden title="Reload to install the downloaded app update">Reload to update</button>
           <div class="header-progress-wrap" title="Progress across 601 vocabulary entries"><span class="progress-orbit" id="headerProgressOrbit" aria-hidden="true"></span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
@@ -36,14 +36,14 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
-        <div class="sidebar-brand"><img class="brand-glyph brand-mark" src="./icon-192.png" alt="" aria-hidden="true"><span class="sidebar-title">HSK Reader<small>READ · LEARN · RETAIN</small></span></div>
+        <div class="sidebar-brand"><img class="brand-glyph brand-mark" src="./icon-192.png" alt="" aria-hidden="true"><span class="sidebar-title">HSK Reader</span></div>
         <button id="sidebarToggle" class="sidebar-toggle" title="Expand or collapse sidebar" aria-label="Expand or collapse sidebar">☰</button>
       </div>
-      <div class="nav-caption" aria-hidden="true">YOUR PRACTICE</div>
+      
       <nav class="sidebar-nav" id="tabs" aria-label="Study areas">
+        <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v16m0-16C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-3-1-6-2-10 1Z"/></svg></span><span class="side-label">Reader</span></button>
         <button class="side-tab" data-tab="lessons" title="Lessons"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v18m3-12h6m-6 4h6"/></svg></span><span class="side-label">Lessons</span></button>
         <button class="side-tab" data-tab="flashcards" title="Flashcards"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="6" width="14" height="15" rx="2"/><path d="M17 3H5a2 2 0 0 0-2 2v12m8-5h6m-6 4h4"/></svg></span><span class="side-label">Flashcards</span></button>
-        <button class="side-tab active" data-tab="reader" title="Reader"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v16m0-16C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-3-1-6-2-10 1Z"/></svg></span><span class="side-label">Reader</span></button>
         <button class="side-tab" data-tab="workspace" title="Workspace"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9M14 3v7h7M14 3l7 7M7 14h10M7 17h6"/></svg></span><span class="side-label">Workspace</span></button>
         <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4Zm0 12h16M8 8h8m-8 4h5"/></svg></span><span class="side-label">Vocab</span></button>
         <button class="side-tab" data-tab="quiz" title="Quiz"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="16" height="18" rx="2"/><path d="M9 4V2H3v17m6-10 1 1 2-2m2 1h3m-8 6 1 1 2-2m2 1h3"/></svg></span><span class="side-label">Quiz</span></button>
@@ -55,8 +55,8 @@
     <main class="app-main" id="mainContent" tabindex="-1">
     <section id="reader" class="panel active" aria-label="Reader">
       <div id="readingStudio" class="reading-studio">
-        <div class="reading-intro"><div><span class="card-eyebrow">LEARN BY READING</span><h2><span class="reading-desktop-title">One sentence. A little more understanding.</span><span class="reading-mobile-title">Sentence reader</span></h2><p class="small">Read, uncover just the hints you need, then practise what you’ve met.</p></div><div class="reading-intro-actions"><button id="readingResumePractice">Quick quiz</button><button id="readingOptionsToggle" class="icon-button" aria-label="Reader settings" title="Reader settings" aria-haspopup="dialog" aria-controls="readingOptions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h4l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div></div>
-        <article class="card sentence-card"><div class="row between"><span id="readingPosition" class="small"></span><span id="readingProgressText" class="small" aria-live="polite"></span><button id="readingExitReview" hidden>End review</button><button id="readingStarSentence">☆ Save sentence</button></div><div class="progressbar" role="progressbar" aria-label="Words toward next reading quiz" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><span id="readingBar"></span></div><div id="sentenceCanvas" class="sentence-canvas" lang="zh-Hans"></div><div id="sentenceTranslation" class="sentence-translation"><div class="row between"><button id="readingTranslateToggle">Reveal translation</button><button id="readingPinTranslation">Pin translation</button></div><p id="readingTranslationText" hidden></p></div><div class="reading-feedback-slot"><div id="readingGestureNotice" class="reading-gesture-notice" role="status" hidden><span id="readingGestureText"></span><button id="readingGestureUndo">Undo</button></div></div><div class="reading-navigation"><button id="readingPrev" aria-label="Previous sentence">←</button><button id="readingListen">Listen</button><button id="readingPeek" aria-pressed="false">Show pinyin</button><button class="primary" id="readingMarkNext">Read &amp; next →</button><button id="readingNext" aria-label="Next sentence without marking read">→</button></div></article>
+        <div class="reading-intro"><div class="reading-intro-actions"><button id="readingResumePractice">Quick quiz</button><button id="readingOptionsToggle" class="icon-button" aria-label="Reader settings" title="Reader settings" aria-haspopup="dialog" aria-controls="readingOptions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.6 2.3-2 .9-2.1-.7-2.5 4.3 1.6 1.6v2.3l-1.6 1.6 2.5 4.3 2.2-.7 1.9 1 .6 2.1h5l.6-2.2 2-1 2.1.8 2.5-4.3-1.6-1.6v-2.3l1.6-1.6-2.5-4.3-2.2.7-1.9-.9-.6-2.3Z"/><circle cx="12" cy="12.5" r="3"/></svg></button></div></div>
+        <article class="card sentence-card"><div class="row between"><span id="readingPosition" class="small"></span><span id="readingProgressText" class="small" aria-live="polite"></span><button id="readingExitReview" hidden>End review</button><button id="readingStarSentence">☆ Save sentence</button></div><div class="progressbar" role="progressbar" aria-label="Overall sentences read" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><span id="readingBar"></span></div><div id="sentenceCanvas" class="sentence-canvas" lang="zh-Hans"></div><div id="sentenceTranslation" class="sentence-translation"><div class="row between"><button id="readingTranslateToggle">Reveal translation</button><button id="readingPinTranslation">Pin translation</button></div><p id="readingTranslationText" hidden></p></div><div class="reading-feedback-slot"><div id="readingGestureNotice" class="reading-gesture-notice" role="status" hidden><span id="readingGestureText"></span><button id="readingGestureUndo">Undo</button></div></div><div class="reading-navigation"><button id="readingPrev" aria-label="Previous sentence">←</button><button id="readingListen">Listen</button><button id="readingPeek" aria-pressed="false">Show pinyin</button><button class="primary" id="readingMarkNext">Read &amp; next →</button><button id="readingNext" aria-label="Next sentence without marking read">→</button></div></article>
         <div id="readingCheckpoint" class="card reading-checkpoint" hidden><div><h2 id="readingCheckpointTitle"></h2><p class="small">Take a short quiz on all vocabulary from the sentences you’ve covered.</p></div><div class="row"><button class="primary" id="readingCheckpointStart">Quick quiz</button><button id="readingCheckpointDismiss">Keep reading</button></div></div>
         <details class="card reading-vocabulary" id="readingVocabulary"><summary><span><strong>Words in this sentence</strong><span id="readingWordCount" class="small"></span></span><span class="disclosure-chevron" aria-hidden="true">⌄</span></summary><div class="row reading-vocab-tools"><button id="readingReviewWords">Study recent words →</button></div><div id="readingSelectedWord" hidden></div><div id="readingVocab"></div></details>
 
@@ -65,11 +65,11 @@
 
     <section id="workspace" class="panel" aria-label="Workspace">
       <div class="workspace-page reading-text-tools"><div class="workspace-intro"><h2>Your reading workspace</h2><p class="small">Paste, edit and save your own passages, then open them in the sentence reader.</p></div>        <div class="row reading-text-tools-heading"><button id="readingUseCustom" class="primary">Read my text in sentence view →</button><span class="small">Paste or load text below, then open it in the sentence reader.</span></div>
-      <div class="study-brief"><div><div class="card-eyebrow">MAKE A LITTLE PROGRESS</div><h2 id="dailyHeadline">Your daily practice</h2><p id="dailySummary" class="small"></p></div><button class="primary" id="reviewDueBtn">Review words</button></div>
+      <div class="study-brief"><div><h2 id="dailyHeadline">Your daily practice</h2></div></div>
       <div class="grid reader">
         <div class="left-stack">
           <div class="card reader-editor-card" id="readerEditorCard">
-            <div class="row between editor-card-heading"><div><div class="card-eyebrow">YOUR SOURCE</div><strong>Passage editor</strong></div><button type="button" id="finishEditingBtn">Done editing</button></div>
+            <div class="row between editor-card-heading"><div><strong>Passage editor</strong></div><button type="button" id="finishEditingBtn">Done editing</button></div>
             <div class="reader-editor-content">
             <label for="inputText" class="sr-only">Paste Chinese text</label>
             <div class="input-wrap">
@@ -115,7 +115,7 @@
         </div>
         <div class="card reader-output-card" id="readerOutputCard">
           <div class="reader-output-head">
-            <div><div class="card-eyebrow">READ AT YOUR PACE</div><strong id="readingTitle">A day at school</strong><div id="matchStats" class="small reader-match-stats"></div></div>
+            <div><strong id="readingTitle">A day at school</strong><div id="matchStats" class="small reader-match-stats"></div></div>
             <div class="reader-quick-actions"><button type="button" id="editPassageBtn" class="primary" aria-expanded="false" aria-controls="readerEditorCard">✎ Edit</button><button type="button" id="readerQuickSpeakBtn" title="Read aloud">▶ Listen</button><button type="button" id="readerQuickStopBtn" hidden>Stop</button><button type="button" id="readerQuickTranslateBtn" title="Translate the passage">Translate</button><button type="button" id="focusReaderBtn" aria-pressed="false">Focus</button></div>
           </div>
           <div class="reader-instruction">Tap a highlighted word to hear it, learn its meaning, or practice writing.</div>
@@ -148,13 +148,13 @@
           </div>
         </div>
         <div class="vocab-scroll-wrap">
-          <div class="scroll"><table><thead><tr><th>Chinese</th><th>Pinyin</th><th>English</th><th>HSK</th><th>Status</th><th>Actions</th></tr></thead><tbody id="vocabTable"></tbody></table></div>
+          <div class="scroll"><table><thead><tr><th>Chinese</th><th>Pinyin</th><th>English</th><th>HSK</th><th>Actions</th></tr></thead><tbody id="vocabTable"></tbody></table></div>
           <div class="row between vocab-footer"><span id="vocabShown" class="small"></span><button id="vocabLoadMoreBtn" type="button" hidden>Show more words</button></div>
         </div>
       </div>
     </section>
 
-    <section id="lessons" class="panel"><div class="lesson-intro"><h2>A little progress, every day.</h2><p class="small">Choose your level. Study one word at a time, at your own pace.</p></div><div class="grid two"><article class="card lesson-overview"><span class="card-eyebrow">YOUR LEARNING PATH</span><div class="row between"><h2>HSK 2</h2><span class="pill" id="lessonPercent2"></span></div><p class="small">Build your foundation</p><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 2 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter2"><span id="lessonLevelBar2"></span></div><p id="lessonStats2" class="small"></p><button class="primary lesson-start" data-start-lesson="2">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily2">Words per day</label><input id="lessonDaily2" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta2"></p><div class="row"><button data-lesson-save="2">Save plan</button><button class="danger" data-lesson-reset="2">Reset plan</button></div></details></article><article class="card lesson-overview"><span class="card-eyebrow">YOUR LEARNING PATH</span><div class="row between"><h2>HSK 3</h2><span class="pill" id="lessonPercent3"></span></div><p class="small">Take the next step</p><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 3 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter3"><span id="lessonLevelBar3"></span></div><p id="lessonStats3" class="small"></p><button class="primary lesson-start" data-start-lesson="3">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily3">Words per day</label><input id="lessonDaily3" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta3"></p><div class="row"><button data-lesson-save="3">Save plan</button><button class="danger" data-lesson-reset="3">Reset plan</button></div></details></article></div><p class="small lesson-swipe-tip">Your next lesson: swipe ← to revisit, ↑ for learning, or → for known.</p>      <details class="card lesson-details"><summary>Lesson words &amp; day progress</summary><div class="row lesson-level-switch"><button data-lesson-load="2">HSK 2</button><button data-lesson-load="3">HSK 3</button></div>
+    <section id="lessons" class="panel"><article class="card study-progress"><div class="row between"><h2>Study progress</h2><button class="primary" id="reviewDueBtn">Review words</button></div><p id="dailySummary" class="small"></p><div id="progressSummary" class="progress-summary" aria-live="polite"></div><p class="small" id="writingSummary"></p></article><div class="grid two"><article class="card lesson-overview"><div class="row between"><h2>HSK 2</h2><span class="pill" id="lessonPercent2"></span></div><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 2 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter2"><span id="lessonLevelBar2"></span></div><p id="lessonStats2" class="small"></p><button class="primary lesson-start" data-start-lesson="2">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily2">Words per day</label><input id="lessonDaily2" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta2"></p><div class="row"><button data-lesson-save="2">Save plan</button><button class="danger" data-lesson-reset="2">Reset plan</button></div></details></article><article class="card lesson-overview"><div class="row between"><h2>HSK 3</h2><span class="pill" id="lessonPercent3"></span></div><div class="progressbar lesson-level-progress" role="progressbar" aria-label="HSK 3 known words" aria-valuemin="0" aria-valuemax="100" id="lessonMeter3"><span id="lessonLevelBar3"></span></div><p id="lessonStats3" class="small"></p><button class="primary lesson-start" data-start-lesson="3">Study today →</button><details class="lesson-plan"><summary>Adjust study plan</summary><label for="lessonDaily3">Words per day</label><input id="lessonDaily3" type="number" min="1" max="100" step="1"><p class="small" id="lessonMeta3"></p><div class="row"><button data-lesson-save="3">Save plan</button><button class="danger" data-lesson-reset="3">Reset plan</button></div></details></article></div>      <details class="card lesson-details"><summary>Lesson words &amp; day progress</summary><div class="row lesson-level-switch"><button data-lesson-load="2">HSK 2</button><button data-lesson-load="3">HSK 3</button></div>
         <div class="row between"><strong id="lessonTitle">Today's lesson</strong><span id="lessonSummary" class="small"></span></div>
         <div class="progressbar" style="margin:10px 0"><span id="lessonProgressBar"></span></div>
         <div class="row" style="margin-bottom:10px"><button id="lessonMarkLearning" class="learn">Mark lesson as learning</button><button id="lessonMarkKnown" class="good">Mark lesson as known</button><button id="lessonStudyBtn">Study these words</button><button id="lessonComplete" class="primary">Complete day</button><button id="lessonUndoBtn" title="Return to previous study day">Undo last day</button></div>
@@ -212,58 +212,57 @@
       </div>
       <div class="card quiz-main-card">
         <div class="quiz-main-head"><strong>Quiz</strong><span id="quizScore" class="small">Score: 0 / 0</span></div>
-        <div id="quizPrompt" class="quiz-idle" style="font-size:42px;margin:20px 0">Press Start Quiz</div>
+        <div id="quizPrompt" class="quiz-idle" style="font-size:42px;margin:20px 0">Choose a deck and start your quiz</div>
         <div id="quizOptions"></div>
-        <div id="quizFeedback" role="status" aria-live="polite" style="min-height:0;margin-top:0"></div>
-        <div class="quiz-next-row"><button id="quizNextBtn" disabled>Next question</button><button id="quizRetryMissedBtn" hidden>Retry missed words</button></div>
+        <div class="quiz-answer-row"><div id="quizFeedback" role="status" aria-live="polite"></div><button id="quizNextBtn" class="icon-button primary" aria-label="Next question" title="Next question" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></div><button id="quizRetryMissedBtn" hidden>Retry missed words</button>
         <p class="small quiz-key-hint">Keyboard: 1–4 to answer · Enter for next. Missed words can be reviewed at the end.</p>
       </div>
     </section>
 
     <section id="settings" class="panel settings-panel">
       <div class="grid two settings-grid">
-        <div class="card"><h2>Daily review</h2><label for="dailyGoal">Words to review each day</label><input id="dailyGoal" type="number" min="1" max="100" value="10"><p class="small">Swipe or use the buttons to mark words as Not known, Learning or Known. Review Learning words from the deck selector. Existing scheduled reviews remain saved.</p><p class="small" id="writingSummary"></p></div>
-        <div class="card"><h2>Install &amp; offline</h2><p class="small">On iPhone or iPad, open this site in Safari, tap Share, then Add to Home Screen. On desktop, use your browser’s install option.</p><p id="offlineStatus" class="small" role="status">Checking offline availability…</p><div class="row"><button id="checkUpdateBtn">Check for updates</button><button id="repairCacheBtn">Repair offline copy</button></div><p class="small">Updates wait until you choose to reload. Repair refreshes this app’s cached files; it keeps study progress. Online translation still needs a connection. Voice availability depends on your device.</p></div>
-        <div class="card" id="settingsSpeechCard">
-          <h2>Speech and translation</h2>
+        <details class="card"><summary>Daily review</summary><div class="setting-content"><label for="dailyGoal">Words to review each day</label><input id="dailyGoal" type="number" min="1" max="100" value="10"><p class="small">Scheduled reviews remain saved when you change this target.</p></div></details>
+        <details class="card"><summary>Install &amp; offline</summary><div class="setting-content"><p class="small">On iPhone or iPad, open this site in Safari, tap Share, then Add to Home Screen. On desktop, use your browser’s install option.</p><p id="offlineStatus" class="small" role="status">Checking offline availability…</p><div class="row"><button id="checkUpdateBtn">Check for updates</button><button id="repairCacheBtn">Repair offline copy</button></div><p class="small">Updates wait for you to reload. Repair keeps your progress.</p></div></details>
+        <details class="card" id="settingsSpeechCard">
+          <summary>Speech and translation</summary><div class="setting-content">
           <div class="voice-setting-block" style="margin-top:10px"><label for="ttsRate">Speech rate</label><div class="voice-line"><div class="voice-slider-cell"><input id="ttsRate" type="range" min="0.5" max="1.25" step="0.05"></div><div class="voice-rate-badge"><span id="ttsRateLabel" class="pill"></span></div></div></div>
           <label class="toggle" style="margin-top:10px"><input type="checkbox" id="onlineTranslate"> Use online full-text translation when available</label>
           <p class="small">Online translation sends pasted text to MyMemory. Turn it off to use the built-in word glossary only.</p>
-        </div>
-        <div class="card" id="settingsStrokeCard">
-          <h2>Stroke order</h2>
+        </div></details>
+        <details class="card" id="settingsStrokeCard">
+          <summary>Stroke order</summary><div class="setting-content">
           <label class="toggle"><input type="checkbox" id="autoStroke"> Auto-load stroke order when opening a word</label>
           <div class="control-grid" style="margin-top:10px">
             <div><label for="preloadStrokeLevel">Preload level</label><select id="preloadStrokeLevel"><option value="all">HSK 2 + 3</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
             <div><button id="preloadStrokeBtn">Check bundled stroke data</button></div>
           </div>
           <p id="strokePreloadStatus" class="small"></p>
-          <p class="small">On iPad, select <strong>Trace practice</strong> in a word popup or flashcard, then write inside the enlarged pad with an Apple Pencil or finger. All 622 dictionary characters are bundled for offline use once the app is downloaded. Palm rejection depends on iPadOS and the browser; physical Apple Pencil testing is still required.</p>
-        </div>
-        <div class="card">
-          <h2>Progress backup</h2>
+          <p class="small">Trace with a finger or Apple Pencil in word details. All 622 characters are available offline.</p>
+        </div></details>
+        <details class="card">
+          <summary>Progress backup</summary><div class="setting-content">
           <p class="small">Known/learning status, lesson metadata, and settings are saved in this browser's localStorage.</p>
           <div class="row"><button id="exportBtn">Copy to box</button><button id="downloadBackupBtn" class="primary">Download backup</button><button id="importBtn">Import from box</button><button id="uploadBackupBtn">Choose backup file</button></div>
           <input id="backupFileInput" type="file" accept="application/json,.json" hidden>
           <label for="jsonBox" style="margin-top:10px">Import/export box</label><textarea id="jsonBox" style="min-height:170px"></textarea>
           <div class="danger-zone"><div><strong>Start fresh</strong><p class="small">Permanently clear study history and saved text on this device.</p></div><button class="danger destructive" id="resetBtn">Reset progress</button></div>
-        </div>
-        <div class="card settings-device-card">
-          <h2>Device &amp; stylus check</h2>
-          <p class="small">Open this page in Safari on your iPhone or iPad, then use <strong>Trace practice</strong> with your finger or Apple Pencil. The last input type seen by this page appears below.</p>
+        </div></details>
+        <details class="card settings-device-card">
+          <summary>Device &amp; stylus check</summary><div class="setting-content">
+          <p class="small">Check touch, pen and storage support on this device.</p>
           <div id="deviceProbeResults" class="device-probe-results" aria-live="polite">Checking browser capabilities…</div>
           <button type="button" id="checkDeviceBtn">Run browser check</button>
-          <p class="small">A detected pen or touch event confirms input reaches this page, not that all strokes are correctly graded or palm rejection works.</p>
-        </div>
-        <div class="card settings-help-card">
-          <h2>Your progress</h2>
-          <div id="progressSummary" class="progress-summary" aria-live="polite"></div>
-          <p class="small">Progress is kept locally and can be lost when changing browsers, preview apps or file locations. Download a backup regularly; it now includes the current reader text.</p>
+          <p class="small">Pen detection confirms input only; palm rejection depends on your device.</p>
+        </div></details>
+        <details class="card settings-help-card">
+          <summary>Help</summary><div class="setting-content">
+          
+          
           <details class="shortcuts-help"><summary>Keyboard shortcuts and tips</summary>
             <p class="small"><strong>Global:</strong> Alt+1–7 change tabs, / focuses vocabulary search, Esc closes word popup.</p>
             <p class="small"><strong>Reader popup:</strong> left/right arrows move among unknown words. <strong>Flashcards:</strong> left/right arrows change cards, Space flips, K marks known, L marks learning. <strong>Quiz:</strong> 1–4 answer, Enter advances.</p>
           </details>
-        </div>
+        </div></details>
       </div>
     </section>
     </main>
@@ -277,8 +276,8 @@
   </dialog>
 
   <dialog id="readingWordDialog" class="reading-word-dialog" aria-labelledby="readingWordHeading"><button id="readingWordClose" class="reading-practice-close" aria-label="Close word details"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button><div class="reading-word-hero"><h2 id="readingWordHeading" lang="zh-Hans"></h2><p id="readingWordPronunciation"></p><p id="readingWordMeaning"></p><span class="pill" id="readingWordState"></span></div><div class="reading-rating"><button id="readingWordListen">Listen</button><button id="readingWordLearning">Learning</button><button id="readingWordKnown">✓ Known</button></div><div class="stroke-panel"><div class="row between"><strong>Writing practice</strong><span id="readingWordWritingStatus" class="small"></span></div><div id="readingWordWriting" class="stroke-grid"></div><div class="row reading-word-writing-actions"><button id="readingWordRetry">↻ Retry</button><button id="readingWordGuide">Hide guide</button></div><p class="small" id="readingWordWritingNote"></p></div></dialog>
-  <dialog id="readingOptions" class="reading-settings-dialog" aria-labelledby="readingSettingsTitle"><button id="readingSettingsClose" class="reading-practice-close" aria-label="Close reader settings">×</button><div><h2 id="readingSettingsTitle">Reader settings</h2><p class="small">Quick quizzes are prompted after reading roughly 20 vocabulary words, with varied intervals. Your preferences are saved on this device.</p></div>        <div class="reading-controls"><div><label for="readingSource">Reading track</label><select id="readingSource"><option value="2">HSK 2 practice · 421 sentences</option><option value="3">HSK 3 practice · 1,181 sentences</option><option value="custom">My text · from Workspace</option><option value="starred">Saved sentences</option></select></div><div><label for="readingPinyinMode">Pinyin</label><select id="readingPinyinMode"><option value="adaptive">Peek · unfamiliar characters</option><option value="always">Peek · all characters</option><option value="never">Individual hints only</option></select></div><button id="readingMode">Full passage</button></div>
-        <div class="reading-options"><div class="reading-option-fields"><div><label for="readingWordInterval">Average words between quizzes</label><input id="readingWordInterval" type="number" min="10" max="30" step="1" value="20"><span class="small">Quizzes appear at varied intervals near this target (10–30 words).</span></div><div><label for="readingQuizCount">Maximum questions</label><select id="readingQuizCount"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></div><div><label for="readingQuizType">Quiz type</label><select id="readingQuizType"><option value="mixed">Mixed · all question types</option><option value="meaning">English → Chinese</option><option value="pinyin">Pinyin → Chinese</option><option value="zh-meaning">Chinese → English</option><option value="py-meaning">Pinyin → English</option></select></div></div><p id="readingIntervalProgress" class="small" role="status"></p><div class="reading-reinforcement-options"><label for="readingOrder">Study order</label><select id="readingOrder"><option value="balanced">Balanced · alternate topics and contexts</option><option value="original">Original bank order</option></select><h3>Reinforce what you’ve read</h3><p id="readingReviewSummary" class="small"></p><div class="row"><button id="readingReviewEarlier">Review earlier sentences</button><button id="readingReviewMissed">Practise missed words</button></div><p class="small">Sentence reviews return after 1, 3, 7, 14 and 30 days. Quiz misses return after 10 minutes. You can review early at any time.</p></div></div>
+  <dialog id="readingOptions" class="reading-settings-dialog" aria-labelledby="readingSettingsTitle"><button id="readingSettingsClose" class="reading-practice-close" aria-label="Close reader settings">×</button><div><h2 id="readingSettingsTitle">Reader settings</h2><p class="small">Quiz the vocabulary from each block of 20 sentences. All words are included in the question pool.</p></div>        <div class="reading-controls"><div><label for="readingSource">Reading track</label><select id="readingSource"><option value="2">HSK 2 practice · 421 sentences</option><option value="3">HSK 3 practice · 1,181 sentences</option><option value="custom">My text · from Workspace</option><option value="starred">Saved sentences</option></select></div><div><label for="readingPinyinMode">Pinyin</label><select id="readingPinyinMode"><option value="adaptive">Peek · unfamiliar characters</option><option value="always">Peek · all characters</option><option value="never">Individual hints only</option></select></div><button id="readingMode">Full passage</button></div>
+        <div class="reading-options"><div class="reading-option-fields"><div><label for="readingWordInterval">Sentences between quizzes</label><select id="readingWordInterval"><option>10</option><option selected>20</option><option>30</option></select><span class="small">Default: 20 sentences. Question count is set separately.</span></div><div><label for="readingQuizCount">Maximum questions</label><select id="readingQuizCount"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></div><div><label for="readingQuizType">Quiz type</label><select id="readingQuizType"><option value="mixed">Mixed · all question types</option><option value="meaning">English → Chinese</option><option value="pinyin">Pinyin → Chinese</option><option value="zh-meaning">Chinese → English</option><option value="py-meaning">Pinyin → English</option></select></div></div><p id="readingIntervalProgress" class="small" role="status"></p><div class="reading-reinforcement-options"><label for="readingOrder">Study order</label><select id="readingOrder"><option value="balanced">Balanced · alternate topics and contexts</option><option value="original">Original bank order</option></select><h3>Reinforce what you’ve read</h3><p id="readingReviewSummary" class="small"></p><div class="row"><button id="readingReviewEarlier">Review earlier sentences</button><button id="readingReviewMissed">Practise missed words</button></div><p class="small">Sentence reviews return after 1, 3, 7, 14 and 30 days. Quiz misses return after 10 minutes. You can review early at any time.</p></div></div>
 <p id="readingPinyinNote" class="small"></p></dialog>
   <dialog id="readingPracticeDialog" class="reading-practice-dialog" aria-label="Reading practice and quick quiz"><button id="readingPracticeClose" class="reading-practice-close" aria-label="Close practice">×</button><div id="readingPracticeBody"></div></dialog>
   <div id="appToast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
