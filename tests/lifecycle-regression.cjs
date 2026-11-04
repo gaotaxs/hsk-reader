@@ -49,5 +49,8 @@ async function test(name,fn){await fn();count++;console.log('PASS '+name)}
  await test('Vocabulary respects reduced motion while retaining accessible expanded state',()=>{const a=boot();try{
   const details=a.$('readingVocabulary'),summary=details.querySelector('summary'),body=details.querySelector('.reading-vocab-content');let animations=0;body.animate=()=>{animations++;throw Error('must not animate')};a.w.matchMedia=q=>({matches:q.includes('prefers-reduced-motion')});summary.click();assert.equal(details.open,true);assert.equal(body.inert,false);summary.click();assert.equal(details.open,false);assert.equal(body.inert,true);assert.equal(animations,0);
  }finally{a.dom.window.close();}});
+ await test('Opening vocabulary follows its expansion in the scrolling reading pane',async()=>{const a=boot();try{
+  const main=a.$('mainContent'),details=a.$('readingVocabulary'),body=details.querySelector('.reading-vocab-content');main.style.overflowY='auto';Object.defineProperty(main,'clientHeight',{value:400});Object.defineProperty(main,'scrollHeight',{value:1000});main.getBoundingClientRect=()=>({bottom:400});details.getBoundingClientRect=()=>({bottom:600-main.scrollTop});body.getBoundingClientRect=()=>({height:240});let finish;body.animate=()=>({finished:new Promise(r=>finish=r),cancel(){}});details.querySelector('summary').click();await new Promise(r=>setTimeout(r,45));assert.ok(main.scrollTop>0);finish();await Promise.resolve();assert.equal(main.scrollTop,212);
+ }finally{a.dom.window.close();}});
  console.log(count+' lifecycle checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
