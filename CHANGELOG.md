@@ -1,3 +1,10 @@
+## 1.15.1
+
+- Removed native pinyin hover tooltips and full-button hover/pressed fills; keyboard focus uses a small underline or mask accent.
+- Learning now uses a muted rose fill in both themes. Upward word pulls mark Learning globally with a downward spring return and Undo; downward pulls retain the Known/Unknown toggle. Only the Chinese word moves.
+- Reader, vocabulary/workspace word popups, and flashcard writing guides use a compact word-left, metadata-right header. Tracing pads are 20% smaller.
+- Read-and-next uses an accessible double-chevron icon. On phones, the sentence frame uses the available viewport height independently of the vocabulary disclosure; the expanded list scrolls below instead of shrinking or clipping the sentence.
+
 ## 1.15.0
 
 - Reader is first and opens by default. Removed decorative headings, eyebrow copy and slogans while retaining accessible page names.

@@ -1,3 +1,9 @@
+# Release verification — 1.15.1
+
+113 automated checks pass: 37 core, 16 service-worker, 41 reader workflow, and 19 lifecycle. New coverage verifies upward pull thresholds/cancellation, global Learning persistence, Undo, stationary pinyin, click suppression, tooltip removal, accessible forward icon, and compact guide/list structure. Existing downward swipe, contextual pronunciation, quiz, reset and backup checks remain passing. JavaScript syntax, HTML IDs and CSS parsing also pass.
+
+The phone sentence frame is now measured independently of the expanded vocabulary list. Browser preview remained unavailable in this environment; actual mobile/iPad rendering and touch animation are unverified. No study progress was reset.
+
 # Release verification — 1.15.0
 
 Run `npm test` from the repository root (install the optional jsdom dependency first). The root command delegates to the full suite in tests/.

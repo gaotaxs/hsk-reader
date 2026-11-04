@@ -262,3 +262,22 @@ body:has(#vocab.active) .app-main{height:calc(100dvh - 65px);overflow:hidden;pad
 #quiz:has(#quizPrompt.quiz-idle):has(#quizFeedback:empty) .quiz-toolbar{grid-template-columns:1fr 1fr;gap:18px}
 #quiz:has(#quizPrompt.quiz-idle):has(#quizFeedback:empty) #startQuizBtn{align-self:end}
 @media(max-width:720px){#quiz:has(#quizPrompt.quiz-idle):has(#quizFeedback:empty) .quiz-top-card{margin:4px auto;padding:16px}#quiz:has(#quizPrompt.quiz-idle):has(#quizFeedback:empty) .quiz-toolbar{gap:14px}#quiz .quiz-main-card:has(#quizPrompt.quiz-idle):not(:has(#quizFeedback:empty)){min-height:250px}}
+
+/* Compact hint interactions, rose learning state, and consistent word guides. */
+:root{--learn:#984653;--learning-fill:#fbe7eb}[data-theme=dark]{--learn:#efb0bd;--learning-fill:#433343}
+.vocab-state-learning,[data-theme=dark] .vocab-state-learning{background:var(--learning-fill)}
+.sentence-token.token-learning .reading-word-button,.sentence-token.word-pull-learning .reading-word-button,[data-theme=dark] .sentence-token.token-learning .reading-word-button,[data-theme=dark] .sentence-token.word-pull-learning .reading-word-button{background:var(--learning-fill);border:0;outline:0;box-shadow:none}
+.sentence-line .reading-pinyin-toggle,.sentence-line .reading-pinyin-toggle:hover,.sentence-line .reading-pinyin-toggle:focus,.sentence-line .reading-pinyin-toggle[aria-pressed=true],[data-theme=dark] .sentence-line .reading-pinyin-toggle:hover{background:transparent;box-shadow:none;border:0;outline:0}
+.sentence-line .reading-pinyin-toggle:focus-visible span:not(.hint-hidden){text-decoration:underline;text-underline-offset:3px}
+.sentence-line .reading-pinyin-toggle:focus-visible.pinyin-masked::before{box-shadow:inset 0 -2px var(--accent)}
+#readingMarkNext{display:grid;place-items:center;width:48px;min-width:48px;padding:8px}#readingMarkNext svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.reading-word-dialog .reading-word-hero{display:grid;grid-template-columns:minmax(60px,auto) minmax(0,1fr);align-items:start;gap:16px;text-align:left;padding:0;margin:0 24px 12px 0}
+.reading-word-dialog .reading-word-hero h2{font:42px/1.2 var(--han);margin:0;max-width:180px;overflow-wrap:anywhere}
+.reading-word-dialog .reading-word-hero .reading-word-info{text-align:right;min-width:0}.reading-word-dialog .reading-word-hero p{margin:0 0 4px;line-height:1.4;max-width:none}.reading-word-dialog .reading-word-hero #readingWordMeaning{font-size:16px}.reading-word-dialog .reading-word-hero #readingWordPronunciation{font-size:14px}
+#wordDialog .word-top{display:grid;grid-template-columns:minmax(60px,auto) minmax(0,1fr);align-items:start;justify-items:stretch;gap:16px;text-align:left}#wordDialog .word-hero{justify-content:flex-start;max-width:180px;overflow-wrap:anywhere}#wordDialog .word-info-side{max-width:none;width:100%;text-align:right}#wordDialog .word-english{text-align:right;font-size:16px}#wordDialog .word-char{font-size:42px}#wordDialog .word-pin{font-size:14px;margin-bottom:4px}
+.compact-word-guide{display:grid;grid-template-columns:minmax(60px,auto) minmax(0,1fr);align-items:start;gap:16px;margin:12px 0}.compact-word-guide>strong{font:42px/1.2 var(--han);max-width:180px;overflow-wrap:anywhere}.compact-word-guide>div{min-width:0;text-align:right}.compact-word-guide p{margin:0 0 4px;line-height:1.4}.compact-word-guide .small{font-weight:600}
+.reading-vocabulary[open]>summary::after{content:none}.reading-vocab-content{min-height:0}
+@media(max-width:720px){
+ .app-main:has(#reader.active){overflow-y:auto;overscroll-behavior-y:contain}#readingStudio{height:auto;min-height:100%}.sentence-card{flex:0 0 auto;height:var(--sentence-frame-height,calc(100dvh - 250px))!important;min-height:360px}.reading-vocabulary{max-height:none;overflow:visible}.reading-vocabulary[open] .reading-vocab-content{max-height:38dvh;overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
+ .reading-word-dialog .reading-word-hero{padding:0;margin:0 22px 12px 0;gap:12px}.reading-word-dialog .reading-word-hero h2{font-size:36px;max-width:130px}.reading-word-dialog .reading-word-hero #readingWordMeaning{font-size:14px}.reading-word-dialog .reading-word-hero #readingWordPronunciation{font-size:13px}#wordDialog .word-char,.compact-word-guide>strong{font-size:36px}#wordDialog .word-hero,.compact-word-guide>strong{max-width:130px}#wordDialog .word-top{gap:12px}#wordDialog .word-english{font-size:14px}.compact-word-guide #flashGuideMeaning{font-size:14px}
+}
