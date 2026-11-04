@@ -281,3 +281,10 @@ body:has(#vocab.active) .app-main{height:calc(100dvh - 65px);overflow:hidden;pad
  .app-main:has(#reader.active){overflow-y:auto;overscroll-behavior-y:contain}#readingStudio{height:auto;min-height:100%}.sentence-card{flex:0 0 auto;height:var(--sentence-frame-height,calc(100dvh - 250px))!important;min-height:360px}.reading-vocabulary{max-height:none;overflow:visible}.reading-vocabulary[open] .reading-vocab-content{max-height:38dvh;overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
  .reading-word-dialog .reading-word-hero{padding:0;margin:0 22px 12px 0;gap:12px}.reading-word-dialog .reading-word-hero h2{font-size:36px;max-width:130px}.reading-word-dialog .reading-word-hero #readingWordMeaning{font-size:14px}.reading-word-dialog .reading-word-hero #readingWordPronunciation{font-size:13px}#wordDialog .word-char,.compact-word-guide>strong{font-size:36px}#wordDialog .word-hero,.compact-word-guide>strong{max-width:130px}#wordDialog .word-top{gap:12px}#wordDialog .word-english{font-size:14px}.compact-word-guide #flashGuideMeaning{font-size:14px}
 }
+
+/* Reader definition metadata sits directly beside its Chinese word. */
+.reading-word-dialog .reading-word-hero{grid-template-columns:max-content minmax(0,1fr);gap:12px;margin-right:24px;align-items:start}
+.reading-word-dialog .reading-word-hero .reading-word-info{text-align:left}.reading-word-dialog .reading-word-hero p{text-align:left}.reading-word-dialog .reading-word-hero #readingWordState{margin-top:2px}
+.reading-vocab-content{display:flow-root;overflow-anchor:none}.reading-vocabulary>summary .disclosure-chevron{transition:transform 230ms cubic-bezier(.22,.68,0,1)}
+@media(prefers-reduced-motion:reduce){.reading-vocabulary>summary .disclosure-chevron{transition:none}}
+.reading-vocabulary>summary[aria-expanded=false] .disclosure-chevron{transform:rotate(0)}.reading-vocabulary>summary[aria-expanded=true] .disclosure-chevron{transform:rotate(180deg)}
