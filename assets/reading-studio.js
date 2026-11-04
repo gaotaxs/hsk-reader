@@ -65,7 +65,7 @@ const ReadingStudio=(()=>{
   function render(){
     if(!root)return;const r=data(),list=sentences(),index=position(),sentence=list[index];
     const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
-    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').textContent=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
+    $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18" text-anchor="middle">ā</text></svg>';$('readingPeek').setAttribute('aria-label',peek?'Hide pinyin':'Show pinyin');$('readingPeek').title=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
     updateGestureNotice();
     $('sentenceCanvas').dataset.mode=r.mode;
     $('readingResumePractice').textContent=r.practice?.mode==='direct'&&r.practice.phase==='quiz'?'Resume quiz':'Quick quiz';
@@ -89,7 +89,7 @@ const ReadingStudio=(()=>{
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
     $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
     fitSentence();
-    const trans=$('sentenceTranslation');trans.hidden=!sentence;
+    const trans=$('sentenceTranslation');trans.hidden=!sentence||!(translationOpen||r.pin);
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
     const translationVisible=translationOpen||r.pin;
@@ -254,22 +254,24 @@ const ReadingStudio=(()=>{
   function resizeReadingFrame(){
     const main=$('mainContent');if(!matchMedia('(max-width:720px)').matches||!main.clientHeight){root.style.removeProperty('--sentence-frame-height');return;}
     const css=getComputedStyle(main),vocab=$('readingVocabulary'),vcss=getComputedStyle(vocab),summary=vocab.querySelector('summary');
-    const available=main.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom)-root.querySelector('.reading-intro').getBoundingClientRect().height-summary.getBoundingClientRect().height-parseFloat(vcss.paddingTop)-parseFloat(vcss.paddingBottom)-22;
+    const available=main.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom)-root.querySelector('.reading-intro').getBoundingClientRect().height-summary.getBoundingClientRect().height-parseFloat(vcss.paddingTop)-parseFloat(vcss.paddingBottom)-12;
     root.style.setProperty('--sentence-frame-height',Math.max(360,Math.floor(available))+'px');
   }
   function bindVocabularyDisclosure(){
     const details=$('readingVocabulary'),summary=details.querySelector('summary'),body=details.querySelector('.reading-vocab-content');
-    let expanded=details.open,animation=null,generation=0;
+    let expanded=details.open,animation=null,generation=0,followFrame=0;
+    const follow=()=>{const main=$('mainContent'),local=/auto|scroll/.test(getComputedStyle(main).overflowY)&&main.scrollHeight>main.clientHeight;const bottom=local?main.getBoundingClientRect().bottom:window.innerHeight,delta=details.getBoundingClientRect().bottom-bottom+12;if(delta>0){if(local)main.scrollTop+=delta;else window.scrollBy(0,delta);}};
     const sync=()=>{summary.setAttribute('aria-expanded',String(expanded));body.inert=!expanded;};sync();
     summary.addEventListener('click',e=>{
       e.preventDefault();const from=details.open?body.getBoundingClientRect().height:0,opening=!expanded,id=++generation;
-      expanded=opening;animation?.cancel();animation=null;body.style.removeProperty('overflow');sync();
-      if(!body.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){details.open=opening;resizeReadingFrame();return;}
+      expanded=opening;cancelAnimationFrame(followFrame);animation?.cancel();animation=null;body.style.removeProperty('overflow');sync();
+      if(!body.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){details.open=opening;resizeReadingFrame();if(opening)requestAnimationFrame(follow);return;}
       details.open=true;const target=opening?body.getBoundingClientRect().height:0;
       body.style.overflow='hidden';
       animation=body.animate([{height:from+'px',opacity:from?1:0},{height:target+'px',opacity:opening?1:0}],{duration:230,easing:'cubic-bezier(.22,.68,0,1)',fill:'both'});
+      if(opening){const tick=()=>{if(id!==generation||!animation)return;follow();followFrame=requestAnimationFrame(tick);};followFrame=requestAnimationFrame(tick);}
       animation.finished.then(()=>{
-        if(id!==generation)return;details.open=opening;animation.cancel();animation=null;body.style.removeProperty('overflow');resizeReadingFrame();
+        if(id!==generation)return;cancelAnimationFrame(followFrame);details.open=opening;if(opening)follow();animation.cancel();animation=null;body.style.removeProperty('overflow');resizeReadingFrame();
       }).catch(()=>{});
     });
     details.addEventListener('toggle',()=>{if(!animation){expanded=details.open;sync();}resizeReadingFrame();fitSentence();});

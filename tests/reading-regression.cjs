@@ -10,11 +10,11 @@ test('Static navigation has no animated image or picture elements',()=>assert.eq
 test('Dictionary segments multi-character words beyond the original HSK deck',()=>assert.ok(run("ReadingStudio.segments('为了明天的比赛').some(x=>x.text==='比赛'&&x.v)")));
 test('Pinyin hints persist without grading the word',()=>{const word=w.document.querySelector('[data-r-word]').dataset.rWord;click('[data-r-word]');assert.equal(run(`statusOf(${JSON.stringify(word)})`),'new');click('[data-r-word]');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false);assert.equal(run(`statusOf(${JSON.stringify(word)})`),'new');run('ReadingStudio.render()');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),false);const backup=run('getBackup()');assert.equal(backup.entryStatuses[word],undefined);assert.equal(backup.studio.reading.hiddenPinyin[word],true);click('[data-r-word]');assert.equal(run(`ReadingStudio.hintsVisible(${JSON.stringify(word)})`),true);assert.equal(run(`statusOf(${JSON.stringify(word)})`),'new');});
 test('Tap pinyin toggles hints without grading, preserves individual pins, and resets on navigation',()=>{
- $('readingNext').click();assert.equal(w.document.querySelector('[data-r-word][aria-pressed="true"]'),null);const before=run('JSON.stringify(statuses)');assert.equal($('readingPeek').textContent,'Show pinyin');
- $('readingPeek').click();assert.equal($('readingPeek').textContent,'Hide pinyin');assert.ok(w.document.querySelector('[data-r-word][aria-pressed="true"]'));assert.equal(run('JSON.stringify(statuses)'),before);
+ $('readingNext').click();assert.equal(w.document.querySelector('[data-r-word][aria-pressed="true"]'),null);const before=run('JSON.stringify(statuses)');assert.equal($('readingPeek').getAttribute('aria-label'),'Show pinyin');
+ $('readingPeek').click();assert.equal($('readingPeek').getAttribute('aria-label'),'Hide pinyin');assert.ok(w.document.querySelector('[data-r-word][aria-pressed="true"]'));assert.equal(run('JSON.stringify(statuses)'),before);
  $('readingPeek').click();assert.equal(w.document.querySelector('[data-r-word][aria-pressed="true"]'),null);assert.equal(run('JSON.stringify(statuses)'),before);
  click('[data-r-word]');$('readingPeek').click();$('readingPeek').click();assert.equal(w.document.querySelector('[data-r-word]').getAttribute('aria-pressed'),'true');
- $('readingPeek').click();$('readingNext').click();assert.equal($('readingPeek').textContent,'Show pinyin');assert.equal(w.document.querySelector('[data-r-word][aria-pressed="true"]'),null);$('readingPrev').click();$('readingPrev').click();
+ $('readingPeek').click();$('readingNext').click();assert.equal($('readingPeek').getAttribute('aria-label'),'Show pinyin');assert.equal(w.document.querySelector('[data-r-word][aria-pressed="true"]'),null);$('readingPrev').click();$('readingPrev').click();
 });
 test('Pinyin and Chinese use separate buttons; a word opens definition and writing',()=>{
  click('[data-r-definition="每天"]');assert.equal($('readingWordDialog').open,true);
@@ -206,5 +206,8 @@ test('Reader popup places status at the right and supplies accessible listen and
 });
 test('Save sentence uses an accessible bookmark and persists its toggled state',()=>{
  const button=$('readingStarSentence'),id=run('ReadingStudio.current().id'),before=button.getAttribute('aria-pressed');assert.ok(button.querySelector('svg'));assert.equal(button.textContent,'');button.click();assert.notEqual(button.getAttribute('aria-pressed'),before);assert.equal(run('getBackup().studio.reading.starSentences.includes('+JSON.stringify(id)+')'),button.getAttribute('aria-pressed')==='true');assert.match(button.getAttribute('aria-label'),/sentence/);button.click();assert.equal(button.getAttribute('aria-pressed'),before);
+});
+test('Reader controls use the header and a compact accessible icon rail',()=>{
+ assert.ok($('readingOptionsToggle').closest('header'));assert.ok($('readingResumePractice').closest('header'));assert.ok($('readingListen').querySelector('svg'));assert.equal($('readingListen').textContent,'');assert.ok($('readingPeek').querySelector('svg'));assert.ok($('readingTranslateToggle').closest('.reading-navigation'));assert.ok($('readingPinTranslation').closest('.reading-navigation'));
 });
 console.log(count+' reading workflow checks passed');dom.window.close();
