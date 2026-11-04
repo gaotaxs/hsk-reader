@@ -85,7 +85,7 @@ const ReadingStudio=(()=>{
     $('readingProgressText').textContent=checkpoint.sentences+' / '+checkpoint.target+' sentences to quiz';
     $('readingPrev').disabled=!index;$('readingNext').disabled=index>=list.length-1;
     $('readingMarkNext').disabled=!sentence;$('readingListen').disabled=!sentence;
-    $('readingStarSentence').disabled=!sentence;$('readingStarSentence').textContent=r.starSentences.includes(sentence?.id)?'★ Saved':'☆ Save sentence';
+    const saveSentence=$('readingStarSentence'),saved=r.starSentences.includes(sentence?.id);saveSentence.disabled=!sentence;saveSentence.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg>';saveSentence.setAttribute('aria-pressed',String(saved));saveSentence.setAttribute('aria-label',saved?'Unsave sentence':'Save sentence');saveSentence.title=saved?'Unsave sentence':'Save sentence';
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
     $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
     fitSentence();
