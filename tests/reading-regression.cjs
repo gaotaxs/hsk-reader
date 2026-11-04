@@ -185,4 +185,20 @@ test('Navigation, progress and vocabulary status controls have the requested str
 test('A stale review list or numeric track never leaves a preset reader empty',()=>{
  run(`extras.reading.source=2;extras.reading.reviewSession={ids:['obsolete-sentence'],index:0};ReadingStudio.render()`);assert.equal(run('ReadingStudio.sentences().length'),421);assert.equal(run('extras.reading.reviewSession'),null);assert.equal($('readingNext').disabled,false);
 });
+test('Upward word pulls mark Learning globally, keep hints still, and support Undo',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='面条。';extras.reading.positions.custom=0;extras.reading.reviewSession=null;statuses['面条']='known';ReadingStudio.render()`);
+ const canvas=$('sentenceCanvas'),send=(type,target,y)=>{const e=new w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{pointerId:17,button:0,isPrimary:true,clientX:100,clientY:y});target.dispatchEvent(e);};
+ let word=w.document.querySelector('[data-r-definition="面条"]');send('pointerdown',word,100);send('pointermove',canvas,80);send('pointerup',canvas,80);assert.equal(run(`statusOf('面条')`),'known');
+ send('pointerdown',word,100);send('pointermove',canvas,55);assert.equal(word.style.transform,'translateY(-12px)');assert.equal(word.closest('.sentence-token').querySelector('.reading-hint-row').style.transform,'');send('pointercancel',canvas,55);assert.equal(run(`statusOf('面条')`),'known');
+ send('pointerdown',word,100);send('pointermove',canvas,55);assert.ok(word.closest('.sentence-token').classList.contains('word-pull-learning'));send('pointerup',canvas,55);
+ assert.equal(run(`statusOf('面条')`),'learning');assert.equal(run('getBackup().entryStatuses["面条"]'),'learning');assert.match($('readingGestureText').textContent,/Learning/);assert.ok(w.document.querySelector('.sentence-token.token-learning'));click('[data-r-definition="面条"]');assert.equal($('readingWordDialog').open,false);
+ $('readingGestureUndo').click();assert.equal(run(`statusOf('面条')`),'known');
+});
+test('Hint tooltips are absent and forward action is an accessible double chevron',()=>{
+ assert.equal(w.document.querySelector('[data-r-word][title]'),null);assert.ok($('readingMarkNext').querySelector('svg'));assert.match($('readingMarkNext').getAttribute('aria-label'),/Mark read/);assert.equal($('readingMarkNext').textContent,'');
+});
+test('Word guide metadata is beside the word and vocabulary has a separate scrolling body',()=>{
+ assert.ok($('readingWordMeaning').closest('.reading-word-info'));assert.equal($('readingWordHeading').parentElement,$('readingWordMeaning').closest('.reading-word-hero'));assert.ok($('readingVocab').closest('.reading-vocab-content'));
+ const css=fs.readFileSync('assets/app.css','utf8');assert.ok(css.includes('height:var(--sentence-frame-height'));assert.ok(css.includes('.reading-vocabulary[open] .reading-vocab-content'));assert.ok($('flashGuideWord'));assert.ok($('flashGuidePinyin'));
+});
 console.log(count+' reading workflow checks passed');dom.window.close();

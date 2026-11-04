@@ -296,8 +296,8 @@
   function buildWordDetails(v, status, statusClass, safeWord){
     return `
       <div class="word-top">
-        ${renderWordHero(v)}
-        <div class="word-info-side">
+        <div class="word-hero" lang="zh-Hans"><span class="word-char">${escapeHtml(v.word)}</span></div>
+        <div class="word-info-side"><div class="word-pin">${escapeHtml(cardSyllables(v).join(' '))}</div>
           <div class="word-english">${escapeHtml(v.english)}</div>
           <div class="word-level">HSK ${v.level}</div>
           <span class="status-chip ${statusClass}">${escapeHtml(status)}</span>
@@ -436,7 +436,7 @@
     syncTraceButtons(area,true,visible);
   }
   function renderStrokeSurfaces({panel,status,wrap,chars,prefix,traceMode,startQuiz,valid,guideVisible,padSize}){
-    const size=traceMode?(Number.isFinite(padSize)?padSize:getTracePadSize()):128;
+    const size=traceMode?(Number.isFinite(padSize)?padSize:Math.round(getTracePadSize()*.8)):128;
     const padding=traceMode?12:8;
     if(wrap) wrap.classList.toggle('trace-mode',traceMode);
     let loaded=0;
@@ -838,6 +838,7 @@
     if(!panel||!status||!flashStrokeOpen)return;
     const wrap=panel.closest('.stroke-panel');
     if(!v){panel.textContent='No flashcard selected.';status.textContent='';flashStrokeRenderedWord='';return;}
+    $('flashGuideWord').textContent=v.word;$('flashGuidePinyin').textContent=cardSyllables(v).join(' ');$('flashGuideMeaning').textContent=v.english;
     const traceMode=opts.traceMode??flashStrokeTraceMode;
     const startQuiz=!!opts.startQuiz;
     if(!opts.force && flashStrokeRenderedWord===v.word && !traceMode)return;
