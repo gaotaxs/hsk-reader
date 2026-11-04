@@ -1,3 +1,9 @@
+## 1.15.6
+
+- Reader shows current-sentence Read/Unread state and separates sentence position from track read totals. Quiz cadence now counts newly marked-read sentences, not forward browsing; existing cadence migrates from saved read history without clearing progress.
+- A centred completion check sits between speaker/pinyin and eye/pin actions. Tools share border-free styling; pinyin uses a two-line pīn/yīn icon and keeps the configured unfamiliar/all hint behaviour.
+- Translation uses a fixed-height reserved slot so its visibility cannot move the bottom controls.
+
 ## 1.15.2
 
 - Reader word-popup pinyin, translation and status now sit immediately beside the Chinese word, aligned to the left as in the supplied sketch.
