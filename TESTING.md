@@ -1,3 +1,7 @@
+# Release verification — 1.15.2
+
+116 checks pass (37 core, 16 service-worker, 41 reader workflow, 22 lifecycle). Added asynchronous animation tests for opening/closing, rapid reversal/cancellation, and reduced motion. JavaScript syntax and CSS parsing pass. Browser rendering remains unverified because the browser runtime is unavailable.
+
 # Release verification — 1.15.1
 
 113 automated checks pass: 37 core, 16 service-worker, 41 reader workflow, and 19 lifecycle. New coverage verifies upward pull thresholds/cancellation, global Learning persistence, Undo, stationary pinyin, click suppression, tooltip removal, accessible forward icon, and compact guide/list structure. Existing downward swipe, contextual pronunciation, quiz, reset and backup checks remain passing. JavaScript syntax, HTML IDs and CSS parsing also pass.

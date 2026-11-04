@@ -257,9 +257,26 @@ const ReadingStudio=(()=>{
     const available=main.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom)-root.querySelector('.reading-intro').getBoundingClientRect().height-summary.getBoundingClientRect().height-parseFloat(vcss.paddingTop)-parseFloat(vcss.paddingBottom)-22;
     root.style.setProperty('--sentence-frame-height',Math.max(360,Math.floor(available))+'px');
   }
+  function bindVocabularyDisclosure(){
+    const details=$('readingVocabulary'),summary=details.querySelector('summary'),body=details.querySelector('.reading-vocab-content');
+    let expanded=details.open,animation=null,generation=0;
+    const sync=()=>{summary.setAttribute('aria-expanded',String(expanded));body.inert=!expanded;};sync();
+    summary.addEventListener('click',e=>{
+      e.preventDefault();const from=details.open?body.getBoundingClientRect().height:0,opening=!expanded,id=++generation;
+      expanded=opening;animation?.cancel();animation=null;body.style.removeProperty('overflow');sync();
+      if(!body.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){details.open=opening;resizeReadingFrame();return;}
+      details.open=true;const target=opening?body.getBoundingClientRect().height:0;
+      body.style.overflow='hidden';
+      animation=body.animate([{height:from+'px',opacity:from?1:0},{height:target+'px',opacity:opening?1:0}],{duration:230,easing:'cubic-bezier(.22,.68,0,1)',fill:'both'});
+      animation.finished.then(()=>{
+        if(id!==generation)return;details.open=opening;animation.cancel();animation=null;body.style.removeProperty('overflow');resizeReadingFrame();
+      }).catch(()=>{});
+    });
+    details.addEventListener('toggle',()=>{if(!animation){expanded=details.open;sync();}resizeReadingFrame();fitSentence();});
+  }
   function bind(){
     bindSentenceGestures();
-    $('readingVocabulary').addEventListener('toggle',()=>{resizeReadingFrame();fitSentence();});
+    bindVocabularyDisclosure();
     window.addEventListener('resize',resizeReadingFrame);
     const peekButton=$('readingPeek');
     peekButton.onclick=()=>setPeek(!peek);

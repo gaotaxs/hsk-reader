@@ -1,3 +1,8 @@
+## 1.15.2
+
+- Reader word-popup pinyin, translation and status now sit immediately beside the Chinese word, aligned to the left as in the supplied sketch.
+- Sentence vocabulary expands and collapses over 230ms, including smooth reversal on rapid taps. Closing retains the content until motion finishes, synchronizes the chevron and accessible expanded state, and respects reduced-motion preferences. The sentence frame remains independent of the disclosure.
+
 ## 1.15.1
 
 - Removed native pinyin hover tooltips and full-button hover/pressed fills; keyboard focus uses a small underline or mask accent.
