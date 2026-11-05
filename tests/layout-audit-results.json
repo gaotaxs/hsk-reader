@@ -1,5 +1,5 @@
 {
-  "release": "1.15.7",
+  "release": "1.16.0",
   "sentence_count": 1602,
   "rendered_cases": 12816,
   "cases": [
@@ -64,17 +64,30 @@
     "Pinyin top clearance",
     "Visible pinyin fits its column"
   ],
-  "method": "Chromium iframe viewports; test-only entry point renders each real sentence through production segmentation, markup and layout. Frame reloaded every 100 sentences to keep long-running DOM measurement stable. Physical iOS Safari/PWA and OS text scaling not certified.",
+  "method": "Chromium iframe viewports; test-only rendering uses actual production segmentation, markup and layout. Frame reloaded every 100 sentences. An initial tablet run had 78 unmeasurable cases after the preview refreshed; the complete 3,204-case tablet sweep was repeated with zero failures. Physical iOS is not certified.",
   "phone_controls": {
     "viewport": [
       402,
       874
     ],
-    "theme_button_right": 390,
-    "read_card_light": "rgb(237, 246, 238)",
-    "translation_align": "center",
-    "controls_y_translation_hidden": 662,
-    "controls_y_translation_visible": 662,
-    "speaker_press_border": "1px rgb(33, 107, 84)"
-  }
+    "toolbar_buttons": 6,
+    "toolbar_px": [
+      44,
+      44
+    ],
+    "header_quiz_px": [
+      40,
+      40
+    ],
+    "header_gear_px": [
+      40,
+      40
+    ],
+    "Chinese_character_px": 34,
+    "within_word_gap_px": 1,
+    "translation_swipe": "rightward drag advanced 1/3 to 2/3 and read/quiz totals to 1",
+    "keyboard": "focused Right Arrow advanced to 3/3 and read/quiz totals to 2",
+    "dark_learning_fill": "rgb(102,88,57)"
+  },
+  "tablet_confirmation_cases": 3204
 }

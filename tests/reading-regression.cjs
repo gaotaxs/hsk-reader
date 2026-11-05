@@ -35,18 +35,18 @@ test('Reader controls live in a settings dialog and sentence vocabulary starts c
  $('readingVocabulary').querySelector('summary').click();assert.equal($('readingVocabulary').open,true);$('readingVocabulary').querySelector('summary').click();
 });
 test('Pinyin hint choices survive backup sanitization',()=>{const r=run('sanitizeExtras(extras).reading');assert.ok(Object.keys(r.hiddenPinyin).length);assert.equal(r.source,'2')});
-test('Sentence translation is initially hidden, reveals and can be pinned',()=>{assert.equal($('readingTranslationText').hidden,true);$('readingTranslateToggle').click();assert.equal($('readingTranslationText').hidden,false);$('readingPinTranslation').click();$('readingMarkNext').click();assert.equal($('readingTranslationText').hidden,false)});
+test('Sentence translation is initially hidden, reveals and can be pinned',()=>{assert.equal($('readingTranslationText').hidden,true);$('readingTranslateToggle').click();assert.equal($('readingTranslationText').hidden,false);$('readingPinTranslation').click();$('readingNext').click();assert.equal($('readingTranslationText').hidden,false)});
 test('Reader progress shows overall read sentences independently of quiz cadence',()=>{
  run('extras.reading.read=[];extras.reading.quizSeen={};extras.reading.quizCadence={};extras.reading.positions["2"]=0;ReadingStudio.render()');
- assert.equal(parseFloat($('readingBar').style.width),0);$('readingMarkNext').click();
+ assert.equal(parseFloat($('readingBar').style.width),0);$('readingNext').click();
  assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
  assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuemax')),421);
  assert.ok(Math.abs(parseFloat($('readingBar').style.width)-100/421)<.001);
  assert.match($('readingProgressText').textContent,/1\/20 quiz/);
 });
 test('Exactly twenty sentences trigger a quiz with all vocabulary eligible',()=>{
- for(let i=1;i<19;i++)$('readingMarkNext').click();assert.equal($('readingPracticeDialog').open,false);
- $('readingMarkNext').click();assert.equal($('readingPracticeDialog').open,true);
+ for(let i=1;i<19;i++)$('readingNext').click();assert.equal($('readingPracticeDialog').open,false);
+ $('readingNext').click();assert.equal($('readingPracticeDialog').open,true);
  assert.ok($('readingQuizStart'));assert.equal($('readingCardReveal'),null);
  assert.match($('readingPracticeBody').textContent,/last 20 sentences/);
  assert.ok(run('extras.reading.quizSeen["2"].length')===20);
@@ -123,7 +123,7 @@ test('Balanced order mixes contexts and patterns and preserves the current sente
 });
 test('Sentence reviews are finite, preserve the reading place and schedule the next visit',()=>{
  const pos=run('extras.reading.positions["2"]'),read=run('extras.reading.read.length');run('ReadingStudio.startSentenceReview()');assert.ok(run('extras.reading.reviewSession'));
- const id=run('ReadingStudio.current().id'),n=run('extras.reading.reviewSession.ids.length');for(let i=0;i<n;i++)$('readingMarkNext').click();
+ const id=run('ReadingStudio.current().id'),n=run('extras.reading.reviewSession.ids.length');for(let i=0;i<n;i++)$('readingNext').click();
  assert.equal(run('extras.reading.reviewSession'),null);assert.equal(run('extras.reading.positions["2"]'),pos);assert.equal(run('extras.reading.read.length'),read);
  assert.ok(run(`extras.reading.sentenceReview[${JSON.stringify(id)}].due`)>Date.now());
 });
@@ -156,9 +156,9 @@ test('Pulling a Known word toggles to Unknown and Undo restores Known',()=>{
  run(`extras.reading.source='custom';extras.reading.custom='面条。';extras.reading.positions.custom=0;statuses['面条']='known';ReadingStudio.render()`);const canvas=$('sentenceCanvas'),word=w.document.querySelector('[data-r-definition="面条"]');for(const [type,y] of [['pointerdown',100],['pointermove',145],['pointerup',145]]){const e=new w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{pointerId:9,button:0,isPrimary:true,clientX:100,clientY:y});(type==='pointerdown'?word:canvas).dispatchEvent(e);}assert.equal(run(`statusOf('面条')`),'new');assert.ok(!w.document.querySelector('[data-r-definition="面条"]').closest('.sentence-token').classList.contains('token-known'));assert.match($('readingGestureText').textContent,/Unknown/);$('readingGestureUndo').click();assert.equal(run(`statusOf('面条')`),'known');
 });
 test('Translation icon buttons retain accessible actions and pin state',()=>{assert.ok($('readingTranslateToggle').querySelector('svg'));assert.ok($('readingPinTranslation').querySelector('svg'));assert.equal($('readingPinTranslation').textContent,'');const before=$('readingPinTranslation').getAttribute('aria-pressed');$('readingPinTranslation').click();assert.notEqual($('readingPinTranslation').getAttribute('aria-pressed'),before);assert.match($('readingPinTranslation').getAttribute('aria-label'),/translation/);});
-test('Horizontal phrase swipes preserve unread state and clamp at the first sentence',()=>{
- run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。';extras.reading.positions.custom=0;ReadingStudio.render()`);const canvas=$('sentenceCanvas'),send=(type,x,y)=>{const e=new w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{pointerId:2,button:0,isPrimary:true,clientX:x,clientY:y});canvas.dispatchEvent(e);};
- const read=run('JSON.stringify(extras.reading.read)'),id=run('ReadingStudio.current().id');send('pointerdown',150,100);send('pointermove',60,104);send('pointerup',60,104);assert.equal(run('extras.reading.positions.custom'),1);assert.equal(run('JSON.stringify(extras.reading.read)'),read);assert.ok(run('extras.reading.quizSeen.custom.includes('+JSON.stringify(id)+')'));send('pointerdown',50,100);send('pointermove',140,102);send('pointerup',140,102);assert.equal(run('extras.reading.positions.custom'),0);send('pointerdown',50,100);send('pointermove',140,102);send('pointerup',140,102);assert.equal(run('extras.reading.positions.custom'),0);
+test('Rightward sentence swipes mark once; leftward swipes go back',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。';extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);const canvas=$('sentenceCanvas'),send=(type,x,y)=>{const e=new w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{pointerId:2,button:0,isPrimary:true,clientX:x,clientY:y});canvas.dispatchEvent(e);};
+ send('pointerdown',50,100);send('pointermove',140,102);send('pointerup',140,102);assert.equal(run('extras.reading.positions.custom'),1);assert.equal(run('extras.reading.read.length'),1);send('pointerdown',150,100);send('pointermove',60,104);send('pointerup',60,104);assert.equal(run('extras.reading.positions.custom'),0);assert.equal(run('extras.reading.read.length'),1);
 });
 test('Balanced word rows avoid an orphan final unit and preserve order',()=>{const ends=Array.from(run('ReadingStudio.balancedBreaks([30,60,30,30,60,60,60],300)'));assert.equal(ends.length,2);assert.ok(ends[0]<=5);assert.equal(ends[1],7);assert.deepEqual(Array.from(run('ReadingStudio.balancedBreaks([30,60,30],300)')),[3]);});
 test('Word feedback occupies a dedicated slot outside translation flow',()=>{assert.equal($('readingGestureNotice').closest('.reading-feedback-slot').parentElement.classList.contains('sentence-card'),true);assert.equal($('readingGestureNotice').closest('#sentenceTranslation'),null);});
@@ -195,7 +195,7 @@ test('Upward word pulls mark Learning globally, keep hints still, and support Un
  $('readingGestureUndo').click();assert.equal(run(`statusOf('面条')`),'known');
 });
 test('Hint tooltips are absent and forward action is an accessible double chevron',()=>{
- assert.equal(w.document.querySelector('[data-r-word][title]'),null);assert.ok($('readingMarkNext').querySelector('svg'));assert.match($('readingMarkNext').getAttribute('aria-label'),/Mark read/);assert.equal($('readingMarkNext').textContent,'');
+ assert.equal(w.document.querySelector('[data-r-word][title]'),null);assert.match($('readingNext').getAttribute('aria-label'),/Mark read/);
 });
 test('Word guide metadata is beside the word and vocabulary has a separate scrolling body',()=>{
  assert.ok($('readingWordMeaning').closest('.reading-word-info'));assert.equal($('readingWordHeading').parentElement,$('readingWordMeaning').closest('.reading-word-hero'));assert.ok($('readingVocab').closest('.reading-vocab-content'));
@@ -210,12 +210,12 @@ test('Save sentence uses an accessible bookmark and persists its toggled state',
 test('Reader controls use the header and a compact accessible icon rail',()=>{
  assert.ok($('readingOptionsToggle').closest('header'));assert.ok($('readingResumePractice').closest('header'));assert.ok($('readingListen').querySelector('svg'));assert.equal($('readingListen').textContent,'');assert.ok($('readingPeek').querySelector('svg'));assert.ok($('readingTranslateToggle').closest('.reading-navigation'));assert.ok($('readingPinTranslation').closest('.reading-navigation'));
 });
-test('Read state distinguishes position from unique read totals and quiz counts only marked sentences',()=>{
- run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。再见。';extras.reading.positions.custom=0;extras.reading.reviewSession=null;extras.reading.read=[];extras.reading.quizSeen={};extras.reading.quizCadence={};extras.reading.quizCountBasis='read';ReadingStudio.render()`);
- assert.equal($('readingReadState').getAttribute('aria-label'),'Sentence unread');$('readingNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),0);assert.equal(run('extras.reading.read.length'),0);$('readingMarkNext').click();assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);$('readingPrev').click();assert.equal($('readingReadState').getAttribute('aria-label'),'Sentence already read');assert.equal($('readingPosition').textContent,'2/3');assert.match($('readingProgressText').textContent,/1 read/);$('readingMarkNext').click();assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);
+test('Forward navigation marks each sentence once and the final sentence remains readable',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。再见。';extras.reading.positions.custom=0;extras.reading.reviewSession=null;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
+ $('readingNext').click();assert.equal(run('extras.reading.read.length'),1);$('readingPrev').click();$('readingNext').click();assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);$('readingNext').click();assert.equal($('readingNext').disabled,false);$('readingNext').click();assert.equal(run('extras.reading.read.length'),3);assert.equal($('readingNext').disabled,true);
 });
-test('Completion check is centred among the five tools and translation slot remains present',()=>{
- const buttons=[...w.document.querySelectorAll('.reading-navigation>button')].map(b=>b.id);assert.equal(buttons[3],'readingMarkNext');assert.ok($('readingMarkNext').querySelector('svg path').getAttribute('d').includes('L20 5'));run('extras.reading.pin=false;ReadingStudio.render()');$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);
+test('Six controls replace the completion check and retain the translation slot',()=>{
+ const buttons=[...w.document.querySelectorAll('.reading-navigation>button')].map(b=>b.id);assert.deepEqual(buttons,['readingPrev','readingListen','readingPeek','readingTranslateToggle','readingPinTranslation','readingNext']);run('extras.reading.pin=false;ReadingStudio.render()');$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);$('readingTranslateToggle').click();assert.equal($('sentenceTranslation').hidden,false);
 });
 test('Adaptive pinyin shows Learning words and keeps Known words hidden',()=>{
  run(`extras.reading.source='custom';extras.reading.custom='我吃面条。';extras.reading.positions.custom=0;extras.reading.pinyin='adaptive';extras.reading.hiddenPinyin={};statuses['面条']='known';statuses['我']='learning';ReadingStudio.render()`);$('readingPeek').click();assert.equal(run(`ReadingStudio.hintsVisible('面条')`),false);assert.equal(run(`ReadingStudio.hintsVisible('我')`),true);
@@ -229,12 +229,26 @@ test('Read tint and compact header icons preserve accessible actions',()=>{
 test('Repeated pasted sentences retain independent read progress',()=>{
  run(`extras.reading.custom='你好。你好。';extras.reading.source='custom';extras.reading.reviewSession=null;extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
  const ids=Array.from(run('ReadingStudio.sentences().map(s=>s.id)'));assert.equal(new Set(ids).size,2);
- $('readingMarkNext').click();assert.equal($('readingReadState').dataset.read,'false');assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
- $('readingMarkNext').click();assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),2);assert.equal(run('extras.reading.read.length'),2);
+ $('readingNext').click();assert.equal($('readingReadState').dataset.read,'false');assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
+ $('readingNext').click();assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),2);assert.equal(run('extras.reading.read.length'),2);
 });
 test('Passage mode preserves the reading place when returning to sentence mode',()=>{
  run(`extras.reading.source='2';extras.reading.positions['2']=7;extras.reading.mode='sentence';ReadingStudio.render()`);const id=run('ReadingStudio.current().id'),history=run('JSON.stringify(extras.reading.read)');
  $('readingMode').click();assert.equal($('sentenceCanvas').querySelectorAll('.sentence-paragraph').length,10);assert.equal(run('ReadingStudio.current().id'),id);
  $('readingMode').click();assert.equal($('sentenceCanvas').querySelectorAll('.sentence-paragraph').length,1);assert.equal(run('ReadingStudio.current().id'),id);assert.equal(run('JSON.stringify(extras.reading.read)'),history);
+});
+test('Translation swipes mark forward once, ignore cancellation and go back without counting',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='你好。谢谢。再见。';extras.reading.reviewSession=null;extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
+ const area=$('sentenceTranslation'),send=(type,x,y)=>{const e=new w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{pointerId:17,button:0,isPrimary:true,clientX:x,clientY:y});area.dispatchEvent(e);};
+ send('pointerdown',40,100);send('pointermove',140,102);send('pointercancel',140,102);assert.equal(run('extras.reading.read.length'),0);
+ send('pointerdown',40,100);send('pointermove',140,102);send('pointerup',140,102);assert.equal(run('extras.reading.positions.custom'),1);assert.equal(run('extras.reading.read.length'),1);
+ send('pointerdown',140,100);send('pointermove',40,102);send('pointerup',40,102);assert.equal(run('extras.reading.positions.custom'),0);assert.equal(run('extras.reading.read.length'),1);
+});
+test('Reader arrow keys respect typing and dialogs and do not double-count revisits',()=>{
+ run(`switchTab('reader');extras.reading.practice=null;extras.reading.source='custom';extras.reading.custom='你好。谢谢。再见。';extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
+ const key=(el,k)=>el.dispatchEvent(new w.KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true}));
+ key($('inputText'),'ArrowRight');assert.equal(run('extras.reading.positions.custom'),0);
+ $('readingOptions').open=true;key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.positions.custom'),0);$('readingOptions').open=false;
+ key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.positions.custom'),1);key(w.document.body,'ArrowLeft');key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);
 });
 console.log(count+' reading workflow checks passed');dom.window.close();
