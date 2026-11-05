@@ -1,3 +1,10 @@
+## 1.16.0
+
+- Removed the separate completion check. Next button, Right Arrow and rightward swipes mark the current sentence read once and advance; leftward/back navigation preserves read totals. The final unread sentence can also be marked read. Quizzes still follow unique read sentences.
+- Swipe navigation now also works over the translation area, with vertical scrolling retained. Keyboard shortcuts ignore text editing, open dialogs, modified keys and repeats.
+- Reader toolbar uses six square controls; quiz/settings header controls are matched 40px squares. Learning uses a warm amber tint in both themes.
+- Two-character Chinese words use uniform 34px character columns with a 1px gap. Longer pinyin syllables fit above the characters without widening the Chinese or changing its font size.
+
 ## 1.15.9
 
 - Repeated occurrences in pasted text now have distinct sentence IDs, so reading one no longer marks every repeat read or inflates the progress bar. The first occurrence keeps its original ID for existing saved progress.

@@ -1,3 +1,9 @@
+# Release verification — 1.16.0
+
+129 automated checks pass (37 application, 16 service-worker, 53 reader, 23 lifecycle). Updated navigation regressions cover read-on-advance, no double counting on revisits, the final unread sentence, and rightward/leftward gestures. New tests cover translation-area swipes, cancellation, keyboard navigation and typing/dialog guards. Existing twenty-sentence quiz and saved-progress checks pass.
+
+Chromium at 402×874 measures both quiz/settings header controls as 40×40 and all six reader controls as 44×44. 晚上 uses two 34px columns separated by 1px, matching 早上 and 时间. A real horizontal drag over translation advanced position 1/3 to 2/3 and changed the unique read/quiz counts to 1; a focused Right Arrow advanced to 3/3 with counts of 2. Learning computes to rgb(102,88,57) in dark mode. Chinese remains 34px. Corpus results are recorded in tests/layout-audit-results.json. Physical iPhone Safari/PWA remains unverified.
+
 # Release verification — 1.15.9
 
 127 automated checks pass (37 application, 16 service-worker, 51 reader, 23 lifecycle). A failing duplicate-text regression reproduced two pasted sentences sharing one ID; the fix verifies distinct IDs and 1/2 then 2/2 read totals. Passage-mode regression verifies 10-sentence rendering and return to the same sentence without modifying read history.
