@@ -1,3 +1,7 @@
+## 1.15.8
+
+- Replaced the pinyin toggle with the approved outlined 拼 glyph. Accessible show/hide labels and active states are preserved.
+
 ## 1.15.7
 
 - Read sentences use a soft green card tint in both themes. Position, read total and quiz cadence share one compact line; the quiz shortcut is a clipboard icon.
