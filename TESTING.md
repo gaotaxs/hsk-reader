@@ -1,3 +1,9 @@
+# Release verification — 1.15.9
+
+127 automated checks pass (37 application, 16 service-worker, 51 reader, 23 lifecycle). A failing duplicate-text regression reproduced two pasted sentences sharing one ID; the fix verifies distinct IDs and 1/2 then 2/2 read totals. Passage-mode regression verifies 10-sentence rendering and return to the same sentence without modifying read history.
+
+Chromium at 402×874 reproduced Passage view overflow (2,600px content, 381px pane, overflow visible). After the fix, overflow is auto with 1,957px content in the 381px pane. Bottom controls stay at Y=662px in Passage and Sentence modes; returning restores one paragraph at 34px. A real quiz answer shows both the wrong and correct choices; closing restores the same Reader position. Physical iOS Safari/PWA remains unverified. The full 1.15.7 single-sentence geometry sweep remains recorded separately.
+
 # Release verification — 1.15.7
 
 125 automated checks pass: 37 application, 16 service-worker, 49 reader workflow, and 23 lifecycle. JavaScript syntax and CSS parsing pass. Reader regressions cover compact accessible icons, saved read state, unique marked-read counts, quiz cadence, pinyin behaviour, fixed completion control order, quiz return, saved progress and vocabulary disclosure animation.

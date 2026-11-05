@@ -19,7 +19,7 @@ const ReadingStudio=(()=>{
       result.push({text:word,v,py:p});i+=word.length;
     }return result;
   }
-  function customSentences(){return (data().custom.match(/[^。！？!?\n]+[。！？!?]?/g)||[]).map((zh,i)=>({id:'custom-'+hash(zh),zh:zh.trim(),py:'',en:'',level:0})).filter(x=>x.zh);}
+  function customSentences(){const counts=new Map();return (data().custom.match(/[^。！？!?\n]+[。！？!?]?/g)||[]).map(zh=>{const base='custom-'+hash(zh),count=(counts.get(base)||0)+1;counts.set(base,count);return {id:base+(count>1?'-'+count:''),zh:zh.trim(),py:'',en:'',level:0};}).filter(x=>x.zh);}
   function hash(s){let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))|0;return String(x>>>0);}
   function orderedLevel(level,order=data().order){
     const key=level+':'+order;if(orderedCache.has(key))return orderedCache.get(key);

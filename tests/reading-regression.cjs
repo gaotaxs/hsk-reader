@@ -226,4 +226,15 @@ test('Legacy browse counters migrate from read history without losing completed 
 test('Read tint and compact header icons preserve accessible actions',()=>{
  assert.equal($('readingReadState').textContent,'');assert.ok($('readingResumePractice').querySelector('svg'));assert.equal($('readingResumePractice').textContent,'');assert.match($('readingResumePractice').getAttribute('aria-label'),/quiz/);assert.equal($('readingPeek').querySelectorAll('svg text').length,0);assert.ok($('readingPeek').querySelector('svg path'));
 });
+test('Repeated pasted sentences retain independent read progress',()=>{
+ run(`extras.reading.custom='你好。你好。';extras.reading.source='custom';extras.reading.reviewSession=null;extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
+ const ids=Array.from(run('ReadingStudio.sentences().map(s=>s.id)'));assert.equal(new Set(ids).size,2);
+ $('readingMarkNext').click();assert.equal($('readingReadState').dataset.read,'false');assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),1);
+ $('readingMarkNext').click();assert.equal(Number($('readingBar').parentElement.getAttribute('aria-valuenow')),2);assert.equal(run('extras.reading.read.length'),2);
+});
+test('Passage mode preserves the reading place when returning to sentence mode',()=>{
+ run(`extras.reading.source='2';extras.reading.positions['2']=7;extras.reading.mode='sentence';ReadingStudio.render()`);const id=run('ReadingStudio.current().id'),history=run('JSON.stringify(extras.reading.read)');
+ $('readingMode').click();assert.equal($('sentenceCanvas').querySelectorAll('.sentence-paragraph').length,10);assert.equal(run('ReadingStudio.current().id'),id);
+ $('readingMode').click();assert.equal($('sentenceCanvas').querySelectorAll('.sentence-paragraph').length,1);assert.equal(run('ReadingStudio.current().id'),id);assert.equal(run('JSON.stringify(extras.reading.read)'),history);
+});
 console.log(count+' reading workflow checks passed');dom.window.close();
