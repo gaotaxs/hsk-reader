@@ -1,3 +1,8 @@
+## 1.15.9
+
+- Repeated occurrences in pasted text now have distinct sentence IDs, so reading one no longer marks every repeat read or inflates the progress bar. The first occurrence keeps its original ID for existing saved progress.
+- Passage view now scrolls within its own pane instead of spilling into the translation and controls. Sentence view retains constant 34px type and expands for long text.
+
 ## 1.15.8
 
 - Replaced the pinyin toggle with the approved outlined 拼 glyph. Accessible show/hide labels and active states are preserved.

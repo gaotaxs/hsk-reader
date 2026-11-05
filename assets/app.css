@@ -322,3 +322,6 @@ header .topbar{min-width:0}header .header-actions{min-width:0;flex-shrink:1;flex
 .sentence-card .sentence-paragraph{height:auto;min-height:260px;max-height:none}.sentence-card>.sentence-canvas{font-size:34px;overflow:visible!important;flex-shrink:0;min-height:260px}.sentence-line .reading-pinyin-toggle{font-size:13px!important}.sentence-card{flex-shrink:0}body:has(#reader.active) .app-main{overflow-y:auto!important}
 
 body:has(#reader.active) .app-main{scrollbar-gutter:stable}
+
+/* Passage text scrolls inside its own pane, clear of translation and controls. */
+.sentence-card>.sentence-canvas[data-mode=passage]{min-height:0;overflow:auto!important;touch-action:pan-y;overscroll-behavior:contain}.sentence-canvas[data-mode=passage] .sentence-paragraph{min-height:0;flex-shrink:0;margin-block:18px;padding-top:28px;padding-bottom:8px}
