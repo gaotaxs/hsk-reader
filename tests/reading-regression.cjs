@@ -251,4 +251,22 @@ test('Reader arrow keys respect typing and dialogs and do not double-count revis
  $('readingOptions').open=true;key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.positions.custom'),0);$('readingOptions').open=false;
  key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.positions.custom'),1);key(w.document.body,'ArrowLeft');key(w.document.body,'ArrowRight');assert.equal(run('extras.reading.read.length'),1);assert.equal(run('extras.reading.quizCadence.custom.sentences'),1);
 });
+test('Sentence jump previews a slider target, jumps exactly and never counts skipped sentences',()=>{
+ run(`extras.reading.source='2';extras.reading.mode='sentence';extras.reading.reviewSession=null;extras.reading.positions['2']=56;ReadingStudio.render()`);
+ const history=run('JSON.stringify([extras.reading.read,extras.reading.quizCadence,extras.reading.quizSeen])');$('readingPosition').click();assert.equal($('readingJumpDialog').open,true);assert.equal($('readingJumpRange').max,'421');assert.equal($('readingJumpNumber').value,'57');
+ $('readingJumpRange').value='210';$('readingJumpRange').dispatchEvent(new w.Event('input'));assert.equal($('readingJumpNumber').value,'210');assert.equal(run('extras.reading.positions["2"]'),56);
+ $('readingJumpForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));assert.equal($('readingJumpDialog').open,false);assert.equal($('readingPosition').textContent,'210/421');assert.equal(run('JSON.stringify([extras.reading.read,extras.reading.quizCadence,extras.reading.quizSeen])'),history);
+});
+test('Sentence jump rejects invalid values and cancellation preserves the reading place',()=>{
+ $('readingPosition').click();for(const value of ['', '0','-1','422','1.5']){$('readingJumpNumber').value=value;$('readingJumpNumber').dispatchEvent(new w.Event('input'));assert.equal($('readingJumpGo').disabled,true);$('readingJumpForm').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal($('readingPosition').textContent,'210/421');}
+ $('readingJumpNumber').value='421';$('readingJumpNumber').dispatchEvent(new w.Event('input'));assert.equal($('readingJumpRange').value,'421');assert.equal($('readingJumpGo').disabled,false);$('readingJumpCancel').click();assert.equal($('readingPosition').textContent,'210/421');
+});
+test('Sentence jump supports review sessions and refuses stale track targets',()=>{
+ run(`extras.reading.reviewSession={ids:ReadingStudio.orderedLevel(2).slice(0,3).map(s=>s.id),index:0,reason:'earlier sentences'};ReadingStudio.render()`);$('readingPosition').click();assert.equal($('readingJumpRange').max,'3');$('readingJumpNumber').value='3';$('readingJumpNumber').dispatchEvent(new w.Event('input'));$('readingJumpForm').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(run('extras.reading.reviewSession.index'),2);assert.equal(run('extras.reading.positions["2"]'),209);
+ run(`extras.reading.reviewSession=null;ReadingStudio.render()`);$('readingPosition').click();run(`extras.reading.source='3';extras.reading.positions['3']=0;ReadingStudio.render()`);$('readingJumpForm').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(run('extras.reading.positions["3"]'),0);assert.equal($('readingJumpDialog').open,false);
+});
+test('Empty tracks cannot jump and replacing study data closes the jump dialog',()=>{
+ run(`extras.reading.source='custom';extras.reading.custom='';ReadingStudio.render()`);assert.equal($('readingPosition').disabled,true);
+ run(`extras.reading.source='2';ReadingStudio.render()`);$('readingPosition').click();assert.equal($('readingJumpDialog').open,true);run('window.onStudyDataReplaced()');assert.equal($('readingJumpDialog').open,false);
+});
 console.log(count+' reading workflow checks passed');dom.window.close();

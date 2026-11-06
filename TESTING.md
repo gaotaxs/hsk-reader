@@ -1,3 +1,9 @@
+# Release verification — 1.16.1
+
+133 automated checks pass (37 application, 16 service-worker, 57 reader, 23 lifecycle). New tests cover slider/number synchronization, exact jump to sentence 210 of 421 without changing read/quiz data, invalid and fractional values, cancellation, review-session positions, stale track targets, empty tracks and dialog closure after replacing study data. Existing advance/read counts and quiz cadence checks remain passing. JavaScript syntax and CSS parsing pass.
+
+Chromium at 402×874 confirms both arrow SVG centres have 0px vertical offset within their 44×44 buttons. Opening the counter at 57/421, selecting slider value 210 and pressing Go renders 210/421 with 0 read and 0/20 quiz unchanged. The progress bar retains its meaning as overall unique sentences read. Physical iPhone Safari/PWA remains unverified.
+
 # Release verification — 1.16.0
 
 129 automated checks pass (37 application, 16 service-worker, 53 reader, 23 lifecycle). Updated navigation regressions cover read-on-advance, no double counting on revisits, the final unread sentence, and rightward/leftward gestures. New tests cover translation-area swipes, cancellation, keyboard navigation and typing/dialog guards. Existing twenty-sentence quiz and saved-progress checks pass.

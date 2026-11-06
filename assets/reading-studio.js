@@ -3,7 +3,7 @@ const ReadingStudio=(()=>{
   const root=$('readingStudio');
   const orderedCache=new Map();
   let translationOpen=false,selectedWord='',localPracticeOptions=[],quizSetup=null;
-  let peek=false,hintContext='',revealedHints=new Set(),practiceReturn=null;
+  let jumpIds=[],peek=false,hintContext='',revealedHints=new Set(),practiceReturn=null;
   const nextIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
   const data=()=>extras.reading ||= {source:'2',positions:{},hiddenPinyin:{},starWords:[],starSentences:[],labels:{},read:[],mode:'sentence',pinyin:'adaptive',pin:false,every:5,sentenceInterval:20,cadenceUnit:'sentences',quizWordInterval:20,quizCadence:{},quizCount:10,quizType:'mixed',quizCovered:{},order:'balanced',sentenceReview:{},wordReview:{},reviewSession:null,custom:'',practice:null};
   const save=()=>saveExtras();
@@ -77,7 +77,7 @@ const ReadingStudio=(()=>{
     $('readingExitReview').hidden=!r.reviewSession;
     $('readingMode').textContent=r.mode==='sentence'?'Passage view · 10 sentences':'Sentence view';
     const completed=list.filter(x=>r.read.includes(x.id)).length;
-    $('readingPosition').textContent=list.length?r.reviewSession?`${index+1}/${list.length}`:`${index+1}/${list.length}`:'No sentences yet';
+    $('readingPosition').textContent=list.length?r.reviewSession?`${index+1}/${list.length}`:`${index+1}/${list.length}`:'No sentences yet';$('readingPosition').disabled=!list.length;$('readingPosition').setAttribute('aria-label',list.length?`Jump to sentence, currently ${index+1} of ${list.length}`:'No sentences to jump to');
     const readState=$('readingReadState'),isRead=!!sentence&&r.read.includes(sentence.id);readState.textContent='';readState.setAttribute('aria-label',isRead?'Sentence already read':'Sentence unread');$('sentenceCanvas').closest('.sentence-card').classList.toggle('sentence-is-read',isRead);readState.dataset.read=String(isRead);
     const checkpoint=cadence();
     $('readingBar').style.width=(list.length?completed/list.length*100:0)+'%';
@@ -284,6 +284,13 @@ const ReadingStudio=(()=>{
   function bind(){
     bindSentenceGestures();
     bindVocabularyDisclosure();
+    const jumpDialog=$('readingJumpDialog'),jumpNumber=$('readingJumpNumber'),jumpRange=$('readingJumpRange');
+    const syncJump=fromRange=>{if(fromRange)jumpNumber.value=jumpRange.value;const n=Number(jumpNumber.value),valid=jumpNumber.value.trim()!==''&&Number.isInteger(n)&&n>=1&&n<=jumpIds.length;$('readingJumpGo').disabled=!valid;if(valid)jumpRange.value=String(n);$('readingJumpPreview').textContent=valid?`${n} / ${jumpIds.length}`:`Enter a number from 1 to ${jumpIds.length}.`;return valid;};
+    $('readingPosition').onclick=()=>{jumpIds=sentences().map(s=>s.id);if(!jumpIds.length)return;jumpNumber.max=jumpRange.max=String(jumpIds.length);jumpNumber.value=jumpRange.value=String(position()+1);syncJump(false);jumpDialog.showModal();jumpRange.focus();};
+    jumpNumber.oninput=()=>syncJump(false);jumpRange.oninput=()=>syncJump(true);$('readingJumpCancel').onclick=()=>jumpDialog.close();
+    $('readingJumpForm').onsubmit=e=>{e.preventDefault();if(!syncJump(false))return;const id=jumpIds[Number(jumpNumber.value)-1],index=sentences().findIndex(s=>s.id===id);if(index<0){jumpDialog.close();toast('Reading track changed. Choose a sentence again.');return;}const r=data();if(r.reviewSession)r.reviewSession.index=index;else r.positions[r.source]=index;selectedWord='';translationOpen=false;save();jumpDialog.close();render();};
+    jumpDialog.addEventListener('close',()=>{jumpIds=[];});
+
     window.addEventListener('resize',resizeReadingFrame);
     document.addEventListener('keydown',e=>{if(e.defaultPrevented||e.repeat||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||!$('reader').classList.contains('active')||document.querySelector('dialog[open]')||e.target.closest('input,textarea,select,[contenteditable=true]'))return;if(e.key==='ArrowRight'){e.preventDefault();move(1,true);}else if(e.key==='ArrowLeft'){e.preventDefault();move(-1);}});
     const peekButton=$('readingPeek');
@@ -348,7 +355,7 @@ const ReadingStudio=(()=>{
       if(e.target.closest('#readingPracticeContinue')){if(p.cursor<p.words.length){p.phase='cards';save();renderPractice();}else{dialog.close();render();}}
     };
   }
-  window.onStudyDataReplaced=()=>{cancelDrag();lastKnown=null;clearTimeout(undoTimer);peek=false;hintContext='';revealedHints.clear();translationOpen=false;selectedWord='';quizSetup=null;practiceReturn=null;localPracticeOptions=[];detailWord='';++detailGeneration;cancelWriters(detailWriters);detailWriters=[];for(const id of ['readingPracticeDialog','readingWordDialog','readingOptions'])if($(id).open)$(id).close();$('readingPracticeBody').innerHTML='';};
+  window.onStudyDataReplaced=()=>{cancelDrag();lastKnown=null;clearTimeout(undoTimer);peek=false;hintContext='';revealedHints.clear();translationOpen=false;selectedWord='';quizSetup=null;practiceReturn=null;localPracticeOptions=[];detailWord='';++detailGeneration;cancelWriters(detailWriters);detailWriters=[];for(const id of ['readingPracticeDialog','readingWordDialog','readingOptions','readingJumpDialog'])if($(id).open)$(id).close();$('readingPracticeBody').innerHTML='';};
   cadence();
   if(!data().order)setOrder('balanced');
   data().sentenceReview ||= {};let addedSchedule=false;for(const id of data().read)if(!data().sentenceReview[id]){data().sentenceReview[id]={step:0,due:Date.now()};addedSchedule=true;}if(addedSchedule)save();

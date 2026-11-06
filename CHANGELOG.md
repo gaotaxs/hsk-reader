@@ -1,3 +1,8 @@
+## 1.16.1
+
+- Sentence position is now clickable and opens an accessible jump dialog with a slider and exact sentence-number entry. Preview before committing; jumping preserves read history and quiz cadence, including during sentence reviews. Empty tracks, invalid numbers and stale track targets are guarded.
+- Replaced font-based navigation arrows with centred 24px SVG icons in the existing square buttons.
+
 ## 1.16.0
 
 - Removed the separate completion check. Next button, Right Arrow and rightward swipes mark the current sentence read once and advance; leftward/back navigation preserves read totals. The final unread sentence can also be marked read. Quizzes still follow unique read sentences.
