@@ -1336,7 +1336,7 @@
   $('resetBtn').onclick=()=>{if(confirm('Erase all word progress, lessons, reading history, review schedules, settings and saved texts on this device? Download a backup first if needed.'))resetStudyProgress();};
   if('speechSynthesis' in window){loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices;}
   document.addEventListener('keydown',e=>{
-    if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open)return;
+    if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open||$('readingJumpDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
     if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-7]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
