@@ -1,3 +1,7 @@
+## 1.16.2
+
+- Reader swipe directions now follow page-turning convention: left advances one sentence and marks it read once; right returns to the previous sentence without adding reads. Applies to Chinese and translation areas. Arrow buttons and keyboard directions are unchanged.
+
 ## 1.16.1
 
 - Sentence position is now clickable and opens an accessible jump dialog with a slider and exact sentence-number entry. Preview before committing; jumping preserves read history and quiz cadence, including during sentence reviews. Empty tracks, invalid numbers and stale track targets are guarded.
