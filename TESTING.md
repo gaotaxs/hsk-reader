@@ -1,3 +1,7 @@
+# Release verification — 1.16.2
+
+133 automated checks pass. Updated sentence-canvas and translation gesture regressions now send actual leftward pointer movements to advance and rightward movements to return, checking position and unique read totals. Cancellation, keyboard, quiz cadence, jump and persistence regressions remain passing. JavaScript syntax passes. No layout or word-grading changes.
+
 # Release verification — 1.16.1
 
 133 automated checks pass (37 application, 16 service-worker, 57 reader, 23 lifecycle). New tests cover slider/number synchronization, exact jump to sentence 210 of 421 without changing read/quiz data, invalid and fractional values, cancellation, review-session positions, stale track targets, empty tracks and dialog closure after replacing study data. Existing advance/read counts and quiz cadence checks remain passing. JavaScript syntax and CSS parsing pass.
