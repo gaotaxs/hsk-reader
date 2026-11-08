@@ -1,3 +1,9 @@
+# 1.17.0 focused audit follow-up
+
+Implemented the Reader quiz, pronunciation identity, backlog, statistics, cadence, touch-target, read-state and offline-diagnostic fixes against main 52bebbc. See CHANGELOG.md for behaviour and migration details, TESTING.md for reproducible checks and verification limits. Storage keys, sentence IDs and entry-specific statuses are retained; no reset or reinstall is required. Left advances and right goes back; backward navigation intentionally does not count as reading.
+
+The historical audit below is retained for context.
+
 # HSK Reader 1.12 audit
 
 Date: 1 November 2026. Scope: reset/persistence and PWA lifecycle, backup/import, lessons and finite card sessions, Reader review/quiz restore and word grading. The audit uses the actual static app, synthetic saved data, failure injection, existing regressions and a desktop Chromium smoke check. No user progress was erased during testing.

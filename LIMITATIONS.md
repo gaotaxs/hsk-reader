@@ -1,3 +1,9 @@
+## 1.17.0 verification and migration notes
+
+Physical iPhone installed-PWA/WebKit validation is still pending; Chromium viewport and synthetic service-worker tests do not establish iOS hardware behaviour. Scroll blank areas vertically; pull directly on Chinese words to grade them. Offline readiness validates successful entries for every required asset in the running release cache; later eviction or corrupted contents cannot be ruled out.
+
+Older missed-word records keyed only by 长 did not identify a pronunciation. The original record is preserved under `reading.legacyWordReview`; both pronunciation queues receive a copy unless a specific record already exists. Migration never changes vocabulary status. Old practice questions keep their saved pinyin/options/score/position, and pools recover available contextual pronunciation IDs. An old sentence-order snapshot without vocabulary IDs cannot recover every ambiguous contextual reading; new snapshots save explicit IDs.
+
 # Remaining limitations and next priorities
 
 1. **Physical Apple testing:** iPhone/iPad Safari, Home Screen installation, software-keyboard behaviour, safe-area insets on actual hardware, Apple Pencil stroke grading and palm rejection require real-device testing. Desktop Chromium viewport simulations do not establish these results. Pointer detection only confirms an event reached the page.

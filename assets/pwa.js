@@ -2,14 +2,25 @@
 (()=>{
   const status=document.getElementById('offlineStatus'),update=document.getElementById('updateAppBtn');
   const prefix='hsk-reader-studio-'+encodeURIComponent(new URL('./',location.href).pathname)+'-';
-  let registration=null,reloading=false;
+  let registration=null,reloading=false,refreshGeneration=0;
+  document.getElementById('appVersion').textContent='Running version '+HSK_RELEASE.version;
   const network=()=>{document.getElementById('connectionStatus').hidden=navigator.onLine;};
   network();window.addEventListener('online',network);window.addEventListener('offline',network);
   async function refresh(){
+    const generation=++refreshGeneration;
     try{
-      const ready=registration?.active?.state==='activated'&&(await caches.keys()).some(k=>k.startsWith(prefix));
-      status.textContent=ready?'Offline copy ready, including all 622 writing characters. Your browser may remove site data under storage pressure.':'Preparing the offline copy. Keep this page open until it is ready.';
-    }catch{status.textContent='Offline caching is unavailable in this browser. Study progress can still be exported.';}
+      const name=prefix+HSK_RELEASE.version,exists=(await caches.keys()).includes(name);
+      let ready=false;
+      // Never open a missing cache: diagnostics must not create or repair caches.
+      if(registration?.active?.state==='activated'&&exists){
+        const cache=await caches.open(name);
+        const entries=await Promise.all(HSK_RELEASE.assets.map(path=>cache.match(new URL(path,location.href).href)));
+        ready=entries.every(response=>response?.ok&&response.type!=='opaque');
+      }
+      if(generation!==refreshGeneration)return;
+      status.textContent=ready?'Offline copy ready for '+HSK_RELEASE.version+', including all 622 writing characters. Your browser may remove site data under storage pressure.':'Offline copy incomplete for '+HSK_RELEASE.version+'. Reconnect and use Repair offline copy if it remains incomplete.';
+      waiting();
+    }catch{if(generation===refreshGeneration){status.textContent='Could not verify offline files. Study progress can still be exported.';waiting();}}
   }
   function waiting(){if(registration?.waiting){update.hidden=false;status.textContent='A new version is ready. Choose Reload to update when you are ready to reload.';}}
   if(!('serviceWorker' in navigator)||!window.isSecureContext){
@@ -22,7 +33,7 @@
   update.onclick=()=>{if(!registration)return;if(!saveReaderDraft()){toast('Export your backup before updating; local saving is unavailable.');return;}if(!saveExtras()){toast('Export your backup before updating; local saving is unavailable.');return;}reloading=true;if(registration.waiting)registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});else location.reload();};
   document.getElementById('checkUpdateBtn').onclick=async()=>{
     if(!navigator.onLine){toast('Reconnect to check for updates.');return;}
-    try{await registration?.update();waiting();toast(registration?.waiting?'Reload to install the downloaded update.':'Update check requested. A button appears when a new version is ready.');}catch{toast('Could not check for updates. Try again when connected.');}
+    try{await registration?.update();await refresh();waiting();toast(registration?.waiting?'Reload to install the downloaded update.':'Update check requested. A button appears when a new version is ready.');}catch{toast('Could not check for updates. Try again when connected.');}
   };
   document.getElementById('repairCacheBtn').onclick=async()=>{
     if(!navigator.onLine){toast('Reconnect before repairing the offline copy.');return;}
