@@ -1,0 +1,56 @@
+{
+  "release": "1.17.0",
+  "base_commit": "52bebbc50ed31aae48729f220dcad841588c9828",
+  "browser": "Chromium",
+  "verification": "CSS viewport simulation; no physical iPhone PWA or WebKit",
+  "viewports": [
+    [
+      402,
+      874
+    ],
+    [
+      874,
+      402
+    ]
+  ],
+  "panel_theme_cases": 28,
+  "panels": [
+    "Reader",
+    "Lessons",
+    "Flashcards",
+    "Workspace",
+    "Vocabulary",
+    "Quiz",
+    "Settings"
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "horizontal_page_overflow": 0,
+  "phone_corpus_cases": 3204,
+  "phone_corpus_horizontal_overflow": 0,
+  "chinese_font_sizes": [
+    "34px"
+  ],
+  "jump_and_bookmark_targets_css_px": [
+    44,
+    44
+  ],
+  "reader_navigation_css_px": [
+    44,
+    44
+  ],
+  "arrow_vertical_offset_css_px": 0,
+  "browser_workflows": [
+    "jump 210/421 leaves read/quiz unchanged",
+    "unfinished quiz reload resumes Question 2",
+    "long sentence expands with outer scroll",
+    "expanded vocabulary follows downward",
+    "read tint and visible Read label survive reload"
+  ],
+  "limitations": [
+    "Native touch arbitration was not exercised by physical touch input.",
+    "Offline/update-save failures use regression mocks."
+  ]
+}

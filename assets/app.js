@@ -57,6 +57,24 @@
   const entryKey = v => v.word==='长' ? `${v.word}::${v.pinyin}` : v.word;
   const BY_ID = new Map(VOCAB.map(v=>[entryKey(v),v]));
   const resolveEntry = key => BY_ID.get(key) || BY_WORD.get(key);
+  function readingVocabularyId(id,py='',source='2'){
+    if(id.includes('::'))return id;
+    if(id==='长')return '长::'+(py.includes('zhǎng')||(!py&&source==='3')?'zhǎng':'cháng');
+    if(id==='只'&&py==='zhī')return '只::zhī';
+    const entry=resolveEntry(id);return entry?entryKey(entry):id;
+  }
+  // Legacy Reader pools used written forms. Recover contextual senses where available.
+  function readingVocabularyCandidates(word,ids,source){
+    if(word!=='长')return [readingVocabularyId(word,'',source)];
+    const found=[];
+    if(typeof READING_SENTENCES!=='undefined')for(const sentence of READING_SENTENCES){
+      if(!ids.includes(sentence.id))continue;
+      const chars=Array.from(sentence.zh).filter(isChineseChar),syllables=sentence.py.split(/\s+/);
+      chars.forEach((ch,i)=>{if(ch==='长')found.push(readingVocabularyId(ch,syllables[i],source));});
+    }
+    return uniq(found.length?found:[readingVocabularyId(word,'',source)]);
+  }
+
   let extras = sanitizeExtras(readJSON(STORE.extras, {}));
   // Preserve an untouched legacy snapshot once, before writing expanded progress.
   try { if(!localStorage.getItem(STORE.migration)) {
@@ -1422,15 +1440,17 @@
     }
     const p=raw.practice;
     if(p&&Array.isArray(p.words)){
-      const words=strings(p.words,600).filter(w=>/^[\u3400-\u9fff]{1,20}$/.test(w));
-      const questions=(Array.isArray(p.questions)?p.questions:[]).slice(0,31).filter(q=>q&&['meaning','pinyin','zh-meaning','py-meaning','order'].includes(q.kind)&&typeof q.prompt==='string'&&Array.isArray(q.options)).map(q=>({kind:q.kind,prompt:q.prompt.slice(0,1000),target:typeof q.target==='string'?q.target.slice(0,20):'',pinyin:typeof q.pinyin==='string'?q.pinyin.slice(0,100):'',meaning:typeof q.meaning==='string'?q.meaning.slice(0,1000):'',word:typeof q.word==='string'?q.word.slice(0,1000):'',answer:Array.isArray(q.answer)?q.answer.filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,40)):[],options:q.kind==='order'?q.options.slice(0,20).filter(o=>o&&typeof o.text==='string'&&Number.isInteger(o.id)).map(o=>({text:o.text.slice(0,40),id:o.id})):uniq(q.options.filter(x=>typeof x==='string').slice(0,4).map(x=>x.slice(0,1000)))}));
+      const words=strings(p.words,600).filter(w=>/^[\u3400-\u9fff]{1,20}(::[^:]{1,40})?$/.test(w));
+      const questions=(Array.isArray(p.questions)?p.questions:[]).slice(0,31).filter(q=>q&&['meaning','pinyin','zh-meaning','py-meaning','order'].includes(q.kind)&&typeof q.prompt==='string'&&Array.isArray(q.options)).map(q=>({kind:q.kind,prompt:q.prompt.slice(0,1000),target:typeof q.target==='string'?readingVocabularyId(q.target.slice(0,100),typeof q.pinyin==='string'?q.pinyin:'',p.source||out.source):'',pinyin:typeof q.pinyin==='string'?q.pinyin.slice(0,100):'',meaning:typeof q.meaning==='string'?q.meaning.slice(0,1000):'',word:typeof q.word==='string'?q.word.slice(0,1000):'',vocabularyIds:strings(q.vocabularyIds,30),answer:Array.isArray(q.answer)?q.answer.filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,40)):[],options:q.kind==='order'?q.options.slice(0,20).filter(o=>o&&typeof o.text==='string'&&Number.isInteger(o.id)).map(o=>({text:o.text.slice(0,40),id:o.id})):uniq(q.options.filter(x=>typeof x==='string').slice(0,4).map(x=>x.slice(0,1000)))}));
       if(words.length){const cursor=Math.min(words.length,Math.max(0,Math.floor(Number(p.cursor)||0)));out.practice={mode:p.mode==='direct'?'direct':'review',source:['2','3','custom','starred'].includes(p.source)?p.source:out.source,sentenceIds:strings(p.sentenceIds,30),words,cursor,reveal:!!p.reveal,phase:['cards','quiz','summary'].includes(p.phase)?p.phase:'cards',questions,q:Math.min(Math.max(0,Math.floor(Number(p.q)||0)),Math.max(0,questions.length-1)),score:Math.max(0,Math.floor(Number(p.score)||0)),total:Math.max(0,Math.floor(Number(p.total)||0)),answered:!!p.answered,selectedAnswer:Number.isInteger(p.selectedAnswer)?p.selectedAnswer:null,order:Array.isArray(p.order)?p.order.filter(x=>Number.isInteger(x)&&x>=0&&x<20).slice(0,20):[],feedback:typeof p.feedback==='string'?p.feedback.slice(0,1000):''};if(out.practice.phase==='quiz'&&!questions.length)out.practice.phase='summary';if(out.practice.phase==='cards'&&cursor===words.length)out.practice.phase='summary';}
     }
     if(out.reviewSession){const validIds=new Set([...((typeof READING_SENTENCES!=='undefined')?READING_SENTENCES.map(s=>s.id):[]),...(out.custom.match(/[^。！？!?\n]+[。！？!?]?/g)||[]).filter(s=>s.trim()).map(s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return 'custom-'+String(h>>>0);})].filter(Boolean));out.reviewSession.ids=out.reviewSession.ids.filter(id=>validIds.has(id));if(!out.reviewSession.ids.length)out.reviewSession=null;else out.reviewSession.index=Math.min(out.reviewSession.index,out.reviewSession.ids.length-1);}
-    if(out.practice){const p=out.practice;const known=word=>BY_WORD.has(word)||(typeof READING_DICTIONARY!=='undefined'&&Object.hasOwn(READING_DICTIONARY,word));p.words=p.words.filter(known);p.cursor=Math.min(p.cursor,p.words.length);
+    if(out.practice){const p=out.practice;const known=word=>!!resolveEntry(word)||(typeof READING_DICTIONARY!=='undefined'&&(Object.hasOwn(READING_DICTIONARY,word)||word==='只::zhī'));const priorWords=p.words,priorCursor=p.cursor;const expand=word=>{const targets=p.questions.filter(q=>q.kind!=='order'&&q.target.split('::')[0]===word).map(q=>q.target);return uniq([...targets,...readingVocabularyCandidates(word,p.sentenceIds,p.source)]);};p.words=uniq(priorWords.flatMap(expand)).filter(known);p.cursor=p.mode==='direct'?p.words.length:Math.min(p.words.length,uniq(priorWords.slice(0,priorCursor).flatMap(expand)).filter(known).length);
       p.questions=p.questions.filter(q=>q.kind==='order'?q.answer.length>=3&&q.answer.length===q.options.length&&q.answer.slice().sort().join('\0')===q.options.map(o=>o.text).sort().join('\0'):q.options.length>=2&&q.options.includes(q.word)&&known(q.target||q.word));
       p.q=Math.min(p.q,Math.max(0,p.questions.length-1));const q=p.questions[p.q];p.order=uniq(p.order.filter(i=>q?.kind==='order'&&i<q.options.length));if(p.phase==='quiz'&&!q)p.phase='summary';if(!p.words.length)out.practice=null;
     }
+    out.legacyWordReview=map(raw.legacyWordReview,x=>x&&Number.isFinite(x.due)&&Number.isInteger(x.misses)&&x.misses>0);
+    if(out.wordReview['长']){const legacy=out.wordReview['长'];out.legacyWordReview['长']=legacy;for(const id of ['长::cháng','长::zhǎng'])if(!out.wordReview[id])out.wordReview[id]={...legacy};delete out.wordReview['长'];}
     return out;
   }
   function saveExtras(){return writeJSON(STORE.extras,extras);}

@@ -1,3 +1,14 @@
+## 1.17.0
+
+- Protect unfinished Reader quizzes at later checkpoints and before flashcard practice. Resume keeps questions, score, answers and position; replacing a quiz requires an explicit confirmed discard.
+- Preserve Known on quiz mistakes while scheduling ten-minute vocabulary/sentence reinforcement. Carry pronunciation IDs through eligible pools, questions, flashcards, grading and missed-word review, including both 长 readings and the contextual 只 classifier.
+- Quiz the oldest pending sentence block first and retain the remaining backlog. Report questions answered, distinct vocabulary tested and the eligible pool separately; include sentence reconstruction vocabulary in tested totals.
+- Make settings explanations follow the selected 10/20/30-sentence cadence. Keep left swipe/Next as read-and-advance and right swipe as back, with unique-read counting unchanged.
+- Allow vertical scrolling from blank sentence and passage areas while retaining deliberate word pulls. Give jump/bookmark controls 44×44 targets and show a restrained visible Read/Unread label alongside the existing card tint. Keep the font, navigation squares, header controls and overall design.
+- Show the running app version and verify all required assets in the expected release cache before declaring offline readiness. Share a versioned release manifest with the service worker. Retain explicit update activation and save-failure protection.
+- Preserve storage keys, sentence IDs, statuses and existing question snapshots. Legacy ambiguous 长 miss records are archived and conservatively copied to both pronunciation queues; no status is changed by migration. Recover legacy practice-pool senses from question snapshots and sentence context while retaining flashcard position.
+- Add 20 isolated audit regressions (153 total checks), plus a reproducible browser QA harness. No progress reset or reinstallation is required.
+
 ## 1.16.2
 
 - Reader swipe directions now follow page-turning convention: left advances one sentence and marks it read once; right returns to the previous sentence without adding reads. Applies to Chinese and translation areas. Arrow buttons and keyboard directions are unchanged.

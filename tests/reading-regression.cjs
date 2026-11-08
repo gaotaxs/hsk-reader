@@ -48,7 +48,7 @@ test('Exactly twenty sentences trigger a quiz with all vocabulary eligible',()=>
  for(let i=1;i<19;i++)$('readingNext').click();assert.equal($('readingPracticeDialog').open,false);
  $('readingNext').click();assert.equal($('readingPracticeDialog').open,true);
  assert.ok($('readingQuizStart'));assert.equal($('readingCardReveal'),null);
- assert.match($('readingPracticeBody').textContent,/last 20 sentences/);
+ assert.match($('readingPracticeBody').textContent,/oldest pending block of 20 sentences/);
  assert.ok(run('extras.reading.quizSeen["2"].length')===20);
 });
 test('Not now defers the quiz without marking untested words as reviewed',()=>{
@@ -101,7 +101,7 @@ test('A 30-question direct quiz survives backup and resumes without flashcards',
  assert.ok(w.document.querySelector('[data-reading-answer]'));assert.equal($('readingCardReveal'),null);
 });
 test('Flashcard review stays separate and completes without silently becoming a quiz',()=>{
- $('readingPracticeClose').click();$('readingSettingsClose').click();$('readingReviewWords').click();assert.ok($('readingCardReveal'));
+ $('readingPracticeClose').click();$('readingSettingsClose').click();run('extras.reading.practice=null');$('readingReviewWords').click();assert.ok($('readingCardReveal'));
  const n=run('extras.reading.practice.words.length');for(let i=0;i<n;i++)click('[data-reading-rate="learning"]');
  assert.equal(run('extras.reading.practice.phase'),'summary');assert.equal(run('extras.reading.practice.cursor'),n);
 });
@@ -224,7 +224,7 @@ test('Legacy browse counters migrate from read history without losing completed 
  run(`extras.reading.source='2';extras.reading.positions['2']=0;extras.reading.reviewSession=null;extras.reading.read=ReadingStudio.orderedLevel(2).slice(0,3).map(s=>s.id);extras.reading.quizCovered={'2':[extras.reading.read[0]]};extras.reading.quizCadence={'2':{sentences:19,target:20}};extras.reading.quizCountBasis='';ReadingStudio.render()`);assert.equal(run('extras.reading.read.length'),3);assert.equal(run('extras.reading.quizCadence["2"].sentences'),2);assert.equal(run('sanitizeExtras(getBackup().studio).reading.quizCountBasis'),'read');assert.equal(run('sanitizeExtras(getBackup().studio).reading.quizCadence["2"].sentences'),2);
 });
 test('Read tint and compact header icons preserve accessible actions',()=>{
- assert.equal($('readingReadState').textContent,'');assert.ok($('readingResumePractice').querySelector('svg'));assert.equal($('readingResumePractice').textContent,'');assert.match($('readingResumePractice').getAttribute('aria-label'),/quiz/);assert.equal($('readingPeek').querySelectorAll('svg text').length,0);assert.ok($('readingPeek').querySelector('svg path'));
+ assert.equal($('readingReadState').textContent,'✓ Read');assert.ok($('readingResumePractice').querySelector('svg'));assert.equal($('readingResumePractice').textContent,'');assert.match($('readingResumePractice').getAttribute('aria-label'),/quiz/);assert.equal($('readingPeek').querySelectorAll('svg text').length,0);assert.ok($('readingPeek').querySelector('svg path'));
 });
 test('Repeated pasted sentences retain independent read progress',()=>{
  run(`extras.reading.custom='你好。你好。';extras.reading.source='custom';extras.reading.reviewSession=null;extras.reading.positions.custom=0;extras.reading.read=[];extras.reading.quizCadence={};ReadingStudio.render()`);
