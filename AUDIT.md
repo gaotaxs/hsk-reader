@@ -1,3 +1,19 @@
+# 1.18.0 quiz improvements and sentence-bank assessment
+
+Started from current main `cf337d726a9c7cb4e13d03d38893c804ec265c0d` (1.17.0). The unchanged baseline freshly passed 153 checks. The new in-quiz Restart regression fails on that untouched commit because the control is absent. Implementation preserves existing storage keys, schema-2 backups, pronunciation identities, sentence IDs, read history and checkpoint backlog. New per-question snapshots and history are additive; no reset, reinstall or origin/path change is required.
+
+Reader restart reuses the exact question/options set after confirmation; discarded results are retained as stopped history. Quiz navigation never regrades an answered question. Older reviewed prefixes without per-question outcomes stay locked with unavailable correctness while saved aggregate scores remain unchanged. Missed-material reviews and Unknown Quiz do not claim checkpoint coverage. The latter excludes Known targets and sentence building. Trace callbacks check the active question and generation, preventing stale writing completion after exit, retry or data replacement.
+
+Final verification: 179 passing automated checks, 56 panel/theme/viewport cases, 24 Reader quiz layout cases and 3,204 phone sentence-layout cases. See TESTING.md and tests/quiz-layout-results.json for evidence and device limitations. No merge or deployment was performed during implementation.
+
+## Sentence-bank recommendation (dry run only)
+
+The corpus contains 40 introductory sentences, 192 everyday-context sentences and 1,370 generated variants across 55 pattern families. Exact Reader token coverage reaches all 601 study identities, but only 203 have at least three examples. Blanket percentage cuts could remove the only example for a rare entry.
+
+`node tools/analyze-sentence-redundancy.cjs` ranks generated variants by inverse vocabulary frequency and proposes up to 320 omissions (20%) without editing any content. The dry run retains every study identity in its matching level, a floor of min(3, original exposure count) per identity, all introductory/everyday sentences and at least four variants per pattern family. It leaves 1,282 sentences. This is a coverage proxy, not a linguistic quality assessment or proof that all proposed omissions are low value; grammar variety still needs editorial review. Results are in tests/sentence-redundancy-analysis.json.
+
+Recommendation: offer an optional shorter core route after editorial review, with the complete bank still available and existing sentence IDs/progress retained. No sentence assets or orders are changed in this release.
+
 # 1.17.0 focused audit follow-up
 
 Implemented the Reader quiz, pronunciation identity, backlog, statistics, cadence, touch-target, read-state and offline-diagnostic fixes against main 52bebbc. See CHANGELOG.md for behaviour and migration details, TESTING.md for reproducible checks and verification limits. Storage keys, sentence IDs and entry-specific statuses are retained; no reset or reinstall is required. Left advances and right goes back; backward navigation intentionally does not count as reading.

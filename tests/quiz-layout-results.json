@@ -1,0 +1,93 @@
+{
+  "release": "1.18.0",
+  "baseline": "cf337d726a9c7cb4e13d03d38893c804ec265c0d",
+  "environment": "Chromium iframe CSS viewports; isolated synthetic storage; service-worker registration disabled",
+  "panels": {
+    "viewports": [
+      [
+        402,
+        874
+      ],
+      [
+        874,
+        402
+      ],
+      [
+        834,
+        1194
+      ],
+      [
+        1194,
+        834
+      ]
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "panelsPerTheme": 7,
+    "cases": 56,
+    "horizontalOverflowCases": 0
+  },
+  "readerQuiz": {
+    "viewports": [
+      [
+        402,
+        874
+      ],
+      [
+        874,
+        402
+      ],
+      [
+        834,
+        1194
+      ],
+      [
+        1194,
+        834
+      ]
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "questionKinds": [
+      "long recognition definitions",
+      "sentence order",
+      "bundled character tracing"
+    ],
+    "cases": 24,
+    "failures": [],
+    "assertions": [
+      "Next visible inside viewport/dialog",
+      "No outer quiz body or dialog scroll",
+      "Equal answer-cell heights",
+      "Theme button remains inside phone header",
+      "Bundled Hanzi Writer SVG rendered for trace questions"
+    ]
+  },
+  "phoneCorpus": {
+    "viewport": [
+      402,
+      874
+    ],
+    "cases": 3204,
+    "failures": [],
+    "chineseFonts": [
+      "34px"
+    ]
+  },
+  "manualBrowserSmoke": [
+    "Reader Don\u2019t know advances",
+    "Confirmed Restart returns to Question 1 with same options",
+    "Leave returns to Reader",
+    "History shows stopped result and missed-review button",
+    "iPad landscape History rendering"
+  ],
+  "limitations": [
+    "No physical iPhone/iPad, WebKit, touch arbitration, Pencil or OS accessibility verification",
+    "No end-to-end offline/update check in the isolated browser fixture",
+    "Stroke completion and failure cases use synthetic Hanzi Writer callbacks in automated tests"
+  ]
+}

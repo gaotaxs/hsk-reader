@@ -1,3 +1,13 @@
+## 1.18.0
+
+- Reader quiz has Leave and confirmed Restart controls. Restart keeps the question set and options, resets its score/position, and retains answered results in History. Checkpoint replacement still requires confirmed discard.
+- Swipe left to advance only after answering; swipe right to review an earlier answer. Reader snapshots survive reload and backups; earlier answers remain locked, including mistakes. Standalone quizzes retain exact question/options/direction snapshots during the current session. Don’t know records a miss and advances.
+- Mixed cycles recognition, multiple sentence-building questions and optional guided character tracing throughout the quiz. Trace-only mode is also available. Bundled Hanzi Writer records completed strokes/mistakes; interrupted traces restart the current character without inventing completion. Leaving/restarting/importing cancels obsolete writers.
+- Prefer New/Learning vocabulary, then recent vocabulary, when sampling Reader and standalone quizzes. Checkpoint quizzes still cover the oldest pending block. Add a manual ? Unknown Quiz over encountered New/Learning vocabulary; it never consumes checkpoint coverage or changes the sentence counter.
+- Add Practice/History subtabs inside Quiz, retaining the seven main navigation areas. Completed/stopped Reader and standalone quizzes save results with a missed-material review action. History is included in existing backups; older backups without history retain the collection. Missing legacy per-question correctness stays unavailable while aggregate scores and saved positions are preserved.
+- Keep Reader quiz controls visible outside bounded scrolling prompts/options; full definitions remain accessible inside equal-height answer cells. Tablet-only spacing/dialog improvements cover 11-inch iPad viewports while preserving phone Reader typography and navigation.
+- Keep all 1,602 sentence IDs and study data. Add a reproducible dry-run redundancy assessment rather than deleting content. Release/offline cache version is shared through assets/release.js as before.
+
 ## 1.17.0
 
 - Protect unfinished Reader quizzes at later checkpoints and before flashcard practice. Resume keeps questions, score, answers and position; replacing a quiz requires an explicit confirmed discard.

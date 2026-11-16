@@ -1,0 +1,46 @@
+{
+  "total": 1602,
+  "original": 40,
+  "context": 192,
+  "pattern": 1370,
+  "families": 55,
+  "covered": 601,
+  "atLeast3": 203,
+  "illustrativeCandidates": 320,
+  "remaining": 1282,
+  "coverageRetained": true,
+  "sampleTopics": [
+    {
+      "topic": "Because and so",
+      "zh": "因为工作已经做完了，所以我决定跑步。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为工作已经做完了，所以我决定看电影。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为这几天不太忙，所以我决定跑步。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为这几天不太忙，所以我决定打篮球。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为这几天不太忙，所以我决定游泳。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为工作已经做完了，所以我决定看书。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为今天有时间，所以我决定看电影。"
+    },
+    {
+      "topic": "Because and so",
+      "zh": "因为明天没有考试，所以我决定学习汉语。"
+    }
+  ]
+}
