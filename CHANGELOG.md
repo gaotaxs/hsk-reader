@@ -1,5 +1,10 @@
 ## 1.18.0
 
+## 1.18.2
+
+- Added a blank freehand pad to Reader Unknown Quiz, Quick quiz and Mixed. The character is checked locally against bundled shape data, with stroke order and direction left flexible.
+- Aligned Reader quiz headers and controls on phones and kept answer cards equal in size across question types.
+
 - Reader quiz has Leave and confirmed Restart controls. Restart keeps the exact question/options set and retains answered results as stopped history. Checkpoint replacement still requires confirmed discard.
 - Swipe left to advance only after answering; swipe right to review locked prior answers, including mistakes. Reader answer snapshots survive reload/backups; standalone direction/options snapshots remain session-only. Don’t know records a miss and advances.
 - Mixed distributes recognition, multiple sentence-building questions and optional guided tracing throughout the quiz. Trace-only mode is available. Interrupted traces never invent completion, and stale callbacks are cancelled on exit/retry/restart/import. A delayed native close event cannot cancel a newly reopened tracing quiz.

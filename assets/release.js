@@ -1,6 +1,6 @@
 /* One release manifest shared by the page and its service worker. */
 var HSK_RELEASE=Object.freeze({
-  "version": "1.18.0",
+  "version": "1.18.2",
   "assets": [
     "./index.html",
     "./assets/release.js",
@@ -17,6 +17,7 @@ var HSK_RELEASE=Object.freeze({
     "./assets/sentences-hsk3-1.js",
     "./assets/sentences-hsk3-2.js",
     "./assets/reading-studio.js",
+    "./assets/quiz-handwriting.js",
     "./assets/reading-dictionary-0.js",
     "./assets/reading-dictionary-1.js",
     "./assets/reading-dictionary-2.js",
