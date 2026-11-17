@@ -1,7 +1,7 @@
 const {JSDOM}=require('jsdom'),fs=require('fs'),path=require('path'),assert=require('node:assert/strict');process.chdir(path.resolve(__dirname,'..'));
 const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'https://example.test/hsk-reader/',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
 w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};w.confirm=()=>true;w.CSS={escape:x=>x};w.TextEncoder=TextEncoder;
-w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/sentences-hsk2.js','assets/sentences-hsk3-0.js','assets/sentences-hsk3-1.js','assets/sentences-hsk3-2.js','assets/sentences-context.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+'\nwindow.readerTest={eval:s=>eval(s)};');
+w.eval(['assets/vocabulary.js',...Array.from({length:4},(_,i)=>`assets/reading-dictionary-${i}.js`),'assets/sentences.js','assets/sentences-hsk2.js','assets/sentences-hsk3-0.js','assets/sentences-hsk3-1.js','assets/sentences-hsk3-2.js','assets/sentences-context.js','assets/sentence-route.js','assets/app.js','assets/reading-studio.js'].map(file=>fs.readFileSync(file,'utf8')).join('\n')+"\nextras.reading.route='full';ReadingStudio.render();window.readerTest={eval:s=>eval(s)};");
 const $=id=>w.document.getElementById(id),run=s=>w.readerTest.eval(s);let count=0;
 function test(name,fn){fn();console.log('PASS '+name);count++;}
 const click=sel=>{const b=w.document.querySelector(sel);assert.ok(b,sel);b.click();};
@@ -59,7 +59,7 @@ test('Not now defers the quiz without marking untested words as reviewed',()=>{
  assert.ok($('readingQuizStart'));
 });
 test('Mixed quiz samples current vocabulary without word-selection setup',()=>{
- $('readingSetupOrder').checked=true;$('readingSetupType').value='mixed';$('readingQuizStart').click();
+ $('readingSetupWriting').checked=false;$('readingSetupOrder').checked=true;$('readingSetupType').value='mixed';$('readingQuizStart').click();
  assert.equal(run('extras.reading.practice.phase'),'quiz');assert.equal(run('extras.reading.practice.mode'),'direct');
  const p=run('extras.reading.practice');assert.ok(p.words.length>0);assert.ok(p.questions.length>0&&p.questions.length<=10);
  assert.ok(new Set(p.questions.map(q=>q.kind)).size>=1);
@@ -91,7 +91,7 @@ test('Sentence intervals and partial progress survive sanitization',()=>{
 });
 test('A 30-question direct quiz survives backup and resumes without flashcards',()=>{
  run('extras.reading.practice=null;extras.reading.read=READING_SENTENCES.filter(s=>s.level===2).slice(0,30).map(s=>s.id);extras.reading.quizCovered={};ReadingStudio.render()');
- $('readingResumePractice').click();$('readingSetupCount').value='30';$('readingSetupOrder').checked=true;$('readingQuizStart').click();
+ $('readingResumePractice').click();$('readingSetupCount').value='30';$('readingSetupType').value='zh-meaning';$('readingSetupOrder').checked=true;$('readingQuizStart').click();
  const before=JSON.parse(JSON.stringify(run('extras.reading.practice')));assert.ok(before.questions.length>5);assert.ok(before.questions.length<=30);
  run('extras.reading=sanitizeExtras(JSON.parse(JSON.stringify(extras))).reading');
  assert.equal(run('extras.reading.practice.questions.length'),before.questions.length);
@@ -128,7 +128,7 @@ test('Sentence reviews are finite, preserve the reading place and schedule the n
  assert.ok(run(`extras.reading.sentenceReview[${JSON.stringify(id)}].due`)>Date.now());
 });
 test('A quiz miss schedules vocabulary and relevant sentences; review uses that word in context',()=>{
- run('extras.reading.practice=null');$('readingResumePractice').click();$('readingQuizStart').click();const p=run('extras.reading.practice'),q=p.questions[p.q],word=q.target;
+ run('extras.reading.practice=null');$('readingResumePractice').click();$('readingSetupType').value='zh-meaning';$('readingSetupOrder').checked=false;$('readingQuizStart').click();const p=run('extras.reading.practice'),q=p.questions[p.q],word=q.target;
  click(`[data-reading-answer="${q.options.findIndex(x=>x!==q.word)}"]`);assert.equal(run(`extras.reading.wordReview[${JSON.stringify(word)}].misses`),1);
  const due=run(`extras.reading.wordReview[${JSON.stringify(word)}].due`);assert.ok(due>Date.now()+590000&&due<=Date.now()+600000);
  $('readingPracticeClose').click();run('ReadingStudio.startSentenceReview(true)');
@@ -170,7 +170,7 @@ test('Pinyin pointer taps never capture or retarget the hint button',()=>{
 });
 test('Quiz exit and resume preserve track, sentence, arrows and all eligible words',()=>{
  run(`extras.reading.source='2';extras.reading.positions['2']=25;extras.reading.practice=null;extras.reading.read=ReadingStudio.orderedLevel(2).slice(0,20).map(s=>s.id);extras.reading.quizSeen={};extras.reading.quizCovered={};ReadingStudio.render()`);
- const id=run('ReadingStudio.current().id');$('readingResumePractice').click();$('readingSetupCount').value='5';$('readingSetupOrder').checked=false;$('readingQuizStart').click();
+ const id=run('ReadingStudio.current().id');$('readingResumePractice').click();$('readingSetupCount').value='5';$('readingSetupType').value='zh-meaning';$('readingSetupOrder').checked=false;$('readingQuizStart').click();
  assert.equal(run('extras.reading.practice.sentenceIds.length'),20);assert.ok(run('extras.reading.practice.words.length')>5);assert.equal(run('extras.reading.practice.questions.length'),5);
  const p=run('extras.reading.practice'),q=p.questions[0];click('[data-reading-answer="'+q.options.findIndex(x=>x!==q.word)+'"]');
  assert.ok(w.document.querySelector('[data-reading-answer].wrong'));assert.ok(w.document.querySelector('[data-reading-answer].correct'));assert.match($('readingPracticeBody').textContent,/Answer:/);assert.ok($('readingQuestionNext').querySelector('svg'));

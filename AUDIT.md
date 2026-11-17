@@ -1,3 +1,19 @@
+# 1.18.0 quiz, compact History and focused-route follow-up
+
+Started from current main `cf337d726a9c7cb4e13d03d38893c804ec265c0d` (1.17.0). Preserve existing storage keys, schema-2 backups, pronunciation-specific statuses, sentence IDs, read history, quiz snapshots and checkpoint backlog. No reset/reinstall/origin change is required. See TESTING.md for the fresh 200-check result, browser evidence and physical-device limits.
+
+History is a separate main navigation item. Compact rows open a detail screen; missed words and review actions do not occupy index space. Previous answers remain immutable when browsing or retrying mistakes. Legacy individual correctness stays unavailable where not saved, while aggregate scores and reviewed positions remain intact. Accuracy color is supplemented by explicit numeric scores and accessible labels.
+
+## Approved focused route
+
+The full corpus remains 1,602 records: 40 introductory, 192 everyday-context and 1,370 generated variants across 55 pattern families. The default route includes 1,282 sentences: 337 HSK 2 and 945 HSK 3. It omits 84 and 236 generated variants respectively, a 19.98% overall reduction. Complete route is available in Reader settings.
+
+The deterministic selector ranks variants by inverse study-vocabulary frequency, with explicit per-track budgets. Coverage checks retain every one of the 601 study identities in its matching level, at least min(3, original exposure count) examples per identity, all introductory/everyday examples and at least four variants per pattern family. Selected families/examples were inspected for repeated slot substitutions (time, place, person, meal/activity) rather than new grammatical structures. This is a constrained editorial reduction, not a claim of validated mastery, universal sense coverage or native-teacher certification. `node tools/analyze-sentence-redundancy.cjs` analyzes without editing; `--write-route` reproduces assets/sentence-route.js without deleting sentence records.
+
+Stored numeric positions retain their full-bank interpretation. Displayed focused positions are mapped by sentence ID; forward/back/jump actions translate back to full-bank coordinates. A previously open omitted sentence is retained as a continuation anchor, so an existing installation can have a few extra focused rows rather than losing its exact place. Switching routes/orders preserves the current ID, read totals and cadence. Existing pending blocks use full-bank read IDs, preventing old omitted sentences from being starved. Favourites/review schedules/unfinished questions continue using the complete corpus.
+
+Route migration is repeatable and additive. Failed saves keep the original persisted data and exportable in-memory state. Missing route data uses the complete bank without marking migration finished; a later successful load preserves the saved location. The route manifest participates in the shared atomic offline release. No vocabulary labels or mastery are inferred by pruning.
+
 # 1.17.0 focused audit follow-up
 
 Implemented the Reader quiz, pronunciation identity, backlog, statistics, cadence, touch-target, read-state and offline-diagnostic fixes against main 52bebbc. See CHANGELOG.md for behaviour and migration details, TESTING.md for reproducible checks and verification limits. Storage keys, sentence IDs and entry-specific statuses are retained; no reset or reinstall is required. Left advances and right goes back; backward navigation intentionally does not count as reading.

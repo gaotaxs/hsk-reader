@@ -1,3 +1,16 @@
+## 1.18.0
+
+- Reader quiz has Leave and confirmed Restart controls. Restart keeps the exact question/options set and retains answered results as stopped history. Checkpoint replacement still requires confirmed discard.
+- Swipe left to advance only after answering; swipe right to review locked prior answers, including mistakes. Reader answer snapshots survive reload/backups; standalone direction/options snapshots remain session-only. Don’t know records a miss and advances.
+- Mixed distributes recognition, multiple sentence-building questions and optional guided tracing throughout the quiz. Trace-only mode is available. Interrupted traces never invent completion, and stale callbacks are cancelled on exit/retry/restart/import. A delayed native close event cannot cancel a newly reopened tracing quiz.
+- Prefer New/Learning vocabulary, then recent vocabulary. Checkpoints retain oldest-pending coverage. Manual ? Unknown Quiz uses encountered New/Learning identities without consuming checkpoint coverage/counters; Known status remains protected on mistakes.
+- Make History an eighth main destination, with no Practice/History switcher above Quiz. Compact tappable rows show type/date at left and a small percentage/ratio at the top right. Accuracy strips use green ≥90%, blue 70–89%, amber 50–69%, red below 50%; text also communicates the score. Missed material and review actions live on the detail screen.
+- Save completed/stopped Reader and standalone results in existing schema-2 backups. History review tests only missed questions. Unavailable legacy individual outcomes stay locked/unavailable while aggregate scores, options and positions are retained. Older backups without history retain the collection.
+- Default to a focused route of 1,282 sentences (337 HSK 2, 945 HSK 3), omitting 320 repetitive generated variants from normal navigation. Keep all 1,602 sentence records/IDs, all 601 study identities, all introductory/everyday examples and at least four variants in every pattern family. Complete route remains selectable.
+- Keep stored positions in full-bank coordinates. Previously open omitted sentences remain as continuation anchors, and old pending quizzes, read history, favourites and review schedules remain available. Migration is repeatable, survives backup/import and falls back to the full bank when route data is unavailable.
+- Keep Reader quiz controls visible outside bounded scrolling prompts/options. Long definitions remain accessible inside equal-height answer cells. Tablet spacing/dialog improvements retain phone sentence typography and square navigation. Failed saves show a warning inside the quiz.
+- Share release/cache version 1.18.0 through assets/release.js; the focused-route manifest is a required offline asset. No progress reset, website-data deletion, reinstall or path change is required.
+
 ## 1.17.0
 
 - Protect unfinished Reader quizzes at later checkpoints and before flashcard practice. Resume keeps questions, score, answers and position; replacing a quiz requires an explicit confirmed discard.

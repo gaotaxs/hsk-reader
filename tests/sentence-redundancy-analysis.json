@@ -1,0 +1,55 @@
+{
+  "total": 1602,
+  "original": 40,
+  "context": 192,
+  "pattern": 1370,
+  "families": 55,
+  "covered": 601,
+  "atLeast3": 203,
+  "illustrativeCandidates": 320,
+  "remaining": 1282,
+  "coverageRetained": true,
+  "sampleTopics": [
+    {
+      "topic": "Meals",
+      "zh": "明天下午我想吃面条。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天下午我想吃菜。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "明天下午我想吃鸡蛋。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天早上我想吃鸡蛋。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天下午我想吃鸡蛋。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天晚上我想吃苹果。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天早上我想吃鱼。"
+    },
+    {
+      "topic": "Meals",
+      "zh": "今天下午我想吃面条。"
+    }
+  ],
+  "focusedByLevel": {
+    "2": 337,
+    "3": 945
+  },
+  "omittedByLevel": {
+    "2": 84,
+    "3": 236
+  },
+  "policy": "Default focused route; full sentence records remain bundled. Retain previously open omitted sentences as continuation anchors."
+}
