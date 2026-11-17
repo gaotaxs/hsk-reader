@@ -2,6 +2,7 @@
 const ReadingStudio=(()=>{
   const root=$('readingStudio');
   const orderedCache=new Map();
+  const coreOmissions=new Set(typeof HSK_CORE_ROUTE==='undefined'?[]:HSK_CORE_ROUTE.omitted);
   let translationOpen=false,selectedWord='',localPracticeOptions=[],quizSetup=null;
   let jumpIds=[],peek=false,hintContext='',revealedHints=new Set(),practiceReturn=null;
   const nextIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
@@ -31,8 +32,14 @@ const ReadingStudio=(()=>{
     orderedCache.set(key,result);return result;
   }
   function setOrder(next){const r=data(),ids={};for(const l of ['2','3'])ids[l]=orderedLevel(l,r.order||'original')[r.positions[l]||0]?.id;r.order=next;for(const l of ['2','3'])r.positions[l]=Math.max(0,orderedLevel(l,next).findIndex(s=>s.id===ids[l]));save();render();}
-  function sentences(){const r=data();r.source=String(r.source);if(!['2','3','custom','starred'].includes(r.source))r.source='2';if(r.reviewSession){const byId=new Map([...READING_SENTENCES,...customSentences()].map(s=>[s.id,s]));const list=r.reviewSession.ids.map(id=>byId.get(id)).filter(Boolean);if(list.length)return list;r.reviewSession=null;}return r.source==='custom'?customSentences():r.source==='starred'?[...READING_SENTENCES,...customSentences()].filter(x=>r.starSentences.includes(x.id)):orderedLevel(r.source);}
-  function position(){const list=sentences(),r=data(),index=r.reviewSession?r.reviewSession.index:r.positions[r.source]||0;return Math.min(Math.max(0,index),Math.max(0,list.length-1));}
+  // Numeric positions retain their full-bank meaning for legacy backups and restores.
+  function retainRoutePositions(){const r=data();r.routeRetained ||= [];for(const level of ['2','3']){const full=orderedLevel(level),id=full[Math.min(full.length-1,Math.max(0,r.positions[level]||0))]?.id;if(id&&coreOmissions.has(id)&&!r.routeRetained.includes(id))r.routeRetained.push(id);}}
+  function ensureRouteState(){const r=data();if(r.routeRevision===1||typeof HSK_CORE_ROUTE==='undefined')return;r.route=r.route==='full'?'full':'core';if(r.route==='core')retainRoutePositions();r.routeRevision=1;save();}
+  function levelSentences(level){const r=data(),full=orderedLevel(level);return r.route==='full'?full:full.filter(s=>!coreOmissions.has(s.id)||(r.routeRetained||[]).includes(s.id));}
+  function setRoute(route){const r=data();if(route==='core')retainRoutePositions();r.route=route==='full'?'full':'core';r.routeRevision=typeof HSK_CORE_ROUTE==='undefined'?0:1;save();render();}
+  function sentences(){const r=data();r.source=String(r.source);if(!['2','3','custom','starred'].includes(r.source))r.source='2';if(r.reviewSession){const byId=new Map([...READING_SENTENCES,...customSentences()].map(s=>[s.id,s]));const list=r.reviewSession.ids.map(id=>byId.get(id)).filter(Boolean);if(list.length)return list;r.reviewSession=null;}return r.source==='custom'?customSentences():r.source==='starred'?[...READING_SENTENCES,...customSentences()].filter(x=>r.starSentences.includes(x.id)):levelSentences(r.source);}
+  function position(){const list=sentences(),r=data();let index=r.reviewSession?r.reviewSession.index:r.positions[r.source]||0;if(!r.reviewSession&&['2','3'].includes(r.source)&&r.route!=='full'){const full=orderedLevel(r.source),at=Math.min(Math.max(0,index),full.length-1),id=full[at]?.id;index=list.findIndex(s=>s.id===id);if(index<0){const indexes=new Map(full.map((s,i)=>[s.id,i]));index=list.findIndex(s=>indexes.get(s.id)>=at);if(index<0)index=list.length-1;}}return Math.min(Math.max(0,index),Math.max(0,list.length-1));}
+  function setPosition(index){const r=data(),list=sentences(),at=Math.max(0,Math.min(list.length-1,index));if(r.reviewSession)r.reviewSession.index=at;else if(['2','3'].includes(r.source))r.positions[r.source]=Math.max(0,orderedLevel(r.source).findIndex(s=>s.id===list[at]?.id));else r.positions[r.source]=at;}
   function current(){return sentences()[position()];}
   const hintKey=(word,index)=>Array.from(word).length===1?word:word+'::hint::'+index;
   function adaptiveHint(word,pyHint='',index=null){const r=data();const shown=i=>{const key=hintKey(word,i);return !(key in r.hiddenPinyin?r.hiddenPinyin[key]:word in r.hiddenPinyin?r.hiddenPinyin[word]:status(word,pyHint)==='known');};return r.pinyin==='always'||(r.pinyin==='adaptive'&&(index===null?Array.from(word).some((_,i)=>shown(i)):shown(index)));}
@@ -64,15 +71,15 @@ const ReadingStudio=(()=>{
   const starred=word=>data().starWords.includes(word)||data().starWords.includes(word.split('::')[0]);
   function toggleStar(list,value){let a=data()[list];if(list==='starWords'&&value.includes('::')&&a.includes(value.split('::')[0])){const base=value.split('::')[0],variants=base==='长'?['长::cháng','长::zhǎng']:[base,value];a=uniq([...a.filter(w=>w!==base),...variants]);}data()[list]=a.includes(value)?a.filter(x=>x!==value):[...a,value];save();render();}
   function render(){
-    if(!root)return;const r=data(),list=sentences(),index=position(),sentence=list[index];
+    if(!root)return;ensureRouteState();const r=data(),list=sentences(),index=position(),sentence=list[index];
     const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
     $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M453 806C489 751 526 677 541 631L610 663C593 707 553 779 517 832ZM164 839V638H41V568H164V349C113 333 66 319 28 309L47 235L164 274V16C164 1 159 -3 147 -3C135 -3 97 -3 55 -2C65 -23 74 -56 77 -76C139 -76 178 -73 203 -61C228 -49 237 -27 237 16V298L336 332L326 400L237 372V568H337V638H237V839ZM732 557V356H587V366V557ZM809 838C789 775 751 686 719 628H393V557H514V366V356H360V284H511C503 175 468 50 336 -31C353 -43 376 -68 387 -84C532 14 574 157 584 284H732V-76H805V284H951V356H805V557H928V628H794C824 682 858 751 888 811Z" transform="translate(1.3932827735644637 20.17984832069339) scale(0.021668472372697724 -0.021668472372697724)"/></svg>';$('readingPeek').setAttribute('aria-label',peek?'Hide pinyin':'Show pinyin');$('readingPeek').title=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
     updateGestureNotice();
     $('sentenceCanvas').dataset.mode=r.mode;
     const resume=$('readingResumePractice'),resuming=!!unfinishedQuiz();resume.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="15" height="18" rx="2"/><path d="M9 4V2h7v4H9m-1 5 1 1 2-2m2 1h4m-9 5 1 1 2-2m2 1h4"/></svg>';resume.setAttribute('aria-label',resuming?'Resume quiz':'Quick quiz');resume.title=resuming?'Resume quiz':'Quick quiz';
-    for(const level of [2,3])$('readingSource').querySelector(`[value="${level}"]`).textContent=`HSK ${level} practice · ${READING_SENTENCES.filter(x=>x.level===level).length.toLocaleString()} sentences`;
+    for(const level of [2,3])$('readingSource').querySelector(`[value="${level}"]`).textContent=`HSK ${level} practice · ${levelSentences(String(level)).length.toLocaleString()} sentences`;
     $('readingSource').value=r.source;$('readingPinyinMode').value=r.pinyin;$('readingWordInterval').value=String(r.sentenceInterval||20);$('readingQuizCount').value=String(r.quizCount||10);$('readingQuizType').value=r.quizType||'mixed';
-    $('readingOrder').value=r.order||'balanced';
+    $('readingOrder').value=r.order||'balanced';$('readingRoute').value=r.route||'core';
     $('readingCadenceExplanation').textContent=`Offer a quiz after every ${randomCheckpoint()} newly read sentences. Questions use the oldest pending block; all its vocabulary is eligible. Revisited sentences and jumps do not advance the counter.`;
     const now=Date.now(),dueCount=Object.entries(r.sentenceReview||{}).filter(([id,v])=>v.due<=now&&r.read.includes(id)).length,misses=Object.keys(r.wordReview||{}).length;
     $('readingReviewSummary').textContent=`${dueCount} sentences due · ${misses} words to revisit`;$('readingReviewEarlier').disabled=!r.read.length;$('readingReviewMissed').disabled=!misses;
@@ -153,18 +160,18 @@ const ReadingStudio=(()=>{
       }
     }
     if(r.reviewSession){if(mark&&position()===list.length-1){r.reviewSession=null;toast('Review complete. Your reading place is saved.');}else r.reviewSession.index=Math.max(0,Math.min(list.length-1,position()+delta));}
-    else r.positions[r.source]=Math.max(0,Math.min(list.length-1,position()+delta));
+    else setPosition(position()+delta);
     selectedWord='';translationOpen=false;save();render();
     if(showQuiz)setupQuiz(true);
   }
   function unquizzed(){const r=data(),covered=r.quizCovered?.[r.source]||[],seen=new Set([...(r.quizSeen?.[r.source]||[]),...r.read]);return sentences().filter(s=>seen.has(s.id)&&!covered.includes(s.id));}
   function recentBlock(){
-    const r=data(),byId=new Map(sentences().map(s=>[s.id,s]));
+    const r=data(),byId=new Map((['2','3'].includes(r.source)?orderedLevel(r.source):sentences()).map(s=>[s.id,s]));
     const ids=uniq(r.read).filter(id=>byId.has(id));
     const pending=ids.filter(id=>!(r.quizCovered?.[r.source]||[]).includes(id));
     return (pending.length?pending.slice(0,randomCheckpoint()):ids.slice(-randomCheckpoint())).map(id=>byId.get(id)).filter(Boolean).concat(ids.length?[]:[current()].filter(Boolean));
   }
-  function rememberReadingPlace(){const r=data();practiceReturn={source:r.source,position:position(),reviewSession:r.reviewSession?JSON.parse(JSON.stringify(r.reviewSession)):null};}
+  function rememberReadingPlace(){const r=data();practiceReturn={source:r.source,position:r.reviewSession?position():(r.positions[r.source]||0),reviewSession:r.reviewSession?JSON.parse(JSON.stringify(r.reviewSession)):null};}
   function restoreReadingPlace(){
     if(practiceReturn){const r=data();r.source=practiceReturn.source;r.reviewSession=practiceReturn.reviewSession;if(r.reviewSession)r.reviewSession.index=practiceReturn.position;else r.positions[r.source]=practiceReturn.position;practiceReturn=null;save();}
     render();requestAnimationFrame(()=>fitSentence());
@@ -199,7 +206,7 @@ const ReadingStudio=(()=>{
   function finishQuiz(p){recordQuizHistory('reader',p);if(p.mode!=='direct'||p.scope==='unknown'||p.scope==='mistakes')return;const r=data();r.quizCovered ||= {};r.quizCovered[p.source]=uniq([...(r.quizCovered[p.source]||[]),...p.sentenceIds]);render();}
   function openPractice(){rememberReadingPlace();const dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();renderPractice();}
   function encounteredSentences(){
-    const r=data(),list=sentences(),seen=new Set(r.read);return list.filter((s,i)=>i<=position()||seen.has(s.id));
+    const r=data(),list=['2','3'].includes(r.source)?orderedLevel(r.source):sentences(),at=['2','3'].includes(r.source)?r.positions[r.source]||0:position(),seen=new Set(r.read);return list.filter((s,i)=>i<=at||seen.has(s.id));
   }
   function prioritizeWords(words,ids=[]){
     const all=new Map([...READING_SENTENCES,...customSentences()].map(s=>[s.id,s]));
@@ -362,7 +369,7 @@ const ReadingStudio=(()=>{
     const syncJump=fromRange=>{if(fromRange)jumpNumber.value=jumpRange.value;const n=Number(jumpNumber.value),valid=jumpNumber.value.trim()!==''&&Number.isInteger(n)&&n>=1&&n<=jumpIds.length;$('readingJumpGo').disabled=!valid;if(valid)jumpRange.value=String(n);$('readingJumpPreview').textContent=valid?`${n} / ${jumpIds.length}`:`Enter a number from 1 to ${jumpIds.length}.`;return valid;};
     $('readingPosition').onclick=()=>{jumpIds=sentences().map(s=>s.id);if(!jumpIds.length)return;jumpNumber.max=jumpRange.max=String(jumpIds.length);jumpNumber.value=jumpRange.value=String(position()+1);syncJump(false);jumpDialog.showModal();jumpRange.focus();};
     jumpNumber.oninput=()=>syncJump(false);jumpRange.oninput=()=>syncJump(true);$('readingJumpCancel').onclick=()=>jumpDialog.close();
-    $('readingJumpForm').onsubmit=e=>{e.preventDefault();if(!syncJump(false))return;const id=jumpIds[Number(jumpNumber.value)-1],index=sentences().findIndex(s=>s.id===id);if(index<0){jumpDialog.close();toast('Reading track changed. Choose a sentence again.');return;}const r=data();if(r.reviewSession)r.reviewSession.index=index;else r.positions[r.source]=index;selectedWord='';translationOpen=false;save();jumpDialog.close();render();};
+    $('readingJumpForm').onsubmit=e=>{e.preventDefault();if(!syncJump(false))return;const id=jumpIds[Number(jumpNumber.value)-1],index=sentences().findIndex(s=>s.id===id);if(index<0){jumpDialog.close();toast('Reading track changed. Choose a sentence again.');return;}const r=data();setPosition(index);selectedWord='';translationOpen=false;save();jumpDialog.close();render();};
     jumpDialog.addEventListener('close',()=>{jumpIds=[];});
 
     window.addEventListener('resize',resizeReadingFrame);
@@ -379,7 +386,7 @@ const ReadingStudio=(()=>{
       const speak=e.target.closest('[data-r-speak]');if(speak){const id=speak.dataset.rSpeak;if(resolveEntry(id))speakEntry(id);else speakChinese(id.split('::')[0]);}
     });
     $('readingSource').onchange=e=>{data().reviewSession=null;data().source=e.target.value;selectedWord='';translationOpen=false;save();render();};
-    $('readingOrder').onchange=e=>setOrder(e.target.value);$('readingReviewEarlier').onclick=()=>startSentenceReview();$('readingReviewMissed').onclick=()=>startSentenceReview(true);$('readingExitReview').onclick=()=>{data().reviewSession=null;save();render();};
+    $('readingRoute').onchange=e=>setRoute(e.target.value);$('readingOrder').onchange=e=>setOrder(e.target.value);$('readingReviewEarlier').onclick=()=>startSentenceReview();$('readingReviewMissed').onclick=()=>startSentenceReview(true);$('readingExitReview').onclick=()=>{data().reviewSession=null;save();render();};
     $('readingPinyinMode').onchange=e=>{data().pinyin=e.target.value;save();render();};
     const settingsDialog=$('readingOptions');
     $('readingOptionsToggle').onclick=()=>{render();settingsDialog.showModal();};$('readingSettingsClose').onclick=()=>settingsDialog.close();
@@ -407,7 +414,7 @@ const ReadingStudio=(()=>{
     $('readingWordLearning').onclick=()=>{rstatus(detailWord,'learning',detailHint);$('readingWordState').textContent=status(detailWord,detailHint);};
     $('readingWordRetry').onclick=()=>{detailGuide=true;$('readingWordGuide').textContent='Hide guide';renderDetailsWriting();};
     $('readingWordGuide').onclick=()=>{detailGuide=!detailGuide;detailWriters.forEach(w=>detailGuide?w.showOutline():w.hideOutline());$('readingWordGuide').textContent=detailGuide?'Hide guide':'Show guide';};
-    const dialog=$('readingPracticeDialog');$('readingPracticeClose').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{stopQuizWriting();quizSetup=null;restoreReadingPlace();});
+    const dialog=$('readingPracticeDialog');$('readingPracticeClose').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{if(dialog.open)return;stopQuizWriting();quizSetup=null;restoreReadingPlace();});
     let backdrop=false;const outside=e=>{const b=dialog.getBoundingClientRect();return e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom;};
     dialog.onpointerdown=e=>{backdrop=e.target===dialog&&outside(e);};dialog.addEventListener('click',e=>{if(backdrop&&e.target===dialog&&outside(e))dialog.close();backdrop=false;});
     
@@ -447,5 +454,5 @@ const ReadingStudio=(()=>{
   if(!data().order)setOrder('balanced');
   data().sentenceReview ||= {};let addedSchedule=false;for(const id of data().read)if(!data().sentenceReview[id]){data().sentenceReview[id]={step:0,due:Date.now()};addedSchedule=true;}if(addedSchedule)save();
   bind();window.refreshReadingStudio=()=>{render();resizeReadingFrame();};render();resizeReadingFrame();if(typeof ResizeObserver!=='undefined'){new ResizeObserver(()=>fitSentence()).observe($('sentenceCanvas'));new ResizeObserver(resizeReadingFrame).observe($('mainContent'));}
-  return {reviewMistakes,prioritizeWords,segments,definition,current,sentences,render,startPractice,hintsVisible,showDetails,setupQuiz,startSentenceReview,orderedLevel,balancedBreaks};
+  return {setRoute,position,levelSentences,reviewMistakes,prioritizeWords,segments,definition,current,sentences,render,startPractice,hintsVisible,showDetails,setupQuiz,startSentenceReview,orderedLevel,balancedBreaks};
 })();

@@ -971,15 +971,29 @@
     extras.quizHistory.push({id:p.id,at:new Date().toISOString(),source,status,practice:JSON.parse(JSON.stringify(p))});
     saveExtras();renderQuizHistory();
   }
-  function renderQuizHistory(){
-    const panel=$('quizHistoryPanel');if(!panel)return;
-    const records=(extras.quizHistory||[]).slice().reverse();
-    panel.innerHTML='<p class="small">Quizzes completed or stopped from this version onward. Earlier results cannot be reconstructed. Included in backups.</p>'+ (records.length?records.map(r=>{
-      const p=r.practice,wrong=p.questions.filter(q=>q.result?.correct===false),unknown=p.questions.filter(q=>q.result?.correct===null);
-      return `<article class="card quiz-history-card"><div><strong>${r.source==='reader'?'Reader':'Standalone'} quiz${p.scope==='unknown'?' · Unknown':''}</strong><p class="small">${escapeHtml(new Date(r.at).toLocaleString())} · ${r.status==='stopped'?'Stopped':'Complete'}</p><p>${p.score} / ${p.total} correct · ${wrong.length} missed${unknown.length?' · '+unknown.length+' older results unavailable':''}</p></div><details><summary>Answers and missed material</summary>${p.questions.filter(q=>q.result).map(q=>`<p><strong>${q.result.correct===true?'✓':q.result.correct===false?'✕':'—'} ${escapeHtml(q.target||q.answer?.join('')||q.word)}</strong> · ${escapeHtml(q.result.feedback||q.prompt)}</p>`).join('')}</details><button data-history-review="${escapeHtml(r.id)}" ${wrong.length?'':'disabled'}>Review ${wrong.length} missed</button></article>`;
-    }).join(''):'<p class="card">No quiz history yet.</p>');
+  let historySelectedId=null,historyListScroll=0;
+  const historyChevron='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
+  function historyAccuracy(p){return p.total?Math.max(0,Math.min(100,Math.round(p.score/p.total*100))):null;}
+  function historyBand(percent){return percent===null?'unscored':percent>=90?'excellent':percent>=70?'good':percent>=50?'developing':'retry';}
+  function historyTitle(r){const p=r.practice,kinds=new Set(p.questions.map(q=>q.kind));return p.scope==='unknown'?'Unknown Quiz':(r.source==='reader'?'Reader':'Standalone')+' · '+(p.scope==='mistakes'&&r.source==='reader'?'Review':kinds.size===1&&kinds.has('writing')?'Tracing':kinds.size>1?'Mixed':'Quiz');}
+  function historyDay(at){const d=new Date(at),now=new Date(),yesterday=new Date();yesterday.setDate(now.getDate()-1);return d.toDateString()===now.toDateString()?'Today':d.toDateString()===yesterday.toDateString()?'Yesterday':Number.isNaN(d.getTime())?'Earlier':d.toLocaleDateString(undefined,{day:'numeric',month:'short'});}
+  function historyMeta(r){const p=r.practice,date=new Date(r.at),time=Number.isNaN(date.getTime())?'':date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}),level=r.source==='reader'&&p.scope!=='mistakes'&&['2','3'].includes(p.source)?'HSK '+p.source+' · ':'';return level+time+(r.status==='stopped'?' · Stopped':'');}
+  function historyScore(p){const percent=historyAccuracy(p);return `<span class="history-score"><strong>${percent===null?'—':percent+'%'}</strong><small>${p.score}/${p.total}<span class="sr-only"> correct</span></small></span>`;}
+  function historyQuestion(q){
+    const word=q.kind==='order'?'Build the sentence':q.kind==='writing'?'Trace '+q.character:(resolveEntry(q.target)?.word||q.target?.split('::')[0]||q.word),correct=q.kind==='order'?(q.answer||[]).join(''):q.word;
+    const selected=q.result?.skipped?'Don’t know':q.kind==='order'?(q.result?.order||[]).map(i=>q.options[i]?.text||'').join(''):q.options[q.result?.selectedAnswer]||'';
+    const label=q.result?.correct===true?'Correct':q.result?.correct===false?(q.result.skipped?'Don’t know':'Incorrect'):'Result unavailable';
+    return `<article class="history-question"><span class="history-result ${q.result?.correct===true?'correct':'wrong'}" aria-hidden="true">${q.result?.correct===true?'✓':q.result?.correct===false?'×':'—'}</span><div><strong lang="zh-Hans">${escapeHtml(word)}</strong><p>${escapeHtml([q.pinyin,q.meaning].filter(Boolean).join(' · '))}</p><p class="small">${selected?'Your answer: '+escapeHtml(selected)+' · ':''}Answer: ${escapeHtml(correct)}</p>${q.result?.feedback?`<details><summary>Feedback</summary><p>${escapeHtml(q.result.feedback)}</p></details>`:''}</div><span class="history-result-label">${label}</span></article>`;
   }
-  function setQuizView(history){$('quizPracticePanel').hidden=history;$('quizHistoryPanel').hidden=!history;$('quizPracticeTab').setAttribute('aria-selected',String(!history));$('quizHistoryTab').setAttribute('aria-selected',String(history));if(history)renderQuizHistory();}
+  function renderQuizHistory(){
+    const list=$('quizHistoryList'),detail=$('quizHistoryDetail');if(!list||!detail)return;
+    const records=(extras.quizHistory||[]).slice().reverse();let group='';
+    list.innerHTML='<h2 class="history-heading">History</h2>'+(records.length?records.map(r=>{const day=historyDay(r.at),heading=day!==group?`<h3 class="history-date">${escapeHtml(day)}</h3>`:'';group=day;const title=historyTitle(r),p=r.practice,percent=historyAccuracy(p);return heading+`<button type="button" class="history-card" data-history-open="${escapeHtml(r.id)}" data-performance="${historyBand(percent)}" aria-label="${escapeHtml(title)}, ${percent===null?'unscored':percent+' percent'}, ${p.score} of ${p.total} correct${r.status==='stopped'?', stopped quiz':''}"><span class="history-meta"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(historyMeta(r))}</small></span>${historyScore(p)}${historyChevron}</button>`;}).join(''):'<p class="card">No quiz history yet. Completed and stopped quizzes appear here.</p>');
+    const r=records.find(r=>r.id===historySelectedId);list.hidden=!!r;detail.hidden=!r;
+    if(!r){historySelectedId=null;detail.innerHTML='';return;}
+    const p=r.practice,missed=p.questions.filter(q=>q.result?.correct===false),others=p.questions.filter(q=>q.result&&q.result.correct!==false),unavailable=others.filter(q=>q.result.correct===null).length;
+    detail.innerHTML=`<div class="history-detail-heading"><button id="historyBack" class="icon-button" aria-label="Back to history">←</button><h2>Quiz details</h2></div><div class="history-detail-summary" data-performance="${historyBand(historyAccuracy(p))}"><div><strong>${escapeHtml(historyTitle(r))}</strong><p class="small">${escapeHtml(historyDay(r.at)+' · '+historyMeta(r))}</p>${r.status==='stopped'?`<p class="small">Stopped · ${p.total} of ${p.questions.length} questions answered</p>`:''}</div>${historyScore(p)}</div><h3 class="history-review-heading">${missed.length?missed.length+' questions to review':unavailable?'Earlier individual results unavailable':'No missed questions'}</h3>${unavailable?`<p class="small">The saved score is retained. Individual results for ${unavailable} earlier answers were not saved.</p>`:''}${missed.map(historyQuestion).join('')}${missed.length?`<button class="primary history-review-button" data-history-review="${escapeHtml(r.id)}">Review these ${missed.length} questions <span aria-hidden="true">→</span></button>`:''}${others.length?`<details class="history-all-answers"><summary>All other answers (${others.length})</summary>${others.map(historyQuestion).join('')}</details>`:''}`;
+  }
   let quiz={score:0,total:0,current:null,locked:false,max:20,deck:[],index:0,currentDir:'zh-en',missed:[]};
   function quizPool(){return getDeck($('quizLevel').value);}
   function quizCountLimit(){const el=$('quizCount');const raw=Number(el?.value||20);const n=Number.isFinite(raw)?Math.max(1,Math.min(VOCAB.length,Math.floor(raw))):20;if(el)el.value=String(n);return n;}
@@ -1098,7 +1112,7 @@
   }
   function recordStandaloneQuiz(status='complete'){
     const questions=quiz.snapshots.map(q=>({kind:q.dir==='zh-en'?'zh-meaning':q.dir==='py-en'?'py-meaning':q.dir==='en-zh'?'meaning':'pinyin',target:entryKey(q.card),word:quizCorrectFor(q.card,q.dir),pinyin:q.card.pinyin,meaning:q.card.english,prompt:quizPromptFor(q.card,q.dir),options:q.options,result:q.answered?{correct:q.correct,selectedAnswer:q.options.indexOf(q.answer),order:[],feedback:q.feedback,skipped:!!q.skipped}:null}));
-    recordQuizHistory('standalone',{id:quiz.id,mode:'direct',source:'2',scope:'mistakes',phase:'summary',words:quiz.deck.map(entryKey),cursor:quiz.deck.length,questions,q:0,score:quiz.score,total:quiz.total,answered:false,order:[],feedback:''},status);
+    recordQuizHistory('standalone',{id:quiz.id,mode:'direct',source:'2',scope:'checkpoint',phase:'summary',words:quiz.deck.map(entryKey),cursor:quiz.deck.length,questions,q:0,score:quiz.score,total:quiz.total,answered:false,order:[],feedback:''},status);
   }
   function renderQuizScore(){ $('quizScore').textContent=`Score: ${quiz.score} / ${quiz.total}`; }
 
@@ -1131,8 +1145,8 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){window.refreshReadingStudio?.();renderQuizHistory();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','lessons','flashcards','workspace','vocab','quiz','settings'];
-  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],settings:['Settings','MAKE IT YOURS']};
+  const APP_TAB_NAMES=['reader','lessons','flashcards','workspace','vocab','quiz','history','settings'];
+  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
     document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
@@ -1141,7 +1155,7 @@
     document.title=`${APP_TAB_DETAILS[name][0]} · HSK Reader`;
     document.body.classList.remove('focus-reading');$('focusReaderBtn').setAttribute('aria-pressed','false');$('focusReaderBtn').textContent='Focus';
     stopVoice();
-    if(name==='reader')window.refreshReadingStudio?.();if(name==='quiz')renderQuizHistory();
+    if(name==='reader')window.refreshReadingStudio?.();if(name==='history'){historySelectedId=null;renderQuizHistory();}
     if(name==='workspace'&&compactEditor())showPassageEditor(true);
     if(name!=='flashcards'&&flashStrokeOpen)toggleFlashStrokePanel(false);
     writeJSON(STORE.lastTab,name);
@@ -1338,8 +1352,11 @@
   function outsideStrokeDialog(e){const r=$('flashStrokeShell').getBoundingClientRect();return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;}
   $('flashStrokeShell').addEventListener('pointerdown',e=>{strokeBackdropStart=e.target===$('flashStrokeShell')&&outsideStrokeDialog(e);});
   $('flashStrokeShell').addEventListener('click',e=>{if(strokeBackdropStart&&e.target===$('flashStrokeShell')&&outsideStrokeDialog(e))toggleFlashStrokePanel(false);strokeBackdropStart=false;});
-  $('quizPracticeTab').onclick=()=>setQuizView(false);$('quizHistoryTab').onclick=()=>setQuizView(true);
-  $('quizHistoryPanel').onclick=e=>{const b=e.target.closest('[data-history-review]');if(!b)return;const r=extras.quizHistory?.find(r=>r.id===b.dataset.historyReview);if(r&&typeof ReadingStudio!=='undefined')ReadingStudio.reviewMistakes(r);};
+  $('history').onclick=e=>{
+    const open=e.target.closest('[data-history-open]');if(open){historyListScroll=$('mainContent').scrollTop;historySelectedId=open.dataset.historyOpen;renderQuizHistory();$('mainContent').scrollTop=0;$('historyBack').focus();return;}
+    if(e.target.closest('#historyBack')){const previous=historySelectedId;historySelectedId=null;renderQuizHistory();$('mainContent').scrollTop=historyListScroll;[...$('quizHistoryList').querySelectorAll('[data-history-open]')].find(b=>b.dataset.historyOpen===previous)?.focus({preventScroll:true});return;}
+    const b=e.target.closest('[data-history-review]');if(!b)return;const r=extras.quizHistory?.find(r=>r.id===b.dataset.historyReview);if(r&&typeof ReadingStudio!=='undefined')ReadingStudio.reviewMistakes(r);
+  };
   $('quizPrevBtn').onclick=()=>navigateStandalone(-1);$('quizDontKnow').onclick=()=>{answerQuiz(null,null,true);navigateStandalone(1);};bindQuizSwipes($('quizPracticePanel'),navigateStandalone);
   $('startQuizBtn').onclick=()=>{if(quiz.snapshots&&quiz.current){if(!confirm('Stop this quiz and start another?'))return;if(quiz.total)recordStandaloneQuiz('stopped');}startQuiz();};$('quizCount').onchange=quizCountLimit;
   $('quizNextBtn').onclick=()=>navigateStandalone(1);
@@ -1378,7 +1395,7 @@
     window.onStudyDataReplaced?.();for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
     undoneReaderText=null;$('undoClearBtn').hidden=true;$('translationBox').hidden=true;$('jsonBox').value='';
     quiz={score:0,total:0,current:null,locked:false,max:0,deck:[],index:0,currentDir:'zh-en',missed:[]};
-    $('quizPrevBtn').disabled=true;$('quizDontKnow').hidden=true;setQuizView(false);$('quizOptions').innerHTML='';$('quizFeedback').textContent='';$('quizNextBtn').disabled=true;$('quizRetryMissedBtn').hidden=true;$('quizPrompt').textContent='Press Start Quiz';$('quizPrompt').classList.add('quiz-idle');renderQuizScore();
+    $('quizPrevBtn').disabled=true;$('quizDontKnow').hidden=true;historySelectedId=null;renderQuizHistory();$('quizOptions').innerHTML='';$('quizFeedback').textContent='';$('quizNextBtn').disabled=true;$('quizRetryMissedBtn').hidden=true;$('quizPrompt').textContent='Press Start Quiz';$('quizPrompt').classList.add('quiz-idle');renderQuizScore();
   }
   function resetStudyProgress(){
     if(!canPersistStudy()){toast('Reopen the app before resetting progress.');return false;}
@@ -1411,7 +1428,7 @@
   document.addEventListener('keydown',e=>{
     if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open||$('readingJumpDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
-    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-7]$/.test(e.key)){
+    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-8]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
     }
     const tag=document.activeElement?.tagName;
@@ -1483,7 +1500,7 @@
   function sanitizeReading(raw){
     const strings=(v,n=10000)=>Array.isArray(v)?uniq(v.filter(s=>typeof s==='string'&&s.length<=100).slice(0,n)):[];
     const map=(v,check)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).filter(([k,x])=>k.length<=100&&check(x)).slice(0,10000)):{};
-    const out={source:['2','3','custom','starred'].includes(raw.source)?raw.source:'2',positions:map(raw.positions,x=>Number.isInteger(x)&&x>=0&&x<10000),hiddenPinyin:map(raw.hiddenPinyin,x=>typeof x==='boolean'),starWords:strings(raw.starWords),starSentences:strings(raw.starSentences),labels:map(raw.labels,x=>['new','learning','known'].includes(x)),read:strings(raw.read,5000),mode:raw.mode==='passage'?'passage':'sentence',pinyin:['always','never'].includes(raw.pinyin)?raw.pinyin:'adaptive',pin:!!raw.pin,every:raw.every===10?10:5,sentenceInterval:[10,20,30].includes(raw.sentenceInterval)&&raw.cadenceUnit==='sentences'?raw.sentenceInterval:20,cadenceUnit:'sentences',quizCountBasis:raw.quizCountBasis==='read'?'read':'',quizWordInterval:Math.min(30,Math.max(10,Math.round(Number(raw.quizWordInterval)||20))),quizCount:[5,10,15,20,30].includes(raw.quizCount)?raw.quizCount:10,quizType:['meaning','pinyin','zh-meaning','py-meaning','writing'].includes(raw.quizType)?raw.quizType:'mixed',order:['balanced','original'].includes(raw.order)?raw.order:'',sentenceReview:map(raw.sentenceReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.step)&&x.step>=-1&&x.step<=4),wordReview:map(raw.wordReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.misses)&&x.misses>0),reviewSession:raw.reviewSession&&Array.isArray(raw.reviewSession.ids)?{ids:strings(raw.reviewSession.ids,10),index:Math.min(9,Math.max(0,Math.floor(Number(raw.reviewSession.index)||0))),reason:raw.reviewSession.reason==='missed vocabulary'?'missed vocabulary':'earlier sentences'}:null,quizCovered:map(raw.quizCovered,x=>Array.isArray(x)&&x.length<=5000&&x.every(s=>typeof s==='string'&&s.length<=100)),custom:typeof raw.custom==='string'?raw.custom.slice(0,200000):'',dismissedCheckpoint:strings(raw.dismissedCheckpoint,1000),practice:null};
+    const out={route:raw.route==='full'?'full':'core',routeRevision:raw.routeRevision===1?1:0,routeRetained:strings(raw.routeRetained,1602),source:['2','3','custom','starred'].includes(raw.source)?raw.source:'2',positions:map(raw.positions,x=>Number.isInteger(x)&&x>=0&&x<10000),hiddenPinyin:map(raw.hiddenPinyin,x=>typeof x==='boolean'),starWords:strings(raw.starWords),starSentences:strings(raw.starSentences),labels:map(raw.labels,x=>['new','learning','known'].includes(x)),read:strings(raw.read,5000),mode:raw.mode==='passage'?'passage':'sentence',pinyin:['always','never'].includes(raw.pinyin)?raw.pinyin:'adaptive',pin:!!raw.pin,every:raw.every===10?10:5,sentenceInterval:[10,20,30].includes(raw.sentenceInterval)&&raw.cadenceUnit==='sentences'?raw.sentenceInterval:20,cadenceUnit:'sentences',quizCountBasis:raw.quizCountBasis==='read'?'read':'',quizWordInterval:Math.min(30,Math.max(10,Math.round(Number(raw.quizWordInterval)||20))),quizCount:[5,10,15,20,30].includes(raw.quizCount)?raw.quizCount:10,quizType:['meaning','pinyin','zh-meaning','py-meaning','writing'].includes(raw.quizType)?raw.quizType:'mixed',order:['balanced','original'].includes(raw.order)?raw.order:'',sentenceReview:map(raw.sentenceReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.step)&&x.step>=-1&&x.step<=4),wordReview:map(raw.wordReview,x=>x&&Number.isFinite(x.due)&&x.due>=0&&Number.isInteger(x.misses)&&x.misses>0),reviewSession:raw.reviewSession&&Array.isArray(raw.reviewSession.ids)?{ids:strings(raw.reviewSession.ids,10),index:Math.min(9,Math.max(0,Math.floor(Number(raw.reviewSession.index)||0))),reason:raw.reviewSession.reason==='missed vocabulary'?'missed vocabulary':'earlier sentences'}:null,quizCovered:map(raw.quizCovered,x=>Array.isArray(x)&&x.length<=5000&&x.every(s=>typeof s==='string'&&s.length<=100)),custom:typeof raw.custom==='string'?raw.custom.slice(0,200000):'',dismissedCheckpoint:strings(raw.dismissedCheckpoint,1000),practice:null};
     out.quizSeen={};
     if(raw.quizSeen&&typeof raw.quizSeen==='object'&&!Array.isArray(raw.quizSeen)){
       for(const key of ['2','3','custom','starred'])if(Array.isArray(raw.quizSeen[key]))out.quizSeen[key]=strings(raw.quizSeen[key],5000);

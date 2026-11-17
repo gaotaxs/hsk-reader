@@ -25,8 +25,8 @@
       "light",
       "dark"
     ],
-    "panelsPerTheme": 7,
-    "cases": 56,
+    "panelsPerTheme": 8,
+    "cases": 64,
     "horizontalOverflowCases": 0
   },
   "readerQuiz": {
@@ -82,12 +82,29 @@
     "Reader Don\u2019t know advances",
     "Confirmed Restart returns to Question 1 with same options",
     "Leave returns to Reader",
-    "History shows stopped result and missed-review button",
-    "iPad landscape History rendering"
+    "Compact main-navigation History opens details and missed-only review",
+    "Delayed close event cannot cancel reopened tracing quiz"
   ],
   "limitations": [
     "No physical iPhone/iPad, WebKit, touch arbitration, Pencil or OS accessibility verification",
     "No end-to-end offline/update check in the isolated browser fixture",
     "Stroke completion and failure cases use synthetic Hanzi Writer callbacks in automated tests"
-  ]
+  ],
+  "history": {
+    "cases": 8,
+    "failures": [],
+    "phoneRowHeight": 64,
+    "tabletRowHeight": 72,
+    "phoneNavigationTarget": [
+      47.5,
+      60
+    ],
+    "assertions": [
+      "Whole row opens immutable results",
+      "Score at top right",
+      "No missed-word preview or footer action in list",
+      "Full-width 44px review button in details",
+      "Back returns focus to selected row"
+    ]
+  }
 }

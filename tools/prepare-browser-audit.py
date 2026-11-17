@@ -20,11 +20,12 @@ for name in ['assets', 'vendor']:
     shutil.copytree(source / name, app / name, dirs_exist_ok=True)
 page = (app / 'index.html').read_text()
 page = re.sub(r'<script src="\./assets/pwa.js" defer></script>',
-              '<script src="./browser-audit.js" defer></script><script src="./browser-quiz-audit.js" defer></script>', page)
+              '<script src="./browser-audit.js" defer></script><script src="./browser-quiz-audit.js" defer></script><script src="./browser-history-audit.js" defer></script>', page)
 (app / 'index.html').write_text(page)
 code = (app / 'assets/app.js').read_text().replace('hskReader', 'hskSyntheticAudit118')
 (app / 'assets/app.js').write_text(code)
 shutil.copy2(source / 'tests/browser-audit.js', app / 'browser-audit.js')
 shutil.copy2(source / 'tests/browser-quiz-audit.js', app / 'browser-quiz-audit.js')
+shutil.copy2(source / 'tests/browser-history-audit.js', app / 'browser-history-audit.js')
 shutil.copy2(source / 'tests/browser-audit.html', output / 'index.html')
 print('Prepared isolated browser QA at', output)

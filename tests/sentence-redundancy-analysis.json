@@ -11,36 +11,45 @@
   "coverageRetained": true,
   "sampleTopics": [
     {
-      "topic": "Because and so",
-      "zh": "因为工作已经做完了，所以我决定跑步。"
+      "topic": "Meals",
+      "zh": "明天下午我想吃面条。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为工作已经做完了，所以我决定看电影。"
+      "topic": "Meals",
+      "zh": "今天下午我想吃菜。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为这几天不太忙，所以我决定跑步。"
+      "topic": "Meals",
+      "zh": "明天下午我想吃鸡蛋。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为这几天不太忙，所以我决定打篮球。"
+      "topic": "Meals",
+      "zh": "今天早上我想吃鸡蛋。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为这几天不太忙，所以我决定游泳。"
+      "topic": "Meals",
+      "zh": "今天下午我想吃鸡蛋。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为工作已经做完了，所以我决定看书。"
+      "topic": "Meals",
+      "zh": "今天晚上我想吃苹果。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为今天有时间，所以我决定看电影。"
+      "topic": "Meals",
+      "zh": "今天早上我想吃鱼。"
     },
     {
-      "topic": "Because and so",
-      "zh": "因为明天没有考试，所以我决定学习汉语。"
+      "topic": "Meals",
+      "zh": "今天下午我想吃面条。"
     }
-  ]
+  ],
+  "focusedByLevel": {
+    "2": 337,
+    "3": 945
+  },
+  "omittedByLevel": {
+    "2": 84,
+    "3": 236
+  },
+  "policy": "Default focused route; full sentence records remain bundled. Retain previously open omitted sentences as continuation anchors."
 }
