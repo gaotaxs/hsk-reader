@@ -51,11 +51,52 @@ const QuizHandwriting = (() => {
     });
   }
 
+  function covers(source, target) {
+    let total = 0, distant = 0, count = 0;
+    for (const stroke of source) {
+      let offStroke = 0;
+      for (const [x, y] of stroke) {
+        let squared = Infinity;
+        for (const [tx, ty] of target) squared = Math.min(squared, (x - tx) ** 2 + (y - ty) ** 2);
+        const error = Math.sqrt(squared);
+        if (error > 0.19) return false;
+        if (error > 0.11) distant++;
+        if (error > 0.085) offStroke++;
+        total += error;
+      }
+      // A missing or extra bar can be small relative to the whole character.
+      if (offStroke / stroke.length > 0.55) return false;
+      count += stroke.length;
+    }
+    return total / count <= 0.062 && distant / count <= 0.12;
+  }
+
+  function similarSilhouette(drawn, reference) {
+    // Allow one split or joined pen stroke only when the whole shape is present.
+    if (reference.length < 4 || Math.abs(drawn.length - reference.length) > 1) return false;
+    const summarize = strokes => {
+      const measured = strokes.map(stroke => ({stroke, length: lengthOf(stroke)}));
+      return {
+        length: measured.reduce((total, stroke) => total + stroke.length, 0),
+        strokes: measured.map(({stroke, length}) => sample(stroke, Math.max(3, Math.ceil(length * 48)), length))
+      };
+    };
+    const ink = summarize(drawn), model = summarize(reference);
+    const ratio = ink.length / model.length;
+    return ratio >= 0.75 && ratio <= 1.23 &&
+      covers(ink.strokes, model.strokes.flat()) && covers(model.strokes, ink.strokes.flat());
+  }
+
   function matches(ink, medians) {
-    if (ink.length !== medians.length) return false;
+    if (Math.abs(ink.length - medians.length) > 1) return false;
     const drawn = normalize(ink, 16);
     const reference = normalize(medians.map(stroke => stroke.map(([x, y]) => [x, -y])), 1);
     if (!drawn || !reference) return false;
+    return (drawn.length === reference.length && matchStrokes(drawn, reference)) ||
+      similarSilhouette(drawn, reference);
+  }
+
+  function matchStrokes(drawn, reference) {
     const expected = reference.map(describe);
     const candidates = drawn.map(describe).map(stroke =>
       expected.flatMap((target, i) => resembles(stroke, target) ? [i] : []));
@@ -100,12 +141,14 @@ const QuizHandwriting = (() => {
       return;
     }
 
+    const undo = host.querySelector('[data-ink-undo]');
     const clear = host.querySelector('[data-ink-clear]'), submit = host.querySelector('[data-ink-check]');
     const status = host.querySelector('[data-ink-status]') || host.querySelector('[role="status"]');
-    const ink = pads.map(() => []);
+    const ink = pads.map(() => []), history = [];
     let active = null, busy = false;
     const setControls = () => {
       clear.disabled = busy || active !== null || !ink.some(strokes => strokes.length);
+      if (undo) undo.disabled = busy || active !== null || !history.length;
       submit.disabled = busy || active !== null || !ink.every(strokes => strokes.length);
     };
     function add(event, pad) {
@@ -141,13 +184,21 @@ const QuizHandwriting = (() => {
         if (event.type === 'pointercancel') {
           strokes.pop();
           active.path.remove();
-        }
+        } else history.push(i);
         active = null;
         setControls();
       }
       for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) pad.addEventListener(type, finish);
     });
+    if (undo) undo.onclick = () => {
+      const i = history.pop();
+      ink[i].pop();
+      groups[i].lastElementChild.remove();
+      status.textContent = '';
+      setControls();
+    };
     clear.onclick = () => {
+      history.length = 0;
       ink.forEach(strokes => { strokes.length = 0; });
       groups.forEach(group => group.replaceChildren());
       status.textContent = '';
@@ -160,7 +211,7 @@ const QuizHandwriting = (() => {
       try {
         await check(ink);
       } catch {
-        if (valid()) status.textContent = 'Writing data unavailable. Try Check again or choose Don’t know.';
+        if (valid()) status.textContent = 'Writing data unavailable. Try Check again.';
       } finally {
         busy = false;
         if (valid()) setControls();

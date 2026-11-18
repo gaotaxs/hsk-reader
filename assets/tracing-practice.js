@@ -9,25 +9,31 @@
     }
   }
 
-  let deck = [], current, result, correctCount = 0, answeredCount = 0;
+  let deck = [], current, result, gradedResult, correctCount = 0, answeredCount = 0;
 
   function nextQuestion() {
     if (!deck.length) {
       deck = shuffle([...cards.values()]);
       if (deck[0] === current) [deck[0], deck[1]] = [deck[1], deck[0]];
     }
+    if (gradedResult) {
+      answeredCount++;
+      if (gradedResult.correct) correctCount++;
+    }
     current = deck.shift();
-    result = null;
+    result = gradedResult = null;
     render();
   }
 
   function render() {
     const question = current;
+    const score = correctCount + Number(!!gradedResult?.correct);
+    const total = answeredCount + Number(!!gradedResult);
     const verdict = result ? result.skipped ? 'Skipped' : result.correct ? 'Correct' : 'Incorrect' : '';
     panel.innerHTML = `<article class="card tracing-card">
       <div class="tracing-heading">
         <h2>Tracing</h2>
-        <p class="small" aria-label="${correctCount} correct out of ${answeredCount}">${correctCount} / ${answeredCount}</p>
+        <p class="small" aria-label="${score} correct out of ${total}">${score} / ${total}</p>
       </div>
       <div class="tracing-prompt" id="tracingPrompt" tabindex="-1">
         <p lang="zh-Latn">${escapeHtml(question.pinyin)}</p>
@@ -42,12 +48,13 @@
           '<p class="small">Write the character from memory.</p>'}</div>
         <p class="small tracing-error" role="status" data-ink-status></p>
         <div class="tracing-actions">${result ?
-          '<button id="tracingNext" class="primary">Next character</button>' :
-          '<button id="tracingSkip">Skip</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+          `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary">Next character</button>` :
+          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
       </div>
     </article>`;
 
-    const valid = () => current === question && !result;
+    const card = panel.firstElementChild;
+    const valid = () => panel.firstElementChild === card && current === question && !result;
     const readInk = QuizHandwriting.mount($('tracingInput'), {
       savedInk: result?.ink,
       valid,
@@ -58,6 +65,12 @@
     });
 
     if (result) {
+      const retry = $('tracingRetry');
+      if (retry) retry.onclick = () => {
+        result = null;
+        render();
+        $('tracingPrompt').focus({preventScroll: true});
+      };
       $('tracingNext').onclick = () => {
         nextQuestion();
         $('tracingPrompt').focus({preventScroll: true});
@@ -68,9 +81,7 @@
   }
 
   function finish(correct, ink, skipped = false) {
-    result = {correct, ink, skipped};
-    answeredCount++;
-    if (correct) correctCount++;
+    result = gradedResult = {correct, ink, skipped};
     render();
     if (panel.classList.contains('active')) panel.querySelector('.tracing-feedback').focus({preventScroll: true});
   }
@@ -80,7 +91,8 @@
   };
   window.resetTracingPractice = () => {
     deck = [];
-    current = result = null;
+    current = result = gradedResult = null;
+    panel.replaceChildren();
     correctCount = answeredCount = 0;
     if (panel.classList.contains('active')) nextQuestion();
   };

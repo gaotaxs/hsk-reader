@@ -152,6 +152,23 @@ await test('One good character and one scribble fail the entire writing question
   assert.match(a.w.document.querySelector('.reading-feedback').textContent,/Incorrect · 随便/);
   assert.equal(a.$('readingQuizTrace').querySelectorAll('svg')[1].querySelectorAll('path').length,1);
 });
+await test('Realistic 很 with joined strokes passes while lookalike characters are rejected',a=>{
+  // Approximate the freehand example from the Tracing feedback screenshot.
+  const ink=[
+    [[495,875],[465,887],[415,918],[379,943],[326,973],[262,1019]],
+    [[406,944],[416,973],[395,1009],[367,1052],[328,1104],[288,1160]],
+    [[384,1091],[390,1104],[394,1156],[410,1275],[419,1318],[426,1334]],
+    [[580,865],[580,875],[612,871],[690,853],[725,849],[741,849],[741,909],[725,971],[716,1009],[700,1053],[681,1062]],
+    [[583,967],[655,973],[728,973],[737,981]],
+    [[541,1078],[562,1098],[594,1098],[626,1091],[662,1065]],
+    [[541,928],[525,960],[518,1094],[518,1315],[524,1352],[535,1379],[552,1376],[560,1370]],
+    [[685,1121],[657,1160],[625,1190],[592,1210],[564,1223],[537,1223],[563,1228],[592,1245],[670,1296],[755,1333],[838,1359]]
+  ].map(s=>s.map(([x,y])=>[Math.round((x-208)*.303),Math.round((y-703)*.303)]));
+  const matches=(ink,word)=>a.run(`QuizHandwriting.matches(${JSON.stringify(ink)},${JSON.stringify(characters[word].medians)})`);
+  assert.equal(matches(ink,'很'),true);
+  assert.equal(matches(handwriting('日'),'目'),false);
+  assert.equal(matches(handwriting('根'),'很'),false);
+});
 await test('Retracing and connecting every stroke into one scribble fail shape checking',a=>{
   const medians=characters['便'].medians, ink=handwriting('便');
   for(const attempt of [ink.map(stroke=>[...stroke,...stroke.slice().reverse()]),[ink.flat()]]){
@@ -188,13 +205,30 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   assert.equal(panel.querySelectorAll('svg path').length,0);
   assert.equal(panel.querySelector('[data-ink-check]').disabled,true);
   assert.ok(!panel.textContent.includes(entry.word));
-  const pad=panel.querySelector('svg');
-  pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
-  for(const stroke of handwriting(entry.word))stroke.forEach(([x,y],i)=>{
-    const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
-    Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
-    pad.dispatchEvent(event);
-  });
+  const drawTrace=strokes=>{
+    const pad=panel.querySelector('svg');
+    pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+    for(const stroke of strokes)stroke.forEach(([x,y],i)=>{
+      const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+      Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+      pad.dispatchEvent(event);
+    });
+  };
+  const undo=()=>panel.querySelector('[data-ink-undo]');
+  assert.ok(undo().disabled);
+  drawTrace([[[70,70],[105,105]]]);
+  assert.equal(panel.querySelectorAll('svg path').length,1);
+  undo().click();
+  assert.equal(panel.querySelectorAll('svg path').length,0);
+  assert.ok(undo().disabled);
+  drawTrace([[[75,70],[78,75]]]);
+  click(a,'#tracing [data-ink-check]');
+  await settle();
+  assert.match(panel.querySelector('.tracing-feedback').textContent,/Incorrect/);
+  a.$('tracingRetry').click();
+  assert.equal(panel.querySelectorAll('svg path').length,0);
+  assert.match(panel.querySelector('.tracing-heading p').textContent,/0 \/ 1/);
+  drawTrace(handwriting(entry.word));
   click(a,'[data-tab=reader]');
   click(a,'[data-tab=tracing]');
   assert.ok(panel.querySelector('svg path'));
