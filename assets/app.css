@@ -600,6 +600,15 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
   min-width: 72px;
 }
 
+.tracing-style-actions {
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.tracing-style-actions button {
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* Compact phone study screens. The tab rail keeps its existing height. */
 @media (min-width: 721px) {
   header .header-title-row {
@@ -685,6 +694,7 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
     margin-top:8px;
   }
   .tracing-card .tracing-actions button { min-width:0; padding-inline:8px; }
+  .tracing-card .tracing-style-actions { display:flex; }
 
   #flashcards .flash-top-card { padding: 0 12px; margin:0 0 8px; }
   #flashOptionsToggle { display:flex; align-items:center; justify-content:space-between; }
