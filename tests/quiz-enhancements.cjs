@@ -306,5 +306,52 @@ await test('A delayed close event cannot cancel a just-reopened tracing quiz',as
   a.$('readingPracticeDialog').dispatchEvent(new a.w.Event('close'));
   drawCurrent(a);await checkInk(a);assert.equal(state(a).practice.total,1);assert.equal(state(a).practice.score,1);
 });
+await test('Tracing learns a confirmed shorthand, restores it on reload and can forget it',async a=>{
+  const setup=instance=>{
+    useCharacterData(instance);
+    instance.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+    click(instance,'[data-tab=tracing]');
+    assert.equal(instance.$('tracingPrompt').querySelector('p').textContent,'yún');
+  };
+  const shorthand=[
+    [[76,52],[100,49],[151,49]],
+    [[48,100],[88,94],[137,86]],
+    [[104,92],[83,116],[64,157],[66,161],[95,149],[128,146],[143,155],[148,179],[172,177]]
+  ];
+  async function check(instance,strokes){
+    const pad=instance.$('tracingInput').querySelector('svg');
+    pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+    for(const stroke of strokes)stroke.forEach(([x,y],i)=>{
+      const event=new instance.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+      Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+      pad.dispatchEvent(event);
+    });
+    click(instance,'#tracing [data-ink-check]');
+    await settle();
+    return instance.$('tracingInput').querySelector('.tracing-feedback').firstElementChild.textContent;
+  }
+  setup(a);
+  assert.equal(await check(a,shorthand),'Incorrect');
+  a.w.confirm=()=>false;
+  a.$('tracingTeach').click();
+  assert.equal(a.run("Boolean(extras.tracingStyles?.['云'])"),false);
+  a.w.confirm=()=>true;
+  a.$('tracingTeach').click();
+  assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
+  const saved=a.run("JSON.stringify(extras.tracingStyles['云'])");
+  const b=boot(a.snapshot());
+  try{
+    setup(b);
+    assert.equal(b.run("JSON.stringify(extras.tracingStyles['云'])"),saved);
+    const redrawn=shorthand.slice().reverse().map(stroke=>stroke.slice().reverse().map(([x,y],i)=>[x+5+i%3,y+7-i%2]));
+    assert.equal(await check(b,redrawn),'Correct');
+    b.$('tracingForget').click();
+    assert.equal(b.run("Boolean(extras.tracingStyles?.['云'])"),false);
+    assert.equal(b.$('tracingForget'),null);
+  }finally{b.dom.window.close();}
+  a.w.shorthand=shorthand;
+  assert.equal(a.run("QuizHandwriting.matchesPersonal(shorthand,'二',extras.tracingStyles)"),false);
+  assert.equal(a.run("QuizHandwriting.matchesPersonal([[[30,30],[204,201]]],'云',extras.tracingStyles)"),false);
+});
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});

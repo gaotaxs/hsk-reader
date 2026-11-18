@@ -1488,6 +1488,13 @@
     if(raw.readerSense==='长::zhǎng')out.readerSense=raw.readerSense;
     for(const [k,v] of Object.entries(raw.srs||{}))if(validKey(k)&&v&&Number.isFinite(v.due)&&Number.isFinite(v.step))out.srs[k]={due:Math.max(0,v.due),step:Math.max(0,Math.min(5,Math.floor(v.step))),reviews:Math.max(0,Math.floor(Number(v.reviews)||0))};
     for(const [k,v] of Object.entries(raw.daily||{}).slice(-90))if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&Array.isArray(v))out.daily[k]=uniq(v.filter(validKey));
+    const styles={};
+    for(const [word,samples] of Object.entries(raw.tracingStyles||{})){
+      if(!/^[\u3400-\u9fff]$/.test(word)||!BY_WORD.has(word)||!Array.isArray(samples))continue;
+      const valid=samples.slice(-3).filter(validInkPad);
+      if(valid.length)styles[word]=valid;
+    }
+    if(Object.keys(styles).length)out.tracingStyles=styles;
     for(const [k,v] of Object.entries(raw.writing||{}))if(Array.from(k).length===1&&isChineseChar(k)&&v)out.writing[k]={count:Math.max(0,Math.floor(Number(v.count)||0)),mistakes:Math.max(0,Math.floor(Number(v.mistakes)||0)),last:typeof v.last==='string'?v.last:''};
     if(raw.session&&Array.isArray(raw.session.ids))out.session={ids:uniq(raw.session.ids.filter(validKey)).slice(0,601),index:Math.max(0,Math.floor(Number(raw.session.index)||0)),label:String(raw.session.label||'').slice(0,80),pinyin:!!raw.session.pinyin,english:!!raw.session.english};
     if(out.session){out.session.reviewed=uniq((Array.isArray(raw.session.reviewed)?raw.session.reviewed:[]).filter(k=>out.session.ids.includes(k)));out.session.complete=!!raw.session.complete&&out.session.reviewed.length===out.session.ids.length;}
@@ -1500,13 +1507,16 @@
     out.quizHistory=[];if(Array.isArray(raw.quizHistory))for(const r of raw.quizHistory){if(!r||typeof r.id!=='string'||typeof r.at!=='string'||!['reader','standalone'].includes(r.source)||!r.practice)continue;const practice=sanitizeReading({source:r.practice.source,practice:r.practice}).practice;if(practice&&!out.quizHistory.some(x=>x.id===r.id))out.quizHistory.push({id:r.id.slice(0,100),at:r.at.slice(0,40),source:r.source,status:r.status==='stopped'?'stopped':'complete',practice});}
     return out;
   }
+  function validInkPad(pad){
+    const validPoint=p=>Array.isArray(p)&&p.length===2&&p.every(n=>Number.isInteger(n)&&n>=0&&n<=240);
+    return Array.isArray(pad)&&pad.length>0&&pad.length<=48&&pad.every(stroke=>
+      Array.isArray(stroke)&&stroke.length>0&&stroke.length<=24&&stroke.every(validPoint));
+  }
   function sanitizeQuestionResult(r,writingWord){
     if(!r||typeof r!=='object')return null;
     const result={correct:typeof r.correct==='boolean'?r.correct:null,selectedAnswer:Number.isInteger(r.selectedAnswer)?r.selectedAnswer:null,order:Array.isArray(r.order)?uniq(r.order.filter(i=>Number.isInteger(i)&&i>=0&&i<20)).slice(0,20):[],feedback:typeof r.feedback==='string'?r.feedback.slice(0,2000):'',skipped:!!r.skipped};
     if(writingWord&&Array.isArray(r.ink)&&r.ink.length===writingWord.length&&r.ink.length<=20){
-      const validPoint=p=>Array.isArray(p)&&p.length===2&&p.every(n=>Number.isInteger(n)&&n>=0&&n<=240);
-      const validStroke=s=>Array.isArray(s)&&s.length>0&&s.length<=24&&s.every(validPoint);
-      if(r.ink.every(pad=>Array.isArray(pad)&&pad.length>0&&pad.length<=48&&pad.every(validStroke)))result.ink=r.ink;
+      if(r.ink.every(validInkPad))result.ink=r.ink;
     }
     return result;
   }

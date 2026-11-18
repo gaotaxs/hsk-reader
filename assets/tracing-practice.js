@@ -29,6 +29,8 @@
     const question = current;
     const score = correctCount + Number(!!gradedResult?.correct);
     const total = answeredCount + Number(!!gradedResult);
+    const samples = extras.tracingStyles?.[question.word];
+    const canTeach = result && !result.correct && !result.skipped && QuizHandwriting.canSaveSample(result.ink[0]);
     const verdict = result ? result.skipped ? 'Skipped' : result.correct ? 'Correct' : 'Incorrect' : '';
     panel.innerHTML = `<article class="card tracing-card">
       <div class="tracing-heading">
@@ -50,6 +52,10 @@
         <div class="tracing-actions">${result ?
           `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary">Next character</button>` :
           '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+        ${canTeach || (result && samples?.length) ? `<div class="tracing-actions tracing-style-actions">
+          ${canTeach ? '<button id="tracingTeach" type="button">Save my writing</button>' : ''}
+          ${samples?.length ? '<button id="tracingForget" type="button">Forget saved writing</button>' : ''}
+        </div>` : ''}
       </div>
     </article>`;
 
@@ -59,12 +65,26 @@
       savedInk: result?.ink,
       valid,
       check: async ink => {
-        const bundle = await loadCharacterBundle();
-        if (valid()) finish(QuizHandwriting.recognizes(ink[0], question.word, bundle), QuizHandwriting.snapshot(ink));
+        const personalMatch = QuizHandwriting.matchesPersonal(ink[0], question.word, extras.tracingStyles);
+        const correct = personalMatch || QuizHandwriting.recognizes(ink[0], question.word, await loadCharacterBundle());
+        if (valid()) finish(correct, QuizHandwriting.snapshot(ink));
       }
     });
 
     if (result) {
+      const teach = $('tracingTeach');
+      if (teach) teach.onclick = () => {
+        if (!confirm(`Is this your handwritten form of ${question.word}? This will count as correct and teach Tracing to accept similar writing next time.`)) return;
+        const next = [...(samples || []), result.ink[0]].slice(-3);
+        if (saveStyle(question.word, next)) finish(true, result.ink);
+      };
+      const forget = $('tracingForget');
+      if (forget) forget.onclick = () => {
+        if (confirm(`Forget your saved writing for ${question.word}?`) && saveStyle(question.word, [])) {
+          render();
+          $('tracingNext').focus({preventScroll:true});
+        }
+      };
       const retry = $('tracingRetry');
       if (retry) retry.onclick = () => {
         result = null;
@@ -78,6 +98,19 @@
     } else {
       $('tracingSkip').onclick = () => finish(false, readInk(), true);
     }
+  }
+
+  function saveStyle(word, samples) {
+    const before = extras.tracingStyles;
+    const next = {...before};
+    if (samples.length) next[word] = samples;
+    else delete next[word];
+    extras.tracingStyles = next;
+    if (saveExtras()) return true;
+    if (before) extras.tracingStyles = before;
+    else delete extras.tracingStyles;
+    panel.querySelector('[data-ink-status]').textContent = 'Could not save your writing.';
+    return false;
   }
 
   function finish(correct, ink, skipped = false) {

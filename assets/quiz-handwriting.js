@@ -235,6 +235,27 @@ const QuizHandwriting = (() => {
     return true;
   }
 
+  function canSaveSample(ink) {
+    return !!normalize(ink, 26);
+  }
+
+  function matchesPersonal(ink, character, styles) {
+    const samples = styles?.[character];
+    if (!samples?.length) return false;
+    const drawing = normalize(ink, 26);
+    if (!drawing) return false;
+    const summary = summarize(drawing);
+    function score(sample) {
+      if (Math.abs(ink.length - sample.length) > 2) return Infinity;
+      const model = normalize(sample, 26);
+      return model ? silhouetteScore(summary, summarize(model)) : Infinity;
+    }
+    const best = Math.min(...samples.map(score));
+    if (best > 0.042) return false;
+    return Object.entries(styles).every(([other, variants]) =>
+      other === character || variants.every(variant => score(variant) > best + 0.008));
+  }
+
   function snapshot(ink) {
     return ink.map(strokes => strokes.map(stroke => {
       const points = stroke.length > 24 ? sample(stroke, 24) : stroke;
@@ -340,5 +361,5 @@ const QuizHandwriting = (() => {
     return () => snapshot(ink);
   }
 
-  return {additionalCharacters, matches, recognizes, mount, snapshot};
+  return {additionalCharacters, matches, recognizes, canSaveSample, matchesPersonal, mount, snapshot};
 })();

@@ -1,3 +1,7 @@
+## 1.18.8
+
+- Tracing can learn a confirmed personal shorthand and recognize similar writing on later attempts. Up to three samples per character are saved with study data and can be forgotten from the result screen.
+
 ## 1.18.7
 
 - Tracing ranks likely candidates for characters with seven or more strokes. Complex answers may differ by two pen strokes if the whole shape is a clear match.
