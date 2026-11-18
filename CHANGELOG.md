@@ -1,3 +1,7 @@
+## 1.18.9
+
+- Add an optional Guess action to Tracing. It ranks likely characters from the drawing before scoring the selected candidate.
+
 ## 1.18.8
 
 - Tracing can learn a confirmed personal shorthand and recognize similar writing on later attempts. Up to three samples per character are saved with study data and can be forgotten from the result screen.

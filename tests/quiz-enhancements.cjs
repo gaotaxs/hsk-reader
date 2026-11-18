@@ -353,5 +353,37 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
   assert.equal(a.run("QuizHandwriting.matchesPersonal(shorthand,'二',extras.tracingStyles)"),false);
   assert.equal(a.run("QuizHandwriting.matchesPersonal([[[30,30],[204,201]]],'云',extras.tracingStyles)"),false);
 });
+await test('Tracing guesses from ink independently of the prompt and scores only after selection',async a=>{
+  useCharacterData(a);
+  a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+  click(a,'[data-tab=tracing]');
+  const pad=a.$('tracingInput').querySelector('svg');
+  pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+  function write(word){
+    for(const stroke of handwriting(word))stroke.forEach(([x,y],i)=>{
+      const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+      Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+      pad.dispatchEvent(event);
+    });
+  }
+  const list=a.$('tracingInput').querySelector('.tracing-guesses');
+  assert.ok(a.$('tracingInput').querySelector('[data-ink-guess]').disabled);
+  write('小');
+  click(a,'#tracing [data-ink-guess]');
+  await settle();
+  assert.equal(list.hidden,false);
+  assert.equal(list.querySelector('button').textContent,'小');
+  assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/0 \/ 0/);
+  click(a,'#tracing [data-ink-undo]');
+  assert.ok(list.hidden);
+  click(a,'#tracing [data-ink-clear]');
+  write('云');
+  click(a,'#tracing [data-ink-guess]');
+  await settle();
+  assert.equal(list.querySelector('button').textContent,'云');
+  list.querySelector('button').click();
+  assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
+  assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Correct/);
+});
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
