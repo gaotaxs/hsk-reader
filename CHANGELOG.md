@@ -1,3 +1,7 @@
+## 1.18.6
+
+- Tracing compares short handwritten characters with other bundled characters before accepting a looser match.
+
 ## 1.18.5
 
 - Accept one joined or split stroke in complex characters when the whole shape matches.

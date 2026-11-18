@@ -59,8 +59,8 @@
       savedInk: result?.ink,
       valid,
       check: async ink => {
-        const {medians} = await localCharacterLoader(question.word);
-        if (valid()) finish(QuizHandwriting.matches(ink[0], medians), QuizHandwriting.snapshot(ink));
+        const bundle = await loadCharacterBundle();
+        if (valid()) finish(QuizHandwriting.recognizes(ink[0], question.word, bundle), QuizHandwriting.snapshot(ink));
       }
     });
 
