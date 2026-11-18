@@ -98,6 +98,11 @@
         const savedInk = QuizHandwriting.snapshot(ink);
         const [first, second] = ranked;
         if (!first) return unreadable(savedInk);
+        const structured = QuizHandwriting.clearStructureMatch(ink[0], bundle, ranked);
+        if (structured) {
+          finish(structured === question.word, savedInk, {readAs: structured});
+          return;
+        }
         const clearLead = !second || second.score - first.score >= 0.014;
         if (clearLead && first.score <= 0.055 &&
             (QuizHandwriting.matchesPersonal(ink[0], first.character, extras.tracingStyles) ||
@@ -105,7 +110,7 @@
           finish(first.character === question.word, savedInk, {readAs: first.character});
           return;
         }
-        const choices = ranked.filter(entry => entry.score - first.score <= 0.045);
+        const choices = ranked.slice(0, 3).filter(entry => entry.score - first.score <= 0.045);
         if (choices.length < 2) return unreadable(savedInk);
         guesses.hidden = false;
         unclear.hidden = true;

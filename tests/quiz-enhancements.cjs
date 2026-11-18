@@ -356,6 +356,76 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
   assert.equal(a.run("QuizHandwriting.matchesPersonal(shorthand,'二',extras.tracingStyles)"),false);
   assert.equal(a.run("QuizHandwriting.matchesPersonal([[[30,30],[204,201]]],'云',extras.tracingStyles)"),false);
 });
+await test('Tracing grades rough 走, narrow 马 and uneven 百 directly when the strokes agree',async a=>{
+  useCharacterData(a);
+  const samples={
+    走:[
+      [[66,56],[81,56],[117,50],[130,51]], [[106,20],[108,40],[108,82],[106,96]],
+      [[36,104],[70,102],[104,100],[139,100]], [[102,98],[100,123],[100,153],[98,161]],
+      [[99,128],[108,124],[143,125],[155,128]], [[76,126],[63,166],[37,201]],
+      [[68,155],[82,154],[96,158],[128,173],[168,189],[212,192]]
+    ],
+    马:[
+      [[77,48],[102,42],[137,34],[136,48],[127,80],[125,84]],
+      [[108,54],[99,77],[96,104],[103,108],[149,104],[156,108],[161,146],[160,187],[153,204],[131,212],[112,185]],
+      [[86,151],[95,148],[135,149]]
+    ],
+    百:[
+      [[71,47],[78,49],[137,50],[154,49],[167,43]], [[121,53],[113,64],[84,90]],
+      [[78,97],[74,110],[75,120],[72,168]], [[93,80],[135,80],[141,83],[144,104],[144,170]],
+      [[84,129],[98,126],[132,124],[160,121]], [[75,161],[80,165],[135,164]]
+    ]
+  };
+  a.w.inkSamples=samples;
+  a.w.structureBundle=baseCharacters;
+  for(const character of Object.keys(samples)){
+    const input=JSON.stringify(character);
+    assert.equal(a.run(`(() => {
+      const strokes=inkSamples[${input}];
+      return QuizHandwriting.clearStructureMatch(strokes, structureBundle, QuizHandwriting.rankCharacters(strokes, structureBundle));
+    })()`),character);
+  }
+  a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='走')-Number(a.word==='走'))`);
+  click(a,'[data-tab=tracing]');
+  function submit(strokes){
+    const pad=a.$('tracingInput').querySelector('svg');
+    pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+    for(const stroke of strokes)stroke.forEach(([x,y],i)=>{
+      const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+      Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+      pad.dispatchEvent(event);
+    });
+    click(a,'#tracing [data-ink-check]');
+    return settle();
+  }
+  await submit(handwriting('足'));
+  assert.match(a.$('tracing').querySelector('.tracing-read-as').textContent,/足/);
+  assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Incorrect/);
+  a.$('tracingRetry').click();
+  await submit(samples.走);
+  assert.equal(a.$('tracing').querySelector('.tracing-feedback').firstElementChild.textContent,'Correct');
+  assert.equal(a.$('tracing').querySelector('.tracing-feedback strong').textContent,'走');
+  assert.equal(a.$('tracingInput').querySelectorAll('svg path').length,samples.走.length);
+});
+await test('Stroke ranking distinguishes distorted characters with 10 or more strokes and rejects scribbles',a=>{
+  a.w.structureBundle=baseCharacters;
+  const classify=ink=>a.run(`(() => {
+    const ink=${JSON.stringify(ink)};
+    return QuizHandwriting.clearStructureMatch(ink, structureBundle, QuizHandwriting.rankCharacters(ink, structureBundle));
+  })()`);
+  for(const character of ['情','请','谢']){
+    assert.ok(baseCharacters[character].medians.length>=10);
+    const distorted=baseCharacters[character].medians.map((stroke,i)=>stroke.map(([x,y],j)=>[
+      120+(x-500)*0.11+Math.sin(i*2)*12+Math.cos(j*1.2)*2,
+      120+(400-y)*0.16+Math.cos(i*2)*9+Math.sin(j*1.2)*2
+    ])).reverse().map(stroke=>stroke.reverse());
+    assert.equal(classify(distorted),character);
+  }
+  const scribble=Array.from({length:10},(_,i)=>Array.from({length:7},(_,j)=>[
+    120+75*Math.sin(i+4*j),120+66*Math.cos(2*i+1.4*j)
+  ]));
+  assert.equal(classify(scribble),undefined);
+});
 await test('Tracing Check grades clear reads and asks for help on close calls',async a=>{
   useCharacterData(a);
   a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
@@ -381,6 +451,8 @@ await test('Tracing Check grades clear reads and asks for help on close calls',a
   write('云',freshPad);
   const rank=a.run('QuizHandwriting.rankCharacters');
   a.run(`QuizHandwriting.rankCharacters = () => [{character:'云',score:0.06},{character:'天',score:0.062}]`);
+  const clearStructureMatch=a.run('QuizHandwriting.clearStructureMatch');
+  a.run('QuizHandwriting.clearStructureMatch = () => undefined');
   click(a,'#tracing [data-ink-check]');
   await settle();
   const newList=a.$('tracingInput').querySelector('.tracing-guesses');
@@ -391,6 +463,7 @@ await test('Tracing Check grades clear reads and asks for help on close calls',a
   assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
   assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Correct with help/);
   a.run('QuizHandwriting').rankCharacters=rank;
+  a.run('QuizHandwriting').clearStructureMatch=clearStructureMatch;
 });
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
