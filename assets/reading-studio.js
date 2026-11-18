@@ -5,6 +5,9 @@ const ReadingStudio=(()=>{
   const coreOmissions=new Set(typeof HSK_CORE_ROUTE==='undefined'?[]:HSK_CORE_ROUTE.omitted);
   let translationOpen=false,selectedWord='',localPracticeOptions=[],quizSetup=null;
   let jumpIds=[],peek=false,hintContext='',revealedHints=new Set(),practiceReturn=null;
+  const exitIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20H5V4h5m4 4 4 4-4 4m4-4H9"/></svg>';
+  const restartIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 6m2-11v5h-5"/></svg>';
+  const previousIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6 6-6-6 6-6"/></svg>';
   const nextIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
   const data=()=>extras.reading ||= {source:'2',positions:{},hiddenPinyin:{},starWords:[],starSentences:[],labels:{},read:[],mode:'sentence',pinyin:'adaptive',pin:false,every:5,sentenceInterval:20,cadenceUnit:'sentences',quizWordInterval:20,quizCadence:{},quizCount:10,quizType:'mixed',quizCovered:{},order:'balanced',sentenceReview:{},wordReview:{},reviewSession:null,custom:'',practice:null};
   const save=()=>{const ok=saveExtras(),notice=$('readingQuizSaveStatus');if(notice){notice.hidden=ok;notice.textContent=ok?'':'Not saved. Export a backup before closing.';}return ok;};
@@ -179,7 +182,7 @@ const ReadingStudio=(()=>{
   function unfinishedQuiz(){return data().practice?.phase==='quiz'&&data().practice.questions?.length;}
   function offerResume(scope='checkpoint'){
     $('readingPracticeBody').dataset.phase='setup';stopQuizWriting();quizSetup={resume:true,scope};const p=data().practice,dialog=$('readingPracticeDialog');if(!dialog.open)dialog.showModal();
-    $('readingPracticeBody').innerHTML=`<h2>Quiz in progress</h2><p>You have answered ${p.total} of ${p.questions.length} questions. Resume your saved quiz, or explicitly discard it to start another.</p><div class="reading-quiz-footer"><button id="readingQuizLater">Later</button><button id="readingQuizRestart">Discard and start another</button><button class="primary" id="readingQuizResume">Resume quiz</button></div>`;
+    $('readingPracticeBody').innerHTML=`<h2>Quiz in progress</h2><p>You have answered ${p.total} of ${p.questions.length} questions. Resume your saved quiz, or explicitly discard it to start another.</p><div class="reading-quiz-footer reading-resume-footer"><button id="readingQuizLater">Later</button><button id="readingQuizRestart">Discard and start another</button><button class="primary" id="readingQuizResume">Resume quiz</button></div>`;
   }
   function startPractice(){
     if(unfinishedQuiz()){rememberReadingPlace();offerResume();return;}
@@ -215,7 +218,25 @@ const ReadingStudio=(()=>{
     // Unknown before Known; recent vocabulary before older material, randomized ties.
     return shuffle(words.slice()).sort((a,b)=>(status(a)==='known')-(status(b)==='known')||Number(recent.includes(b))-Number(recent.includes(a))||(last.get(b)||0)-(last.get(a)||0));
   }
-  const writingCharacters=new Set(VOCAB.flatMap(v=>Array.from(v.word)));
+  const extraWritingCharacters=new Set(QuizHandwriting.additionalCharacters);
+  const writingCharacters=new Set([...VOCAB.flatMap(v=>Array.from(v.word).filter(isChineseChar)),...extraWritingCharacters]);
+  let extraWritingData;
+  function loadWritingMedians(character){
+    if(!extraWritingCharacters.has(character))return localCharacterLoader(character);
+    extraWritingData ||= fetch('./vendor/reader-character-medians.json').then(response=>{
+      if(!response.ok)throw Error('Missing Reader character medians');
+      return response.json();
+    }).catch(error=>{extraWritingData=null;throw error;});
+    return extraWritingData.then(data=>data[character]);
+  }
+  const canWrite=word=>word.length>0&&Array.from(word).every(c=>writingCharacters.has(c));
+  function recognitionQuestion(word,v,kind,covered){
+    const englishAnswer=kind.endsWith('-meaning'),correct=englishAnswer?v.english:v.word;
+    const usable=w=>{const d=definition(w);return w!==word&&d&&(englishAnswer||d.word!==v.word)&&(kind.includes('pinyin')||kind==='py-meaning'?d.pinyin!==v.pinyin:true)&&d.english!==v.english;};
+    const familiar=shuffle(covered.filter(usable)),fallback=shuffle(uniq(VOCAB.map(entryKey)).filter(w=>usable(w)&&!familiar.includes(w)));
+    const distractors=uniq(familiar.concat(fallback).map(w=>englishAnswer?definition(w).english:definition(w).word)).slice(0,3);
+    return {kind,target:word,pinyin:v.pinyin,meaning:v.english,word:correct,prompt:kind==='meaning'?v.english:kind==='zh-meaning'?v.word:v.pinyin,options:shuffle([correct,...distractors])};
+  }
   function makeQuiz(p,block=p.words.slice(Math.max(0,p.cursor-data().every),p.cursor),sentence=current(),type='mixed',includeOrder=true,limit=31){
     const covered=uniq([...vocabWords(recentBlock()),...p.words]);
     const bySentence=new Map([...READING_SENTENCES,...customSentences()].map(s=>[s.id,s]));
@@ -223,7 +244,7 @@ const ReadingStudio=(()=>{
     const orderQuestions=candidates.map(s=>({s,parts:segments(s.zh,s.py).filter(t=>t.v).map(t=>t.text)})).filter(x=>x.parts.length>=3&&x.parts.length<=14);
     const count=Math.min(limit,Math.max(block.length,type==='mixed'&&includeOrder&&orderQuestions.length?Math.min(limit,5):0));
     const modes=['meaning','zh-meaning','pinyin','py-meaning'];
-    if(type==='mixed'&&p.includeWriting!==false&&block.some(w=>Array.from(definition(w).word).some(c=>writingCharacters.has(c))))modes.splice(2,0,'writing');
+    if(type==='mixed'&&p.includeWriting!==false&&block.some(w=>canWrite(definition(w).word)))modes.splice(2,0,'writing');
     if(type==='mixed'&&includeOrder&&orderQuestions.length)modes.splice(1,0,'order');
     const rotation=Math.floor(Math.random()*modes.length);let cycle=modes.slice(rotation).concat(modes.slice(0,rotation));
     if(type==='mixed'&&count<modes.length){const special=modes.filter(k=>k==='order'||k==='writing');cycle=shuffle([...special,...shuffle(modes.filter(k=>!special.includes(k))).slice(0,Math.max(0,count-special.length))]);}
@@ -235,15 +256,10 @@ const ReadingStudio=(()=>{
         return {kind:'order',sentenceId:s.id,vocabularyIds:vocabWords([s]),prompt:s.en||'Rebuild this sentence.',answer:parts,options:shuffle(parts.map((text,i)=>({text,id:i})))};
       }
       if(kind==='writing'){
-        const chars=Array.from(v.word).filter(c=>writingCharacters.has(c));
-        if(chars.length)return {kind,target:word,character:chars[Math.floor(Math.random()*chars.length)],pinyin:v.pinyin,meaning:v.english,word:v.word,prompt:v.pinyin+' · '+v.english,options:[]};
+        if(canWrite(v.word))return {kind,target:word,pinyin:v.pinyin,meaning:v.english,word:v.word,prompt:v.pinyin+' · '+v.english,options:[]};
         kind='meaning';
       }
-      const englishAnswer=kind.endsWith('-meaning'),correct=englishAnswer?v.english:v.word;
-      const usable=w=>{const d=definition(w);return w!==word&&d&&(englishAnswer||d.word!==v.word)&&(kind.includes('pinyin')||kind==='py-meaning'?d.pinyin!==v.pinyin:true)&&d.english!==v.english;};
-      const familiar=shuffle(covered.filter(usable)),fallback=shuffle(uniq(VOCAB.map(entryKey)).filter(w=>usable(w)&&!familiar.includes(w)));
-      const distractors=uniq(familiar.concat(fallback).map(w=>englishAnswer?definition(w).english:definition(w).word)).slice(0,3);
-      return {kind,target:word,pinyin:v.pinyin,meaning:v.english,word:correct,prompt:kind==='meaning'?v.english:kind==='zh-meaning'?v.word:v.pinyin,options:shuffle([correct,...distractors])};
+      return recognitionQuestion(word,v,kind,covered);
     });
     // Explicit recognition modes can also opt into sentence reconstruction.
     if(type!=='mixed'&&type!=='writing'&&includeOrder&&orderQuestions.length){
@@ -260,23 +276,32 @@ const ReadingStudio=(()=>{
   }
   let quizWritingGeneration=0;
   function stopQuizWriting(){quizWritingGeneration++;}
-  function writingPrompt(q){
+  function writingMarkup(p,q){
     const chars=Array.from(q.word);
-    if(chars.length<2)return 'Write the character from memory.';
-    return 'Write character '+(chars.indexOf(q.character)+1)+' of '+chars.length+' from memory.';
+    const instruction=chars.length===1?'Write the character from memory.':`Write all ${chars.length} characters from memory, left to right.`;
+    if(p.answered&&!q.result?.ink)return '';
+    const pads=chars.map((_,i)=>`<svg class="quiz-trace-pad" viewBox="0 0 240 240" role="img" aria-label="${p.answered?'Submitted drawing':'Handwriting pad'} ${i+1} of ${chars.length}"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></g></svg>`).join('');
+    return `${p.answered?'':`<p class="small quiz-writing-instruction">${instruction}</p>`}<div id="readingQuizTrace"><div class="quiz-writing-pads ${chars.length===1?'single-pad':''}">${pads}</div>
+      ${p.answered?'':`<div class="quiz-writing-actions"><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button></div><p class="small quiz-writing-status" role="status"></p>`}</div>`;
   }
   function renderQuizWriting(p,q){
+    const host=$('readingQuizTrace');
+    if(!host)return;
     const generation=quizWritingGeneration;
     const valid=()=>generation===quizWritingGeneration&&data().practice===p&&p.questions[p.q]===q&&!p.answered&&$('readingPracticeDialog').open;
-    QuizHandwriting.mount($('readingQuizTrace'),{valid,check:async ink=>{
-      const {medians}=await localCharacterLoader(q.character);
+    const chars=Array.from(q.word);
+    QuizHandwriting.mount(host,{savedInk:q.result?.ink,valid,check:async ink=>{
+      const references=await Promise.all(chars.map(loadWritingMedians));
       if(!valid())return;
-      const correct=QuizHandwriting.matches(ink,medians);
-      const record=extras.writing[q.character] ||= {count:0,mistakes:0,last:''};
-      record.count++;
-      if(!correct)record.mistakes++;
-      record.last=new Date().toISOString();
-      answer(correct,(correct?'Correct · ':'Answer · ')+q.character+' · '+q.word);
+      const results=references.map(({medians},i)=>QuizHandwriting.matches(ink[i],medians));
+      chars.forEach((character,i)=>{
+        const record=extras.writing[character] ||= {count:0,mistakes:0,last:''};
+        record.count++;
+        if(!results[i])record.mistakes++;
+        record.last=new Date().toISOString();
+      });
+      const correct=results.every(Boolean);
+      answer(correct,(correct?'Correct · ':'Incorrect · ')+q.word,QuizHandwriting.snapshot(ink));
     }});
   }
   function reviewMistakes(record){
@@ -300,12 +325,19 @@ const ReadingStudio=(()=>{
       const v=definition(p.words[p.cursor]);if(!v){p.phase='summary';return renderPractice();}
       shell.innerHTML=`<span class="card-eyebrow">READING VOCABULARY</span><p class="small">${p.cursor} / ${total} words reviewed</p><button class="reading-study-card" id="readingCardReveal" aria-label="Reveal or hide this word"><span lang="zh-Hans">${escapeHtml(v.word)}</span><strong class="${p.reveal?'':'hint-hidden'}">${escapeHtml(v.pinyin)}</strong><p class="${p.reveal?'':'hint-hidden'}">${escapeHtml(v.english)}</p><small>Tap to reveal</small></button><div class="reading-rating"><button data-reading-rate="new">Revisit</button><button data-reading-rate="learning">Learning</button><button data-reading-rate="known" class="primary">Known</button></div>`;
     }else if(p.phase==='quiz'){
-      const q=p.questions[p.q];if(!q){p.phase='summary';save();return renderPractice();}p.order=uniq((p.order||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<q.options.length));shell.innerHTML=`<div class="reading-quiz-actions"><span class="reading-quiz-title">${p.scope==='unknown'?'Unknown Quiz':'Quick quiz'}</span><button id="readingQuizLeave">Leave quiz</button><button id="readingQuizRestart">Restart</button></div><p class="small">Question ${p.q+1} / ${p.questions.length}</p><div class="progressbar reading-quiz-progress"><span style="width:${p.q/p.questions.length*100}%"></span></div><h2 class="reading-question">${escapeHtml(q.prompt)}</h2><div class="reading-question-content">${q.kind==='writing'?`<p class="small quiz-writing-instruction">${escapeHtml(writingPrompt(q))}</p>${p.answered?'':`<div id="readingQuizTrace"><svg class="quiz-trace-pad" viewBox="0 0 240 240" role="img" aria-label="Blank handwriting pad"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></g></svg><div class="quiz-writing-actions"><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button></div><p class="small quiz-writing-status" role="status"></p></div>`}`:q.kind==='order'?`<p class="small">Tap the words in sentence order. Tap your answer to undo the last word.</p><button id="readingOrderAnswer" class="reading-order-answer ${p.answered?(p.order.map(i=>q.options[i].text).join('')===q.answer.join('')?'correct':'wrong'):''}" aria-label="Undo last word">${p.order.map(i=>escapeHtml(q.options[i].text)).join(' ')||'Build your sentence here'}</button><div class="reading-order-options">${q.options.map((o,i)=>`<button data-reading-order="${i}" ${p.order.includes(i)||p.answered?'disabled':''}>${escapeHtml(o.text)}</button>`).join('')}</div><button id="readingOrderCheck" ${p.answered||p.order.length!==q.options.length?'disabled':''}>Check sentence</button>`:`<div class="reading-quiz-options ${q.kind.endsWith('-meaning')?'latin-options':''}">${q.options.map((w,i)=>`<button data-reading-answer="${i}" class="${p.answered&&w===q.word?'correct':p.answered&&i===p.selectedAnswer?'wrong':''}" ${p.answered?'disabled':''}>${escapeHtml(w)}</button>`).join('')}</div>`}</div><div class="quiz-answer-row"><button class="icon-button" id="readingQuestionPrev" aria-label="Previous question" ${p.q?'':'disabled'}>←</button><p class="reading-feedback" role="status">${escapeHtml(p.feedback||'')}</p><button id="readingDontKnow" ${p.answered?'hidden':''}>Don’t know</button><button class="icon-button primary" id="readingQuestionNext" aria-label="${p.q+1===p.questions.length?'See results':'Next question'}" title="${p.q+1===p.questions.length?'See results':'Next question'}" ${p.answered?'':'disabled'}>${nextIcon}</button></div>`;if(q.kind==='writing'&&!p.answered)renderQuizWriting(p,q);
+      let q=p.questions[p.q];
+      if(!q){p.phase='summary';save();return renderPractice();}
+      if(q.kind==='writing'&&!p.answered&&!canWrite(q.word)){
+        // Older quizzes could pick one bundled character out of a custom word.
+        q=p.questions[p.q]=recognitionQuestion(q.target,definition(q.target,q.pinyin),'meaning',p.words);
+        save();
+      }
+      p.order=uniq((p.order||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<q.options.length));shell.innerHTML=`<div class="reading-quiz-actions"><span class="reading-quiz-title">${p.scope==='unknown'?'Unknown Quiz':'Quick quiz'}</span><button id="readingQuizLeave" aria-label="Leave quiz" title="Leave quiz">${exitIcon}</button><button id="readingQuizRestart" aria-label="Restart quiz" title="Restart quiz">${restartIcon}</button></div><p class="small">Question ${p.q+1} / ${p.questions.length}</p><div class="progressbar reading-quiz-progress"><span style="width:${p.q/p.questions.length*100}%"></span></div><h2 class="reading-question">${escapeHtml(q.prompt)}</h2><div class="reading-question-content">${q.kind==='writing'?writingMarkup(p,q):q.kind==='order'?`<p class="small">Tap the words in sentence order. Tap your answer to undo the last word.</p><button id="readingOrderAnswer" class="reading-order-answer ${p.answered?(p.order.map(i=>q.options[i].text).join('')===q.answer.join('')?'correct':'wrong'):''}" aria-label="Undo last word">${p.order.map(i=>escapeHtml(q.options[i].text)).join(' ')||'Build your sentence here'}</button><div class="reading-order-options">${q.options.map((o,i)=>`<button data-reading-order="${i}" ${p.order.includes(i)||p.answered?'disabled':''}>${escapeHtml(o.text)}</button>`).join('')}</div><button id="readingOrderCheck" ${p.answered||p.order.length!==q.options.length?'disabled':''}>Check sentence</button>`:`<div class="reading-quiz-options ${q.kind.endsWith('-meaning')?'latin-options':''}">${q.options.map((w,i)=>`<button data-reading-answer="${i}" class="${p.answered&&w===q.word?'correct':p.answered&&i===p.selectedAnswer?'wrong':''}" ${p.answered?'disabled':''}>${escapeHtml(w)}</button>`).join('')}</div>`}</div><div class="quiz-answer-row"><button class="icon-button" id="readingQuestionPrev" aria-label="Previous question" ${p.q?'':'disabled'}>${previousIcon}</button><p class="reading-feedback" role="status">${escapeHtml(p.feedback||'')}</p><button id="readingDontKnow" ${p.answered?'hidden':''}>Don’t know</button><button class="icon-button primary" id="readingQuestionNext" aria-label="${p.q+1===p.questions.length?'See results':'Next question'}" title="${p.q+1===p.questions.length?'See results':'Next question'}" ${p.answered?'':'disabled'}>${nextIcon}</button></div>`;if(q.kind==='writing')renderQuizWriting(p,q);
     }else{
       shell.innerHTML=`<span class="card-eyebrow">PRACTICE COMPLETE</span><h2>${p.mode==='direct'?'Quiz complete!':p.cursor===total?'Nice work. You’re done!':'A little stronger, one block at a time.'}</h2><p>${p.mode==='direct'?`${p.total} questions answered · ${testedVocabulary(p).length} distinct vocabulary items tested · ${p.words.length} eligible vocabulary items`:`${p.cursor} / ${total} words reviewed`} · ${p.score} / ${p.total} quiz answers correct</p><button class="primary" id="readingPracticeContinue">${p.cursor<total?'Continue flashcards':'Back to reading'}</button>`;
     }
   }
-  function answer(correct,feedback){const r=data(),p=r.practice;if(p.answered||p.questions[p.q].result)return;stopQuizWriting();p.answered=true;p.total++;const q=p.questions[p.q],word=q.kind==='order'?'':q.target||q.word;r.wordReview ||= {};q.result={correct,selectedAnswer:p.selectedAnswer??null,order:p.order.slice(),feedback,skipped:!!p.skipping};p.skipping=false;
+  function answer(correct,feedback,ink){const r=data(),p=r.practice;if(p.answered||p.questions[p.q].result)return;stopQuizWriting();p.answered=true;p.total++;const q=p.questions[p.q],word=q.kind==='order'?'':q.target||q.word;r.wordReview ||= {};q.result={correct,selectedAnswer:p.selectedAnswer??null,order:p.order.slice(),feedback,skipped:!!p.skipping};if(ink)q.result.ink=ink;p.skipping=false;
     if(correct){p.score++;if(word)delete r.wordReview[word];}else if(word){r.wordReview[word]={due:Date.now()+600000,misses:(r.wordReview[word]?.misses||0)+1};r.sentenceReview ||= {};for(const s of [...READING_SENTENCES,...customSentences()])if(r.read.includes(s.id)&&segments(s.zh,s.py).some(t=>(definition(t.text,t.py)?.key||t.text)===word))r.sentenceReview[s.id]={step:-1,due:Date.now()+600000};if(status(word,q.pinyin)!=='known')rstatus(word,'learning',q.pinyin);}
     if(!correct&&q.kind==='order'){r.sentenceReview ||= {};if(q.sentenceId)r.sentenceReview[q.sentenceId]={step:-1,due:Date.now()+600000};}p.feedback=feedback;save();render();renderPractice();}
   let detailWriters=[],detailGeneration=0,detailWord='',detailHint='',detailGuide=true;
@@ -443,7 +475,7 @@ const ReadingStudio=(()=>{
       if(quizSetup)return;
       const p=data().practice;if(!p)return;
       if(e.target.closest('#readingQuestionPrev')){navigateQuestion(-1);return;}
-      if(e.target.closest('#readingDontKnow')&&p.phase==='quiz'&&!p.answered){p.skipping=true;const q=p.questions[p.q];answer(false,'Don’t know · '+(q.kind==='order'?q.answer.join(''):q.kind==='writing'?q.character+' · '+q.word:q.word)+' · '+(q.meaning||''));navigateQuestion(1);return;}
+      if(e.target.closest('#readingDontKnow')&&p.phase==='quiz'&&!p.answered){p.skipping=true;const q=p.questions[p.q];answer(false,'Don’t know · '+(q.kind==='order'?q.answer.join(''):q.word)+' · '+(q.meaning||''));navigateQuestion(1);return;}
       if(e.target.closest('#readingCardReveal')){p.reveal=!p.reveal;save();renderPractice();return;}
       const rate=e.target.closest('[data-reading-rate]');if(rate&&p.phase==='cards'){
         rstatus(p.words[p.cursor],rate.dataset.readingRate);p.cursor++;p.reveal=false;

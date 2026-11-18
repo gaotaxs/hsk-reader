@@ -1,6 +1,6 @@
 /* One release manifest shared by the page and its service worker. */
 var HSK_RELEASE=Object.freeze({
-  "version": "1.18.2",
+  "version": "1.18.3",
   "assets": [
     "./index.html",
     "./assets/release.js",
@@ -24,6 +24,7 @@ var HSK_RELEASE=Object.freeze({
     "./assets/reading-dictionary-3.js",
     "./vendor/hanzi-writer-3.7.3.min.js",
     "./vendor/characters.json",
+    "./vendor/reader-character-medians.json",
     "./vendor/READING-DICTIONARY-NOTICE.txt",
     "./icon-192.png",
     "./icon-512.png",
