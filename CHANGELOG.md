@@ -1,3 +1,7 @@
+## 1.18.11
+
+- Tracing checks the shape and position of individual strokes alongside the overall character. Clear matches can score immediately even if the handwriting is narrow, uneven or written out of stroke order.
+
 ## 1.18.10
 
 - Tracing uses one Check action. It grades clear matches immediately, prompts for a choice when recognition is uncertain, and leaves unreadable attempts unscored.

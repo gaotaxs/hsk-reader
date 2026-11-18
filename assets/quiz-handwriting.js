@@ -120,8 +120,11 @@ const QuizHandwriting = (() => {
     const expected = reference.map(describe);
     const candidates = drawn.map(describe).map(stroke =>
       expected.flatMap((target, i) => resembles(stroke, target) ? [i] : []));
-    // Each reference stroke must match a distinct drawn stroke.
-    const assigned = Array(expected.length).fill(-1);
+    return hasDistinctMatches(candidates);
+  }
+
+  function hasDistinctMatches(candidates) {
+    const assigned = Array(candidates.length).fill(-1);
     function assign(stroke, visited) {
       for (const i of candidates[stroke]) {
         if (visited.has(i)) continue;
@@ -249,13 +252,16 @@ const QuizHandwriting = (() => {
     return true;
   }
 
+  function meanGap(from, to) {
+    return from.reduce((sum, [x, y]) =>
+      sum + Math.sqrt(nearestSquared(x, y, to)), 0) / from.length;
+  }
+
   // Candidate mode ranks the supplied ink without knowing the quiz answer.
   function rankCharacters(ink, bundle, styles = {}) {
     const drawing = normalize(ink, 26);
     if (!drawing) return [];
     const drawn = summarize(drawing);
-    const meanGap = (from, to) => from.reduce((sum, [x, y]) =>
-      sum + Math.sqrt(nearestSquared(x, y, to)), 0) / from.length;
     function score(model, strokeCount) {
       if (!model || !model.length || Math.abs(ink.length - strokeCount) > Math.max(3, ink.length * 0.4)) return Infinity;
       const lengthGap = Math.abs(Math.log(drawn.length / model.length));
@@ -279,7 +285,71 @@ const QuizHandwriting = (() => {
       }
       if (best <= 0.13) ranked.push({character, score: best});
     }
-    return ranked.sort((a, b) => a.score - b.score).slice(0, 3);
+    return ranked.sort((a, b) => a.score - b.score);
+  }
+
+  const structureModels = new WeakMap();
+
+  function structureFeatures(drawing) {
+    // Allow tall or wide handwriting while keeping nearly flat shapes distinct.
+    const points = drawing.flat();
+    const width = Math.max(0.24, ...points.map(p => Math.abs(p[0])));
+    const height = Math.max(0.24, ...points.map(p => Math.abs(p[1])));
+    return handwritingFeatures(drawing.map(stroke =>
+      stroke.map(([x, y]) => [x / (2 * width), y / (2 * height)])));
+  }
+
+  function structureCost(stroke, model) {
+    const position = distance(stroke.center, model.center);
+    const length = Math.abs(Math.log((stroke.length + 0.05) / (model.length + 0.05)));
+    if (position > 0.38 || length > 1.12) return Infinity;
+    const shape = Math.max(meanGap(stroke.shape, model.shape), meanGap(model.shape, stroke.shape));
+    if (shape > 0.23 || Math.abs(stroke.straightness - model.straightness) > 0.35) return Infinity;
+    return 0.65 * position + 0.10 * length + 0.95 * shape;
+  }
+
+  function structureScore(drawn, model) {
+    const costs = drawn.map(stroke => model.map(target => structureCost(stroke, target)));
+    // Require a distinct plausible counterpart for every stroke, even in dense characters.
+    const choices = costs.map(row => row.flatMap((cost, i) => cost <= 0.39 ? [i] : []));
+    if (!hasDistinctMatches(choices)) return Infinity;
+    const inkCost = costs.reduce((sum, row) => sum + Math.min(...row), 0);
+    const modelCost = model.reduce((sum, _, i) => sum + Math.min(...costs.map(row => row[i])), 0);
+    return (inkCost + modelCost) / (2 * model.length);
+  }
+
+  function rankStructure(ink, bundle) {
+    if (ink.length < 3) return [];
+    const drawing = normalize(ink, 26);
+    if (!drawing) return [];
+    const drawn = structureFeatures(drawing);
+    if (!structureModels.has(bundle)) structureModels.set(bundle, new Map());
+    const models = structureModels.get(bundle);
+    const ranked = [];
+    for (const [character, {medians}] of Object.entries(bundle)) {
+      if (medians.length !== drawn.length) continue;
+      if (!models.has(character)) {
+        const reference = normalize(medians.map(s => s.map(([x, y]) => [x, -y])), 1);
+        models.set(character, reference ? structureFeatures(reference) : null);
+      }
+      const model = models.get(character);
+      if (!model) continue;
+      const score = structureScore(drawn, model);
+      if (Number.isFinite(score)) ranked.push({character, score});
+    }
+    return ranked.sort((a, b) => a.score - b.score);
+  }
+
+  function clearStructureMatch(ink, bundle, ranked) {
+    const [bestShape] = ranked;
+    if (!bestShape || bestShape.score > 0.08) return undefined;
+    const [first, second] = rankStructure(ink, bundle);
+    if (!first || first.score > 0.168 || (second && second.score - first.score < 0.017)) return undefined;
+    const shape = ranked.find(candidate => candidate.character === first.character);
+    if (!shape || shape.score > 0.08 || shape.score - bestShape.score > 0.021) return undefined;
+    // A very strong whole-character read takes precedence over a competing stroke fit.
+    if (first.character !== bestShape.character && bestShape.score < 0.035) return undefined;
+    return first.character;
   }
 
   function canSaveSample(ink) {
@@ -411,5 +481,5 @@ const QuizHandwriting = (() => {
     return () => snapshot(ink);
   }
 
-  return {additionalCharacters, matches, recognizes, rankCharacters, canSaveSample, matchesPersonal, mount, snapshot};
+  return {additionalCharacters, matches, recognizes, rankCharacters, clearStructureMatch, canSaveSample, matchesPersonal, mount, snapshot};
 })();

@@ -1,4 +1,4 @@
-# HSK Reader 1.18.10
+# HSK Reader 1.18.11
 
 Reader quizzes now have Leave/Restart, locked backward review, left/right swipe navigation, Don’t know, and optional freehand tracing on a blank pad mixed throughout the question set. History retains completed/stopped results and can review missed material. The Reader header’s **? Unknown Quiz** manually tests encountered New/Learning vocabulary without using checkpoint counters; regular quizzes prefer unfamiliar and recent vocabulary while preserving oldest-first checkpoint coverage. Full definitions scroll inside equal-height options and controls stay visible. Tablet-only layout adjustments cover 11-inch iPad viewports. History is its own main navigation item: compact rows open quiz details and missed-material review. The default focused route has 1,282 sentences (337 HSK 2 and 945 HSK 3); select Complete in Reader settings for all 1,602. All sentence records, IDs and existing study data are retained. Previously open omitted sentences remain as continuation anchors.
 
