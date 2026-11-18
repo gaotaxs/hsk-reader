@@ -194,8 +194,37 @@ await test('Realistic 很 with joined strokes passes while lookalike characters 
   ].map(s=>s.map(([x,y])=>[Math.round((x-208)*.303),Math.round((y-703)*.303)]));
   const matches=(ink,word)=>a.run(`QuizHandwriting.matches(${JSON.stringify(ink)},${JSON.stringify(characters[word].medians)})`);
   assert.equal(matches(ink,'很'),true);
+  a.w.fixtureCharacters=baseCharacters;
+  assert.equal(a.run(`QuizHandwriting.recognizes(${JSON.stringify(ink)},'很',fixtureCharacters)`),true);
   assert.equal(matches(handwriting('日'),'目'),false);
   assert.equal(matches(handwriting('根'),'很'),false);
+});
+await test('Complex Tracing accepts two pen lifts or joins and distinguishes lookalikes',a=>{
+  a.w.fixtureCharacters=baseCharacters;
+  const recognize=(ink,word)=>a.run(`QuizHandwriting.recognizes(${JSON.stringify(ink)},${JSON.stringify(word)},fixtureCharacters)`);
+  // The median paths are perturbed and reversed by the handwriting fixture.
+  for(const word of ['便','情','谢','照','舞']){
+    const ink=handwriting(word);
+    const split=ink.map((stroke,i)=>({i,length:stroke.length}))
+      .filter(stroke=>stroke.length>=4).sort((a,b)=>b.length-a.length).slice(0,2).map(stroke=>stroke.i);
+    const lifted=ink.flatMap((stroke,i)=>{
+      const midpoint=Math.floor(stroke.length/2);
+      return split.includes(i)?[stroke.slice(0,midpoint+1),stroke.slice(midpoint)]:[stroke];
+    });
+    assert.equal(lifted.length,ink.length+2);
+    assert.equal(recognize(lifted,word),true,word+' with two extra pen lifts');
+    assert.equal(recognize(ink.map(stroke=>[...stroke,...stroke.slice().reverse()]),word),false,word+' retraced');
+  }
+  const separate=baseCharacters['谢'].medians.map(stroke=>stroke.map(([x,y])=>[x/6,(900-y)/6]));
+  const joined=separate.flatMap((stroke,i)=>{
+    if(i===2||i===7)return [[...stroke,...separate[i+1]]];
+    return i===3||i===8?[]:[stroke];
+  });
+  assert.equal(joined.length,separate.length-2);
+  assert.equal(recognize(joined,'谢'),true);
+  for(const [drawn,expected] of [['清','情'],['晴','清'],['睛','晴'],['请','情'],['根','很']]){
+    assert.equal(recognize(handwriting(drawn),expected),false,drawn+' vs '+expected);
+  }
 });
 await test('Retracing and connecting every stroke into one scribble fail shape checking',a=>{
   const medians=characters['便'].medians, ink=handwriting('便');

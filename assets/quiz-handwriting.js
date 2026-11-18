@@ -51,40 +51,56 @@ const QuizHandwriting = (() => {
     });
   }
 
-  function covers(source, target) {
+  function measureCoverage(source, target, relaxed) {
+    const farLimit = relaxed ? 0.19 : 0.11;
+    const strayLimit = relaxed ? 0.11 : 0.085;
     let total = 0, distant = 0, count = 0;
     for (const stroke of source) {
       let offStroke = 0;
       for (const [x, y] of stroke) {
         let squared = Infinity;
-        for (const [tx, ty] of target) squared = Math.min(squared, (x - tx) ** 2 + (y - ty) ** 2);
+        for (let i = 0; i < target.length; i++) {
+          const point = target[i];
+          const dx = x - point[0], dy = y - point[1];
+          const gap = dx * dx + dy * dy;
+          if (gap < squared) squared = gap;
+        }
         const error = Math.sqrt(squared);
-        if (error > 0.19) return false;
-        if (error > 0.11) distant++;
-        if (error > 0.085) offStroke++;
+        if (error > (relaxed ? 0.25 : 0.19)) return Infinity;
+        if (error > farLimit) distant++;
+        if (error > strayLimit) offStroke++;
         total += error;
       }
-      // A missing or extra bar can be small relative to the whole character.
-      if (offStroke / stroke.length > 0.55) return false;
+      // Reject a missing or extra bar even if it is small relative to the character.
+      if (offStroke / stroke.length > 0.55) return Infinity;
       count += stroke.length;
     }
-    return total / count <= 0.062 && distant / count <= 0.12;
+    const mean = total / count;
+    return mean <= (relaxed ? 0.075 : 0.062) && distant / count <= 0.12 ? mean : Infinity;
+  }
+
+  function summarize(strokes) {
+    let length = 0;
+    const sampled = strokes.map(stroke => {
+      const size = lengthOf(stroke);
+      length += size;
+      return sample(stroke, Math.max(3, Math.ceil(size * 48)), size);
+    });
+    return {length, strokes: sampled, points: sampled.flat()};
+  }
+
+  function silhouetteScore(ink, model, relaxed = false) {
+    const ratio = ink.length / model.length;
+    if (ratio < 0.75 || ratio > 1.23) return Infinity;
+    const excess = measureCoverage(ink.strokes, model.points, relaxed);
+    if (!Number.isFinite(excess)) return Infinity;
+    const missing = measureCoverage(model.strokes, ink.points, relaxed);
+    return (excess + missing) / 2;
   }
 
   function similarSilhouette(drawn, reference) {
-    // Allow one split or joined pen stroke only when the whole shape is present.
-    if (reference.length < 4 || Math.abs(drawn.length - reference.length) > 1) return false;
-    const summarize = strokes => {
-      const measured = strokes.map(stroke => ({stroke, length: lengthOf(stroke)}));
-      return {
-        length: measured.reduce((total, stroke) => total + stroke.length, 0),
-        strokes: measured.map(({stroke, length}) => sample(stroke, Math.max(3, Math.ceil(length * 48)), length))
-      };
-    };
-    const ink = summarize(drawn), model = summarize(reference);
-    const ratio = ink.length / model.length;
-    return ratio >= 0.75 && ratio <= 1.23 &&
-      covers(ink.strokes, model.strokes.flat()) && covers(model.strokes, ink.strokes.flat());
+    return reference.length >= 4 && Math.abs(drawn.length - reference.length) <= 1 &&
+      Number.isFinite(silhouetteScore(summarize(drawn), summarize(reference)));
   }
 
   function matches(ink, medians) {
@@ -159,9 +175,37 @@ const QuizHandwriting = (() => {
     return totals.at(-1) / ink.length;
   }
 
+  const complexModels = new WeakMap();
+
+  function recognizesComplex(ink, character, bundle, strictMatch) {
+    const delta = Math.abs(ink.length - bundle[character].medians.length);
+    if (delta > 2) return false;
+    const normalized = normalize(ink, 16);
+    if (!normalized) return false;
+    if (!complexModels.has(bundle)) complexModels.set(bundle, new Map());
+    const cache = complexModels.get(bundle);
+    const drawn = summarize(normalized);
+    function score(key, medians) {
+      if (!cache.has(key)) {
+        const reference = normalize(medians.map(stroke => stroke.map(([x, y]) => [x, -y])), 1);
+        cache.set(key, summarize(reference));
+      }
+      return silhouetteScore(drawn, cache.get(key), true) + 0.003 * Math.abs(ink.length - medians.length);
+    }
+    const expected = score(character, bundle[character].medians);
+    if (!Number.isFinite(expected)) return strictMatch;
+    const limit = expected + (strictMatch ? -Math.min(0.012, expected / 3) : 0.008);
+    for (const [other, {medians}] of Object.entries(bundle)) {
+      if (other === character || Math.abs(medians.length - ink.length) > 2) continue;
+      if (score(other, medians) < limit) return false;
+    }
+    return true;
+  }
+
   function recognizes(ink, character, bundle) {
     const medians = bundle[character].medians;
     const strictMatch = matches(ink, medians);
+    if (medians.length >= 7) return recognizesComplex(ink, character, bundle, strictMatch);
     // Short characters benefit most from allowing individual stroke placement
     // and proportions to vary. Require a good fit and a lead over lookalikes.
     if (ink.length < 2 || ink.length > 6 || ink.length !== medians.length) return strictMatch;
