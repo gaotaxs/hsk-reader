@@ -116,6 +116,81 @@ const QuizHandwriting = (() => {
     return candidates.every((_, i) => assign(i, new Set()));
   }
 
+  const rankedModels = new WeakMap();
+
+  function handwritingFeatures(strokes) {
+    return strokes.map(stroke => {
+      const length = lengthOf(stroke);
+      const points = sample(stroke, 12, length);
+      const center = [0, 1].map(axis => points.reduce((sum, p) => sum + p[axis], 0) / points.length);
+      const scale = Math.max(0.07, length);
+      const straightness = length ? distance(points[0], points.at(-1)) / length : 1;
+      return {length, center, points, straightness, shape: points.map(p => p.map((value, axis) => (value - center[axis]) / scale))};
+    });
+  }
+
+  function featureDistance(a, b) {
+    const position = distance(a.center, b.center);
+    const size = Math.abs(Math.log((a.length + 0.035) / (b.length + 0.035)));
+    if (position > 0.31 || size > 1.3) return Infinity;
+    if ((b.straightness > 0.93 && a.straightness < 0.72) ||
+        (b.straightness < 0.8 && a.straightness > 0.9)) return Infinity;
+    const mean = (from, to) => from.reduce((sum, p) => sum + Math.min(...to.map(q => distance(p, q))), 0) / from.length;
+    const shape = Math.max(mean(a.shape, b.shape), mean(b.shape, a.shape));
+    if (shape > 0.26) return Infinity;
+    return position + 0.12 * size + 0.65 * shape;
+  }
+
+  function rankScore(ink, reference) {
+    const costs = ink.map(stroke => reference.map(model => featureDistance(stroke, model)));
+    // Choose the lowest-cost assignment regardless of stroke order.
+    const totals = Array(1 << ink.length).fill(Infinity);
+    totals[0] = 0;
+    for (let used = 0; used < totals.length - 1; used++) {
+      if (!Number.isFinite(totals[used])) continue;
+      let row = 0;
+      for (let bits = used; bits; bits &= bits - 1) row++;
+      for (let i = 0; i < ink.length; i++) {
+        if (used & (1 << i)) continue;
+        const next = used | (1 << i);
+        totals[next] = Math.min(totals[next], totals[used] + costs[row][i]);
+      }
+    }
+    return totals.at(-1) / ink.length;
+  }
+
+  function recognizes(ink, character, bundle) {
+    const medians = bundle[character].medians;
+    const strictMatch = matches(ink, medians);
+    // Short characters benefit most from allowing individual stroke placement
+    // and proportions to vary. Require a good fit and a lead over lookalikes.
+    if (ink.length < 2 || ink.length > 6 || ink.length !== medians.length) return strictMatch;
+    const normalized = normalize(ink, 16);
+    if (!normalized || normalized.some(stroke => lengthOf(stroke) < 0.018)) return strictMatch;
+    if (!rankedModels.has(bundle)) rankedModels.set(bundle, new Map());
+    const byCount = rankedModels.get(bundle);
+    if (!byCount.has(ink.length)) {
+      const models = Object.entries(bundle).filter(([, {medians}]) => medians.length === ink.length)
+        .map(([key, {medians}]) => [key, handwritingFeatures(normalize(medians.map(s => s.map(([x, y]) => [x, -y])), 1))]);
+      byCount.set(ink.length, new Map(models));
+    }
+    const models = byCount.get(ink.length);
+    const drawn = handwritingFeatures(normalized);
+    const expected = models.get(character);
+    if (!strictMatch && drawn.length === 2) {
+      const touches = (strokes, tolerance) => strokes[0].points.some(p =>
+        strokes[1].points.some(q => distance(p, q) < tolerance));
+      if (touches(expected, 0.04) && !touches(drawn, 0.075)) return false;
+    }
+    const score = rankScore(drawn, expected);
+    if (!Number.isFinite(score) || score > 0.20) return strictMatch;
+    const limit = strictMatch ? score - 0.012 : score + 0.018;
+    for (const [other, model] of models) {
+      if (other !== character && rankScore(drawn, model) < limit) return false;
+    }
+    return true;
+  }
+
   function snapshot(ink) {
     return ink.map(strokes => strokes.map(stroke => {
       const points = stroke.length > 24 ? sample(stroke, 24) : stroke;
@@ -221,5 +296,5 @@ const QuizHandwriting = (() => {
     return () => snapshot(ink);
   }
 
-  return {additionalCharacters, matches, mount, snapshot};
+  return {additionalCharacters, matches, recognizes, mount, snapshot};
 })();

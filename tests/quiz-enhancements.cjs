@@ -152,6 +152,34 @@ await test('One good character and one scribble fail the entire writing question
   assert.match(a.w.document.querySelector('.reading-feedback').textContent,/Incorrect · 随便/);
   assert.equal(a.$('readingQuizTrace').querySelectorAll('svg')[1].querySelectorAll('path').length,1);
 });
+await test('Tracing ranks natural 小, 让 and 七 above the bundled alternatives',a=>{
+  // Pen paths reconstructed from the reported Tracing screenshots.
+  const examples={
+    小: [
+      [[116,40],[118,53],[118,67],[119,85],[119,105],[118,123],[115,154],[110,175],[102,175],[94,171],[83,162],[72,150]],
+      [[75,91],[65,99],[58,106],[53,118]],
+      [[157,84],[171,95],[184,116],[189,125]]
+    ],
+    让: [
+      [[34,48],[41,47],[45,53],[51,73],[53,74]],
+      [[26,103],[35,105],[50,103],[63,100],[62,115],[51,148],[49,163],[49,191],[51,198],[54,202],[57,201],[68,184],[73,176]],
+      [[138,53],[146,64],[146,89],[145,124],[145,157],[152,164]],
+      [[148,89],[163,88],[178,88],[186,89],[195,94],[195,96],[189,99]],
+      [[102,175],[149,175],[183,173],[194,173],[201,175],[208,182]]
+    ],
+    七: [
+      [[34,113],[58,107],[85,99],[112,90],[143,83],[161,80],[171,80],[175,79],[175,76]],
+      [[80,44],[73,57],[62,78],[58,92],[56,117],[56,143],[59,157],[66,167],[76,175],[88,178],[101,179],[128,179],[166,176],[172,168],[165,156],[160,146],[155,134],[155,121]]
+    ]
+  };
+  const recognize=(ink,word)=>a.run(`QuizHandwriting.recognizes(${JSON.stringify(ink)},${JSON.stringify(word)},fixtureCharacters)`);
+  a.w.fixtureCharacters=characters;
+  for(const [word,ink] of Object.entries(examples))assert.equal(recognize(ink,word),true,word);
+  for(const [drawn,target] of [['十','七'],['上','让'],['水','小'],['少','小'],['根','很'],['日','目'],['已','己']]){
+    assert.equal(recognize(handwriting(drawn),target),false,drawn+' vs '+target);
+  }
+  assert.equal(recognize([[[34,33],[202,209]],[[32,210],[210,32]]],'七'),false);
+});
 await test('Realistic 很 with joined strokes passes while lookalike characters are rejected',a=>{
   // Approximate the freehand example from the Tracing feedback screenshot.
   const ink=[
