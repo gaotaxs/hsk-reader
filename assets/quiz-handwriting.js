@@ -194,7 +194,7 @@ const QuizHandwriting = (() => {
     }
     const expected = score(character, bundle[character].medians);
     if (!Number.isFinite(expected)) return strictMatch;
-    const limit = expected + (strictMatch ? -0.007 : 0.008);
+    const limit = expected + (strictMatch ? -Math.min(0.012, expected / 3) : 0.008);
     for (const [other, {medians}] of Object.entries(bundle)) {
       if (other === character || Math.abs(medians.length - ink.length) > 2) continue;
       if (score(other, medians) < limit) return false;
