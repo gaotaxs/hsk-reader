@@ -23,7 +23,7 @@
       <div class="topbar">
         <div class="header-brand"><img class="brand-mark header-brand-mark" src="./icon-192.png" alt="" aria-hidden="true"><div class="header-identity">
           <span id="pageKicker" hidden></span>
-          <div class="header-title-row sr-only"><h1 id="pageTitle">Reader</h1></div>
+          <div class="header-title-row"><h1 id="pageTitle">Reader</h1></div>
         </div></div>
         <div class="header-actions"><span id="connectionStatus" class="connection-status" role="status" hidden>Offline</span><button id="updateAppBtn" class="primary" hidden title="Reload to install the downloaded app update">Reload to update</button>
           <div class="header-progress-wrap" title="Progress across 601 vocabulary entries"><span class="progress-orbit" id="headerProgressOrbit" aria-hidden="true"></span><span id="headerProgress" class="header-progress small" aria-live="polite"></span></div>
@@ -47,6 +47,7 @@
         <button class="side-tab" data-tab="workspace" title="Workspace"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9M14 3v7h7M14 3l7 7M7 14h10M7 17h6"/></svg></span><span class="side-label">Workspace</span></button>
         <button class="side-tab" data-tab="vocab" title="Vocab"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4Zm0 12h16M8 8h8m-8 4h5"/></svg></span><span class="side-label">Vocab</span></button>
         <button class="side-tab" data-tab="quiz" title="Quiz"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="16" height="18" rx="2"/><path d="M9 4V2H3v17m6-10 1 1 2-2m2 1h3m-8 6 1 1 2-2m2 1h3"/></svg></span><span class="side-label">Quiz</span></button>
+        <button class="side-tab" data-tab="tracing" title="Tracing"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 16-1 5 5-1L21 7l-4-4L4 16Zm10-10 4 4M12 21h9"/></svg></span><span class="side-label">Tracing</span></button>
         <button class="side-tab" data-tab="history" title="History"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><span class="side-label">History</span></button>
         <button class="side-tab" data-tab="settings" title="Settings"><span class="side-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></svg></span><span class="side-label">Settings</span></button>
       </nav>
@@ -132,13 +133,6 @@
     </section>
 
     <section id="vocab" class="panel">
-      <div class="card" style="margin-bottom:18px">
-        <div class="vocab-toolbar-grid">
-          <div><label for="vocabLevel">HSK</label><select id="vocabLevel"><option value="all">All</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
-          <div><label for="vocabStatus">Status</label><select id="vocabStatus"><option value="all">All</option><option value="new">New</option><option value="learning">Learning</option><option value="known">Known</option></select></div>
-          <div><label for="vocabSort">Sort</label><select id="vocabSort"><option value="level">HSK level</option><option value="pinyin">Pinyin</option><option value="word">Chinese</option></select></div>
-        </div>
-      </div>
       <div class="card vocab-browser-card">
         <div class="vocab-browser-head">
           <div class="vocab-browser-title"><strong>Vocabulary browser</strong><span class="vocab-count-inline" id="vocabCount"></span><button type="button" id="vocabStudyResultsBtn" class="mini-primary">Study results</button></div>
@@ -146,6 +140,11 @@
             <span class="search-icon">⌕</span>
             <input id="vocabSearch" type="search" aria-label="Search vocabulary by Chinese, pinyin or English" placeholder="Chinese, pinyin, English">
             <button id="clearVocabSearchBtn" class="search-clear" title="Clear search" aria-label="Clear search">✕</button>
+          </div>
+          <div class="vocab-toolbar-grid">
+            <div><label for="vocabLevel">HSK</label><select id="vocabLevel"><option value="all">All</option><option value="2">HSK 2</option><option value="3">HSK 3</option></select></div>
+            <div><label for="vocabStatus">Status</label><select id="vocabStatus"><option value="all">All</option><option value="new">New</option><option value="learning">Learning</option><option value="known">Known</option></select></div>
+            <div><label for="vocabSort">Sort</label><select id="vocabSort"><option value="level">HSK level</option><option value="pinyin">Pinyin</option><option value="word">Chinese</option></select></div>
           </div>
         </div>
         <div class="vocab-scroll-wrap">
@@ -179,7 +178,7 @@
           <div class="flashcard" aria-describedby="swipeInstructions" id="flashcardBox" tabindex="0" role="button" aria-label="Flashcard, tap to reveal or hide both pinyin and English"><span class="swipe-feedback" aria-hidden="true"></span><div><div class="flash-front" lang="zh-Hans" id="flashFront">词</div><div class="flash-back" id="flashBack" hidden></div><span class="flash-tap-hint small">Tap to reveal / hide</span></div></div>
           <button id="flashNextArrowBtn" class="flash-nav-arrow right" title="Next flashcard" aria-label="Next flashcard"><span class="flash-nav-glyph">›</span></button>
         </div>
-        <p class="small swipe-instructions" id="swipeInstructions">Swipe or drag: ← Revisit · ↑ Learning · → Known</p><div class="swipe-actions"><button id="flashRevisitBtn">← Not known / revisit</button><button class="learn" id="flashLearningBtn">↑ Learning</button><button class="good" id="flashKnownBtn">Known →</button></div><p id="swipeStatus" class="small" role="status" aria-live="polite"></p>
+        <p class="small swipe-instructions" id="swipeInstructions">Swipe or drag: ← Revisit · ↑ Learning · → Known</p><div class="swipe-actions"><button id="flashRevisitBtn">← Revisit</button><button class="learn" id="flashLearningBtn">↑ Learning</button><button class="good" id="flashKnownBtn">Known →</button></div><p id="swipeStatus" class="small" role="status" aria-live="polite"></p>
         <div class="review-rating" id="reviewRating" hidden><p class="small" id="reviewRatingHint">How well did you recall this word?</p><div class="row"><button id="rateAgainBtn">Again <small>10 min</small></button><button id="rateGoodBtn" class="primary">Remembered <small id="nextReviewLabel">1 day</small></button></div></div>
         <div class="flash-deck-progress" aria-hidden="true"><span id="flashDeckProgressFill"></span></div>
         <div class="flash-meta-row">
@@ -188,7 +187,7 @@
             <button id="flashTogglePinyinBtn">Pinyin</button>
             <button id="flashToggleEnglishBtn">Eng</button>
             <button id="flashStrokeToggleBtn">Stroke order</button>
-            <button id="flashSpeakBtn">🔊 Speak</button>
+            <button id="flashSpeakBtn">Speak</button>
           </div>
         </div>
         <dialog class="flash-stroke-shell" id="flashStrokeShell" aria-labelledby="flashStrokeTitle" aria-hidden="true" inert>
@@ -212,14 +211,16 @@
           <button class="primary" id="startQuizBtn">Start Quiz</button>
         </div>
       </div>
-      <div class="card quiz-main-card">
+      <div class="card quiz-main-card" aria-describedby="quizKeyHint">
         <div class="quiz-main-head"><strong>Quiz</strong><span id="quizScore" class="small">Score: 0 / 0</span></div>
         <div id="quizPrompt" class="quiz-idle" style="font-size:42px;margin:20px 0">Choose a deck and start your quiz</div>
         <div id="quizOptions"></div>
         <div class="quiz-answer-row"><button id="quizPrevBtn" class="icon-button" aria-label="Previous question" disabled>←</button><div id="quizFeedback" role="status" aria-live="polite"></div><button id="quizDontKnow" hidden>Don’t know</button><button id="quizNextBtn" class="icon-button primary" aria-label="Next question" title="Next question" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></div><button id="quizRetryMissedBtn" hidden>Retry missed words</button>
-        <p class="small quiz-key-hint">Keyboard: 1–4 to answer · Enter for next. Swipe left for next after answering; right to review the previous result.</p>
+        <p class="small quiz-key-hint" id="quizKeyHint">Keyboard: 1–4 to answer · Enter for next. Swipe left for next after answering; right to review the previous result.</p>
       </div></div>
     </section>
+
+    <section id="tracing" class="panel" aria-label="Tracing practice"></section>
 
     <section id="history" class="panel history-panel" aria-label="Quiz history">
       <div id="quizHistoryList"></div><div id="quizHistoryDetail" hidden></div>
@@ -265,8 +266,8 @@
           
           
           <details class="shortcuts-help"><summary>Keyboard shortcuts and tips</summary>
-            <p class="small"><strong>Global:</strong> Alt+1–7 change tabs, / focuses vocabulary search, Esc closes word popup.</p>
-            <p class="small"><strong>Reader popup:</strong> left/right arrows move among unknown words. <strong>Flashcards:</strong> left/right arrows change cards, Space flips, K marks known, L marks learning. <strong>Quiz:</strong> 1–4 answer, Enter advances.</p>
+            <p class="small"><strong>Global:</strong> Alt+1–9 change tabs, / focuses vocabulary search, Esc closes word popup.</p>
+            <p class="small"><strong>Reader popup:</strong> left/right arrows move among unknown words. <strong>Flashcards:</strong> left/right arrows change cards, Space flips, K marks known, L marks learning. <strong>Quiz:</strong> 1–4 answer, Enter advances. Swipe left after answering to advance, or right to review the previous answer.</p>
           </details>
         </div></details>
       </div>
@@ -304,6 +305,7 @@
   <script src="./assets/sentence-route.js" defer></script>
   <script src="./assets/app.js" defer></script>
   <script src="./assets/quiz-handwriting.js" defer></script>
+  <script src="./assets/tracing-practice.js" defer></script>
   <script src="./assets/reading-studio.js" defer></script>
   <script src="./assets/release.js" defer></script>
   <script src="./assets/pwa.js" defer></script>

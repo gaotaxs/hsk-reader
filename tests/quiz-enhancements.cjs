@@ -174,6 +174,42 @@ await test('History escapes definition text and preserves trace results in a los
 await test('Reset and import clear stale standalone navigation controls and history is study data',a=>{a.run(`startQuiz([resolveEntry('我'),resolveEntry('你')])`);a.$('quizDontKnow').click();assert.equal(a.$('quizPrevBtn').disabled,false);a.run('clearTransientStudy()');assert.equal(a.$('quizPrevBtn').disabled,true);assert.equal(a.$('quizDontKnow').hidden,true);assert.equal(a.$('quizHistoryDetail').hidden,true);a.run('resetStudyProgress()');assert.equal(a.run('extras.quizHistory.length'),0);});
 await test('Five-question Mixed keeps both sentence building and tracing when eligible',a=>{custom(a);start(a,{type:'mixed',questions:5,order:true});const qs=state(a).practice.questions;assert.equal(qs.length,5);assert.ok(qs.some(q=>q.kind==='order'));assert.ok(qs.some(q=>q.kind==='writing'));});
 await test('Confirmed replacement from Unknown Quiz retains the requested manual scope',a=>{start(a);recognition(a);a.$('readingQuizLeave').click();a.$('readingUnknownQuiz').click();a.$('readingQuizRestart').click();assert.match(a.$('readingPracticeBody').textContent,/Unknown Quiz/);a.$('readingSetupType').value='zh-meaning';a.$('readingQuizStart').click();assert.equal(state(a).practice.scope,'unknown');});
+await test('Tracing grades random single characters, retains ink and leaves existing study records alone',async a=>{
+  useCharacterData(a);
+  start(a);
+  recognition(a);
+  a.$('readingQuizLeave').click();
+  const before=state(a).practice;
+  click(a,'[data-tab=tracing]');
+  const panel=a.$('tracing'),pinyin=panel.querySelector('.tracing-prompt p').textContent;
+  const meaning=panel.querySelector('.tracing-prompt p+p').textContent;
+  const entry=a.run(`VOCAB.find(v=>v.word.length===1&&v.pinyin===${JSON.stringify(pinyin)}&&v.english===${JSON.stringify(meaning)})`);
+  assert.ok(entry);
+  assert.equal(panel.querySelectorAll('svg path').length,0);
+  assert.equal(panel.querySelector('[data-ink-check]').disabled,true);
+  assert.ok(!panel.textContent.includes(entry.word));
+  const pad=panel.querySelector('svg');
+  pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+  for(const stroke of handwriting(entry.word))stroke.forEach(([x,y],i)=>{
+    const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+    Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+    pad.dispatchEvent(event);
+  });
+  click(a,'[data-tab=reader]');
+  click(a,'[data-tab=tracing]');
+  assert.ok(panel.querySelector('svg path'));
+  click(a,'#tracing [data-ink-check]');
+  await settle();
+  assert.match(panel.querySelector('.tracing-feedback').textContent,/Correct/);
+  assert.equal(panel.querySelector('.tracing-feedback strong').textContent,entry.word);
+  assert.match(panel.querySelector('.tracing-heading p').textContent,/1 \/ 1/);
+  assert.ok(panel.querySelector('svg path'));
+  a.$('tracingNext').click();
+  a.$('tracingSkip').click();
+  assert.notEqual(panel.querySelector('.tracing-feedback strong').textContent,entry.word);
+  assert.match(panel.querySelector('.tracing-feedback').textContent,/Skipped/);
+  assert.deepEqual(state(a).practice,before);
+});
 await test('A delayed close event cannot cancel a just-reopened tracing quiz',async a=>{
   useCharacterData(a);start(a,{type:'writing'});a.$('readingQuizLeave').click();a.$('readingResumePractice').click();
   a.$('readingPracticeDialog').dispatchEvent(new a.w.Event('close'));

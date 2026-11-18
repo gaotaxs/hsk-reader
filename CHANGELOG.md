@@ -1,3 +1,10 @@
+## 1.18.4
+
+- Added a standalone Tracing tab with random single-character prompts, a blank practice pad and a session score.
+- Enabled horizontal scrolling in the phone tab bar at its existing height.
+- Tightened the phone layouts for Reader, Quiz, Tracing and Flashcards. Matching controls use consistent sizes and alignment.
+- Grouped vocabulary search and filters in one card and simplified History and Settings spacing.
+
 ## 1.18.3
 
 - Reader handwriting quizzes require every character in the word. Each stroke must match a distinct reference stroke, with flexible stroke order and direction. Submitted ink remains visible when reviewing the question.
