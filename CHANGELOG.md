@@ -1,3 +1,7 @@
+## 1.18.7
+
+- Tracing ranks likely candidates for characters with seven or more strokes. Complex answers may differ by two pen strokes if the whole shape is a clear match.
+
 ## 1.18.6
 
 - Tracing compares short handwritten characters with other bundled characters before accepting a looser match.
