@@ -31,7 +31,7 @@
     const total = answeredCount + Number(!!gradedResult);
     const samples = extras.tracingStyles?.[question.word];
     const canTeach = result && !result.correct && !result.skipped && QuizHandwriting.canSaveSample(result.ink[0]);
-    const verdict = result ? result.skipped ? 'Skipped' : result.correct ? 'Correct' : 'Incorrect' : '';
+    const verdict = result ? result.skipped ? 'Skipped' : result.correct ? result.assisted ? 'Correct with help' : 'Correct' : 'Incorrect' : '';
     panel.innerHTML = `<article class="card tracing-card">
       <div class="tracing-heading">
         <h2>Tracing</h2>
@@ -48,14 +48,21 @@
         <div class="tracing-feedback" role="status" tabindex="-1">${result ?
           `<span class="${result.correct ? 'tracing-correct' : ''}">${verdict}</span><strong lang="zh-Hans">${escapeHtml(question.word)}</strong>` :
           '<p class="small">Write the character from memory.</p>'}</div>
+        ${result?.readAs && !result.correct ? `<p class="small tracing-read-as">Read as <span lang="zh-Hans">${escapeHtml(result.readAs)}</span></p>` : ''}
         <p class="small tracing-error" role="status" data-ink-status></p>
         <div class="tracing-actions${result ? '' : ' tracing-entry-actions'}">${result ?
           `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary">Next character</button>` :
-          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-guess>Guess</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
-        ${result ? '' : '<section class="tracing-guesses" aria-label="Handwriting guesses" hidden><p class="small" tabindex="-1">Pick the character you wrote.</p><div class="tracing-guess-list"></div></section>'}
+          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+        ${result ? '' : `<section class="tracing-guesses" aria-label="Handwriting choices" hidden>
+          <p class="small" tabindex="-1">Which character did you write?</p>
+          <div class="tracing-guess-list"></div>
+          <button type="button" id="tracingNone">None of these</button>
+        </section>
+        <div class="tracing-actions tracing-style-actions" id="tracingUnclear" hidden>
+          <button type="button" id="tracingTeachUnclear">Save my writing</button>
+        </div>` }
         ${canTeach || (result && samples?.length) ? `<div class="tracing-actions tracing-style-actions">
-          ${result ? '' : '<section class="tracing-guesses" aria-label="Handwriting guesses" hidden><p class="small" tabindex="-1">Pick the character you wrote.</p><div class="tracing-guess-list"></div></section>'}
-        ${canTeach ? '<button id="tracingTeach" type="button">Save my writing</button>' : ''}
+          ${canTeach ? '<button id="tracingTeach" type="button">Save my writing</button>' : ''}
           ${samples?.length ? '<button id="tracingForget" type="button">Forget saved writing</button>' : ''}
         </div>` : ''}
       </div>
@@ -65,44 +72,62 @@
     const valid = () => panel.firstElementChild === card && current === question && !result;
     const guesses = card.querySelector('.tracing-guesses');
     const status = card.querySelector('[data-ink-status]');
+    const unclear = $('tracingUnclear');
+    function teachSample(ink) {
+      if (!confirm(`Is this your handwritten form of ${question.word}? This will count as correct and teach Tracing to accept similar writing next time.`)) return;
+      const next = [...(samples || []), ink[0]].slice(-3);
+      if (saveStyle(question.word, next)) finish(true, ink);
+    }
+    function unreadable(ink) {
+      guesses.hidden = true;
+      unclear.hidden = !QuizHandwriting.canSaveSample(ink[0]);
+      status.textContent = 'Couldn’t read that. Add ink or clear the pad and try again.';
+      $('tracingTeachUnclear').onclick = () => teachSample(ink);
+    }
     const readInk = QuizHandwriting.mount($('tracingInput'), {
       savedInk: result?.ink,
       valid,
-      onEdit: () => { if (guesses) guesses.hidden = true; },
-      guess: async ink => {
+      onEdit: () => {
+        if (guesses) guesses.hidden = true;
+        if (unclear) unclear.hidden = true;
+      },
+      check: async ink => {
         const bundle = await loadCharacterBundle();
         if (!valid()) return;
-        const choices = QuizHandwriting.guessCharacters(ink[0], bundle, extras.tracingStyles);
-        guesses.hidden = !choices.length;
-        status.textContent = choices.length ? '' : 'No clear guess yet. Keep writing or try again.';
+        const ranked = QuizHandwriting.rankCharacters(ink[0], bundle, extras.tracingStyles);
+        const savedInk = QuizHandwriting.snapshot(ink);
+        const [first, second] = ranked;
+        if (!first) return unreadable(savedInk);
+        const clearLead = !second || second.score - first.score >= 0.014;
+        if (clearLead && first.score <= 0.055 &&
+            (QuizHandwriting.matchesPersonal(ink[0], first.character, extras.tracingStyles) ||
+              QuizHandwriting.recognizes(ink[0], first.character, bundle))) {
+          finish(first.character === question.word, savedInk, {readAs: first.character});
+          return;
+        }
+        const choices = ranked.filter(entry => entry.score - first.score <= 0.045);
+        if (choices.length < 2) return unreadable(savedInk);
+        guesses.hidden = false;
+        unclear.hidden = true;
+        status.textContent = '';
         const list = guesses.querySelector('.tracing-guess-list');
-        list.replaceChildren(...choices.map(character => {
+        list.replaceChildren(...choices.map(({character}) => {
           const option = document.createElement('button');
           option.type = 'button';
           option.lang = 'zh-Hans';
           option.textContent = character;
-          option.onclick = () => finish(character === question.word, QuizHandwriting.snapshot(ink));
+          option.onclick = () => finish(character === question.word, savedInk, {readAs: character, assisted: true});
           return option;
         }));
-        if (choices.length) {
-          guesses.querySelector('p').focus({preventScroll: true});
-          guesses.scrollIntoView({block: 'nearest'});
-        }
-      },
-      check: async ink => {
-        const personalMatch = QuizHandwriting.matchesPersonal(ink[0], question.word, extras.tracingStyles);
-        const correct = personalMatch || QuizHandwriting.recognizes(ink[0], question.word, await loadCharacterBundle());
-        if (valid()) finish(correct, QuizHandwriting.snapshot(ink));
+        $('tracingNone').onclick = () => unreadable(savedInk);
+        guesses.querySelector('p').focus({preventScroll: true});
+        guesses.scrollIntoView({block: 'nearest'});
       }
     });
 
     if (result) {
       const teach = $('tracingTeach');
-      if (teach) teach.onclick = () => {
-        if (!confirm(`Is this your handwritten form of ${question.word}? This will count as correct and teach Tracing to accept similar writing next time.`)) return;
-        const next = [...(samples || []), result.ink[0]].slice(-3);
-        if (saveStyle(question.word, next)) finish(true, result.ink);
-      };
+      if (teach) teach.onclick = () => teachSample(result.ink);
       const forget = $('tracingForget');
       if (forget) forget.onclick = () => {
         if (confirm(`Forget your saved writing for ${question.word}?`) && saveStyle(question.word, [])) {
@@ -121,7 +146,7 @@
         $('tracingPrompt').focus({preventScroll: true});
       };
     } else {
-      $('tracingSkip').onclick = () => finish(false, readInk(), true);
+      $('tracingSkip').onclick = () => finish(false, readInk(), {skipped: true});
     }
   }
 
@@ -138,8 +163,8 @@
     return false;
   }
 
-  function finish(correct, ink, skipped = false) {
-    result = gradedResult = {correct, ink, skipped};
+  function finish(correct, ink, {skipped = false, readAs, assisted = false} = {}) {
+    result = gradedResult = {correct, ink, skipped, readAs, assisted};
     render();
     if (panel.classList.contains('active')) panel.querySelector('.tracing-feedback').focus({preventScroll: true});
   }

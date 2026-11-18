@@ -250,7 +250,7 @@ const QuizHandwriting = (() => {
   }
 
   // Candidate mode ranks the supplied ink without knowing the quiz answer.
-  function guessCharacters(ink, bundle, styles = {}) {
+  function rankCharacters(ink, bundle, styles = {}) {
     const drawing = normalize(ink, 26);
     if (!drawing) return [];
     const drawn = summarize(drawing);
@@ -277,9 +277,9 @@ const QuizHandwriting = (() => {
         const personal = normalize(inkSample, 26);
         if (personal) best = Math.min(best, score(summarize(personal), inkSample.length));
       }
-      if (best <= 0.17) ranked.push({character, score: best});
+      if (best <= 0.13) ranked.push({character, score: best});
     }
-    return ranked.sort((a, b) => a.score - b.score).slice(0, 5).map(item => item.character);
+    return ranked.sort((a, b) => a.score - b.score).slice(0, 3);
   }
 
   function canSaveSample(ink) {
@@ -314,7 +314,7 @@ const QuizHandwriting = (() => {
     return 'M' + stroke.map(p => p.join(' ')).join(' L') + (stroke.length === 1 ? ' l0.01 0' : '');
   }
 
-  function mount(host, {check, guess, onEdit, valid, savedInk}) {
+  function mount(host, {check, onEdit, valid, savedInk}) {
     const pads = [...host.querySelectorAll('svg')];
     const groups = pads.map(pad => pad.querySelector('g'));
     const appendStroke = (group, stroke) => {
@@ -329,7 +329,6 @@ const QuizHandwriting = (() => {
     }
 
     const undo = host.querySelector('[data-ink-undo]');
-    const guessButton = host.querySelector('[data-ink-guess]');
     const clear = host.querySelector('[data-ink-clear]'), submit = host.querySelector('[data-ink-check]');
     const status = host.querySelector('[data-ink-status]') || host.querySelector('[role="status"]');
     const ink = pads.map(() => []), history = [];
@@ -338,7 +337,6 @@ const QuizHandwriting = (() => {
       clear.disabled = busy || active !== null || !ink.some(strokes => strokes.length);
       if (undo) undo.disabled = busy || active !== null || !history.length;
       submit.disabled = busy || active !== null || !ink.every(strokes => strokes.length);
-      if (guessButton) guessButton.disabled = submit.disabled;
     };
     function add(event, pad) {
       const rect = pad.getBoundingClientRect();
@@ -396,12 +394,12 @@ const QuizHandwriting = (() => {
       status.textContent = '';
       setControls();
     };
-    const run = action => async () => {
+    submit.onclick = async () => {
       if (submit.disabled) return;
       busy = true;
       setControls();
       try {
-        await action(ink);
+        await check(ink);
       } catch {
         if (valid()) status.textContent = 'Writing data unavailable. Try Check again.';
       } finally {
@@ -409,11 +407,9 @@ const QuizHandwriting = (() => {
         if (valid()) setControls();
       }
     };
-    submit.onclick = run(check);
-    if (guessButton && guess) guessButton.onclick = run(guess);
     setControls();
     return () => snapshot(ink);
   }
 
-  return {additionalCharacters, matches, recognizes, guessCharacters, canSaveSample, matchesPersonal, mount, snapshot};
+  return {additionalCharacters, matches, recognizes, rankCharacters, canSaveSample, matchesPersonal, mount, snapshot};
 })();

@@ -254,6 +254,7 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   recognition(a);
   a.$('readingQuizLeave').click();
   const before=state(a).practice;
+  a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
   click(a,'[data-tab=tracing]');
   const panel=a.$('tracing'),pinyin=panel.querySelector('.tracing-prompt p').textContent;
   const meaning=panel.querySelector('.tracing-prompt p+p').textContent;
@@ -281,10 +282,10 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   drawTrace([[[75,70],[78,75]]]);
   click(a,'#tracing [data-ink-check]');
   await settle();
-  assert.match(panel.querySelector('.tracing-feedback').textContent,/Incorrect/);
-  a.$('tracingRetry').click();
-  assert.equal(panel.querySelectorAll('svg path').length,0);
-  assert.match(panel.querySelector('.tracing-heading p').textContent,/0 \/ 1/);
+  assert.match(panel.querySelector('[data-ink-status]').textContent,/Couldn’t read/);
+  assert.equal(panel.querySelectorAll('svg path').length,1);
+  assert.match(panel.querySelector('.tracing-heading p').textContent,/0 \/ 0/);
+  click(a,'#tracing [data-ink-clear]');
   drawTrace(handwriting(entry.word));
   click(a,'[data-tab=reader]');
   click(a,'[data-tab=tracing]');
@@ -331,12 +332,14 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
     return instance.$('tracingInput').querySelector('.tracing-feedback').firstElementChild.textContent;
   }
   setup(a);
-  assert.equal(await check(a,shorthand),'Incorrect');
+  await check(a,shorthand);
+  assert.equal(a.$('tracingInput').querySelector('.tracing-guesses').hidden,false);
+  a.$('tracingNone').click();
   a.w.confirm=()=>false;
-  a.$('tracingTeach').click();
+  a.$('tracingTeachUnclear').click();
   assert.equal(a.run("Boolean(extras.tracingStyles?.['云'])"),false);
   a.w.confirm=()=>true;
-  a.$('tracingTeach').click();
+  a.$('tracingTeachUnclear').click();
   assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
   const saved=a.run("JSON.stringify(extras.tracingStyles['云'])");
   const b=boot(a.snapshot());
@@ -353,37 +356,41 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
   assert.equal(a.run("QuizHandwriting.matchesPersonal(shorthand,'二',extras.tracingStyles)"),false);
   assert.equal(a.run("QuizHandwriting.matchesPersonal([[[30,30],[204,201]]],'云',extras.tracingStyles)"),false);
 });
-await test('Tracing guesses from ink independently of the prompt and scores only after selection',async a=>{
+await test('Tracing Check grades clear reads and asks for help on close calls',async a=>{
   useCharacterData(a);
   a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
   click(a,'[data-tab=tracing]');
   const pad=a.$('tracingInput').querySelector('svg');
   pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
-  function write(word){
+  function write(word,target=pad){
     for(const stroke of handwriting(word))stroke.forEach(([x,y],i)=>{
       const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
       Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
-      pad.dispatchEvent(event);
+      target.dispatchEvent(event);
     });
   }
-  const list=a.$('tracingInput').querySelector('.tracing-guesses');
-  assert.ok(a.$('tracingInput').querySelector('[data-ink-guess]').disabled);
+  assert.equal(a.$('tracingInput').querySelector('[data-ink-guess]'),null);
   write('小');
-  click(a,'#tracing [data-ink-guess]');
+  click(a,'#tracing [data-ink-check]');
   await settle();
-  assert.equal(list.hidden,false);
-  assert.equal(list.querySelector('button').textContent,'小');
-  assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/0 \/ 0/);
-  click(a,'#tracing [data-ink-undo]');
-  assert.ok(list.hidden);
-  click(a,'#tracing [data-ink-clear]');
-  write('云');
-  click(a,'#tracing [data-ink-guess]');
+  assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Incorrect/);
+  assert.match(a.$('tracing').querySelector('.tracing-read-as').textContent,/小/);
+  a.$('tracingRetry').click();
+  const freshPad=a.$('tracingInput').querySelector('svg');
+  freshPad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+  write('云',freshPad);
+  const rank=a.run('QuizHandwriting.rankCharacters');
+  a.run(`QuizHandwriting.rankCharacters = () => [{character:'云',score:0.06},{character:'天',score:0.062}]`);
+  click(a,'#tracing [data-ink-check]');
   await settle();
-  assert.equal(list.querySelector('button').textContent,'云');
-  list.querySelector('button').click();
+  const newList=a.$('tracingInput').querySelector('.tracing-guesses');
+  assert.equal(newList.hidden,false);
+  assert.equal(newList.querySelector('button').textContent,'云');
+  assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/0 \/ 1/);
+  newList.querySelector('button').click();
   assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
-  assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Correct/);
+  assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Correct with help/);
+  a.run('QuizHandwriting').rankCharacters=rank;
 });
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
