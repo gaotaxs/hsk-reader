@@ -1,6 +1,6 @@
 /* One release manifest shared by the page and its service worker. */
 var HSK_RELEASE=Object.freeze({
-  "version": "1.18.4",
+  "version": "1.18.5",
   "assets": [
     "./index.html",
     "./assets/release.js",

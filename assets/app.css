@@ -684,6 +684,7 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
     width:min(100%, var(--tracing-pad-width));
     margin-top:8px;
   }
+  .tracing-card .tracing-actions button { min-width:0; padding-inline:8px; }
 
   #flashcards .flash-top-card { padding: 0 12px; margin:0 0 8px; }
   #flashOptionsToggle { display:flex; align-items:center; justify-content:space-between; }

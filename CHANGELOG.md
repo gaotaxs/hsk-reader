@@ -1,3 +1,8 @@
+## 1.18.5
+
+- Accept one joined or split stroke in complex characters when the whole shape matches.
+- Add stroke-level Undo and same-character Retry in Tracing.
+
 ## 1.18.4
 
 - Added a standalone Tracing tab with random single-character prompts, a blank practice pad and a session score.
