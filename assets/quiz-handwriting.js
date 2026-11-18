@@ -101,7 +101,7 @@ const QuizHandwriting = (() => {
     }
 
     const clear = host.querySelector('[data-ink-clear]'), submit = host.querySelector('[data-ink-check]');
-    const status = host.querySelector('[role="status"]');
+    const status = host.querySelector('[data-ink-status]') || host.querySelector('[role="status"]');
     const ink = pads.map(() => []);
     let active = null, busy = false;
     const setControls = () => {
@@ -167,6 +167,7 @@ const QuizHandwriting = (() => {
       }
     };
     setControls();
+    return () => snapshot(ink);
   }
 
   return {additionalCharacters, matches, mount, snapshot};

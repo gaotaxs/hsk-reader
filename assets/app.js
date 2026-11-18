@@ -1147,8 +1147,8 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){window.refreshReadingStudio?.();renderQuizHistory();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','lessons','flashcards','workspace','vocab','quiz','history','settings'];
-  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
+  const APP_TAB_NAMES=['reader','lessons','flashcards','workspace','vocab','quiz','history','settings','tracing'];
+  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],tracing:['Tracing','HANDWRITING PRACTICE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
     document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
@@ -1158,6 +1158,8 @@
     document.body.classList.remove('focus-reading');$('focusReaderBtn').setAttribute('aria-pressed','false');$('focusReaderBtn').textContent='Focus';
     stopVoice();
     if(name==='reader')window.refreshReadingStudio?.();if(name==='history'){historySelectedId=null;renderQuizHistory();}
+    if(name==='tracing')window.openTracingPractice?.();
+    if(matchMedia('(max-width: 600px)').matches)document.querySelector('.side-tab.active')?.scrollIntoView({block:'nearest',inline:'nearest'});
     if(name==='workspace'&&compactEditor())showPassageEditor(true);
     if(name!=='flashcards'&&flashStrokeOpen)toggleFlashStrokePanel(false);
     writeJSON(STORE.lastTab,name);
@@ -1394,7 +1396,7 @@
   };
   function clearTransientStudy(){
     clearTimeout(readerInputTimer);++translationRequestId;stopVoice();closeWordDialog();toggleFlashStrokePanel(false);
-    window.onStudyDataReplaced?.();for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
+    window.onStudyDataReplaced?.();window.resetTracingPractice?.();for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
     undoneReaderText=null;$('undoClearBtn').hidden=true;$('translationBox').hidden=true;$('jsonBox').value='';
     quiz={score:0,total:0,current:null,locked:false,max:0,deck:[],index:0,currentDir:'zh-en',missed:[]};
     $('quizPrevBtn').disabled=true;$('quizDontKnow').hidden=true;historySelectedId=null;renderQuizHistory();$('quizOptions').innerHTML='';$('quizFeedback').textContent='';$('quizNextBtn').disabled=true;$('quizRetryMissedBtn').hidden=true;$('quizPrompt').textContent='Press Start Quiz';$('quizPrompt').classList.add('quiz-idle');renderQuizScore();
@@ -1430,7 +1432,7 @@
   document.addEventListener('keydown',e=>{
     if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open||$('readingJumpDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
-    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-8]$/.test(e.key)){
+    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-9]$/.test(e.key)){
       e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
     }
     const tag=document.activeElement?.tagName;

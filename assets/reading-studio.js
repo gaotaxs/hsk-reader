@@ -65,7 +65,25 @@ const ReadingStudio=(()=>{
     function solve(from,lines){if(!lines)return from===widths.length?{cost:0,ends:[]}:null;const key=from+':'+lines;if(memo.has(key))return memo.get(key);let best=null,width=0;for(let end=from+1;end<=widths.length-lines+1;end++){width+=widths[end-1];if(width>limit&&end>from+1)break;const tail=solve(end,lines-1);if(tail){const cost=(width-target)**2+tail.cost;if(!best||cost<best.cost)best={cost,ends:[end,...tail.ends]};}}memo.set(key,best);return best;}return solve(0,count)?.ends||greedy;
   }
   function layoutSentences(){const canvas=$('sentenceCanvas');if(!canvas.clientWidth)return;for(const p of canvas.querySelectorAll('.sentence-paragraph')){const units=[...p.querySelectorAll('.sentence-unit')];if(!units.length)continue;const measure=document.createElement('span');measure.className='sentence-line';measure.style.width='max-content';measure.append(...units);p.replaceChildren(measure);for(const token of p.querySelectorAll('.sentence-token')){const word=token.querySelector('.reading-word-button');if(!word)continue;word.style.gridTemplateColumns=`repeat(${word.children.length},1em)`;for(const hint of token.querySelectorAll('.reading-pinyin-toggle span')){hint.style.transform='';const width=hint.scrollWidth||hint.getBoundingClientRect().width,available=parseFloat(getComputedStyle(word).fontSize)-2;if(width>available)hint.style.transform=`scaleX(${available/width})`;}}const widths=units.map(el=>{const css=getComputedStyle(el);return el.getBoundingClientRect().width+parseFloat(css.marginLeft)+parseFloat(css.marginRight);});const ends=balancedBreaks(widths,p.clientWidth-2);const rowWidth=Math.floor(p.clientWidth-2);p.replaceChildren();let start=0;for(const end of ends){const row=document.createElement('span');row.className='sentence-line';row.style.width=rowWidth+'px';row.append(...units.slice(start,end));p.append(row);start=end;}}}
-  function fitSentence(){const canvas=$('sentenceCanvas');canvas.style.fontSize='';canvas.style.removeProperty('--reader-hint-size');canvas.style.minHeight='';canvas.parentElement.style.minHeight='';layoutSentences();if(data().mode!=='sentence'||!canvas.clientWidth)return;const p=canvas.querySelector('.sentence-paragraph');if(!p)return;const required=Math.ceil(Math.max(260,p.scrollHeight));canvas.style.minHeight=required+'px';const card=canvas.parentElement,style=getComputedStyle(card),other=[...card.children].filter(el=>el!==canvas&&!el.hidden&&getComputedStyle(el).display!=='none');const occupied=other.reduce((n,el)=>n+el.getBoundingClientRect().height,0)+Math.max(0,other.length)*parseFloat(style.rowGap||0)+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+2;card.style.minHeight=Math.ceil(required+occupied)+'px';}
+  function fitSentence(){
+    const canvas=$('sentenceCanvas'),card=canvas.parentElement,scrollTop=canvas.scrollTop;
+    canvas.style.fontSize='';
+    canvas.style.removeProperty('--reader-hint-size');
+    canvas.style.minHeight='';
+    card.style.minHeight='';
+    layoutSentences();
+    canvas.scrollTop=scrollTop;
+    if(data().mode!=='sentence'||!canvas.clientWidth||matchMedia('(max-width:720px)').matches)return;
+    const paragraph=canvas.querySelector('.sentence-paragraph');
+    if(!paragraph)return;
+    const required=Math.ceil(Math.max(260,paragraph.scrollHeight));
+    canvas.style.minHeight=required+'px';
+    const style=getComputedStyle(card);
+    const other=[...card.children].filter(el=>el!==canvas&&!el.hidden&&getComputedStyle(el).display!=='none');
+    const occupied=other.reduce((height,el)=>height+el.getBoundingClientRect().height,0)
+      +other.length*parseFloat(style.rowGap||0)+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+2;
+    card.style.minHeight=Math.ceil(required+occupied)+'px';
+  }
 
 
   function vocabWords(list=[current()]){return uniq(list.filter(Boolean).flatMap(s=>segments(s.zh,s.py).filter(x=>x.v).map(x=>definition(x.text,x.py)?.key||x.text)));}
@@ -75,7 +93,9 @@ const ReadingStudio=(()=>{
   function toggleStar(list,value){let a=data()[list];if(list==='starWords'&&value.includes('::')&&a.includes(value.split('::')[0])){const base=value.split('::')[0],variants=base==='长'?['长::cháng','长::zhǎng']:[base,value];a=uniq([...a.filter(w=>w!==base),...variants]);}data()[list]=a.includes(value)?a.filter(x=>x!==value):[...a,value];save();render();}
   function render(){
     if(!root)return;ensureRouteState();const r=data(),list=sentences(),index=position(),sentence=list[index];
-    const context=r.source+':'+(sentence?.id||'')+':'+r.mode;if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
+    const context=r.source+':'+(sentence?.id||'')+':'+r.mode,canvas=$('sentenceCanvas');
+    const scrollTop=context===hintContext?canvas.scrollTop:0;
+    if(context!==hintContext){hintContext=context;peek=false;revealedHints.clear();lastKnown=null;cancelDrag();}
     $('readingPeek').setAttribute('aria-pressed',String(peek));$('readingPeek').innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M453 806C489 751 526 677 541 631L610 663C593 707 553 779 517 832ZM164 839V638H41V568H164V349C113 333 66 319 28 309L47 235L164 274V16C164 1 159 -3 147 -3C135 -3 97 -3 55 -2C65 -23 74 -56 77 -76C139 -76 178 -73 203 -61C228 -49 237 -27 237 16V298L336 332L326 400L237 372V568H337V638H237V839ZM732 557V356H587V366V557ZM809 838C789 775 751 686 719 628H393V557H514V366V356H360V284H511C503 175 468 50 336 -31C353 -43 376 -68 387 -84C532 14 574 157 584 284H732V-76H805V284H951V356H805V557H928V628H794C824 682 858 751 888 811Z" transform="translate(1.3932827735644637 20.17984832069339) scale(0.021668472372697724 -0.021668472372697724)"/></svg>';$('readingPeek').setAttribute('aria-label',peek?'Hide pinyin':'Show pinyin');$('readingPeek').title=peek?'Hide pinyin':'Show pinyin';$('readingPeek').disabled=!sentence;
     updateGestureNotice();
     $('sentenceCanvas').dataset.mode=r.mode;
@@ -100,8 +120,9 @@ const ReadingStudio=(()=>{
     $('readingListen').disabled=!sentence;
     const saveSentence=$('readingStarSentence'),saved=r.starSentences.includes(sentence?.id);saveSentence.disabled=!sentence;saveSentence.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg>';saveSentence.setAttribute('aria-pressed',String(saved));saveSentence.setAttribute('aria-label',saved?'Unsave sentence':'Save sentence');saveSentence.title=saved?'Unsave sentence':'Save sentence';
     const visible=r.mode==='sentence'?[sentence].filter(Boolean):list.slice(Math.floor(index/10)*10,Math.floor(index/10)*10+10);
-    $('sentenceCanvas').innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
+    canvas.innerHTML=visible.length?visible.map(s=>`<div class="sentence-paragraph ${s.id===sentence?.id?'current-sentence':''}">${sentenceHTML(s)}</div>`).join(''):'<p class="small">Choose a reading track, save a sentence, or open Workspace to add your own text.</p>';
     fitSentence();
+    canvas.scrollTop=scrollTop;
     const trans=$('sentenceTranslation');trans.hidden=!sentence;
     $('readingTranslationText').hidden=!(translationOpen||r.pin);
     $('readingTranslationText').textContent=sentence?.en||'No sentence translation is bundled for your pasted text. Word meanings are available below; use the full-text translator in the text tools if needed.';
