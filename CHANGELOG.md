@@ -1,3 +1,7 @@
+## 1.18.10
+
+- Tracing uses one Check action. It grades clear matches immediately, prompts for a choice when recognition is uncertain, and leaves unreadable attempts unscored.
+
 ## 1.18.9
 
 - Add an optional Guess action to Tracing. It ranks likely characters from the drawing before scoring the selected candidate.
