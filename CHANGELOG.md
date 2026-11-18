@@ -1,3 +1,8 @@
+## 1.18.3
+
+- Reader handwriting quizzes require every character in the word. Each stroke must match a distinct reference stroke, with flexible stroke order and direction. Submitted ink remains visible when reviewing the question.
+- Reader quiz dialogs use matching icon buttons and center answer feedback between the navigation arrows.
+
 ## 1.18.0
 
 ## 1.18.2

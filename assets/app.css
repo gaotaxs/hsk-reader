@@ -389,22 +389,55 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 
 /* Reader quiz layout keeps the controls fixed as question content changes. */
 .reading-order-setting[hidden] { display: none; }
-.reading-practice-dialog:has(#readingPracticeBody[data-phase=quiz]) {
+#readingPracticeDialog {
+  --quiz-inset: 18px;
+  padding-inline: var(--quiz-inset);
+}
+#readingPracticeDialog:has(#readingPracticeBody[data-phase=quiz]) {
   padding-block-start: 12px;
 }
-.reading-practice-dialog:has(#readingPracticeBody[data-phase=quiz]) .reading-practice-close {
+#readingPracticeClose {
   top: 12px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
+  right: var(--quiz-inset);
 }
 .reading-quiz-actions {
   min-height: 44px;
-  padding-inline-end: 42px;
+  padding-inline-end: 52px;
 }
-.reading-quiz-actions button {
+.reading-quiz-actions button, #readingPracticeClose {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
   min-height: 44px;
-  white-space: nowrap;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  flex: none;
+}
+.reading-quiz-actions svg, #readingPracticeClose svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#readingPracticeClose svg {
+  stroke-width: 2.2;
+}
+.reading-practice-dialog .reading-resume-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 8px;
+}
+.reading-resume-footer button {
+  min-height: 44px;
+  padding: 8px 4px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 .reading-quiz-title {
   color: var(--muted);
@@ -424,13 +457,26 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 }
 #readingPracticeBody[data-phase=quiz] .reading-feedback {
   max-height: 50px;
+  text-align: center;
 }
 .quiz-writing-instruction {
   margin: 0 0 8px;
   text-align: center;
 }
+.quiz-writing-pads {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 104px), 1fr));
+  justify-content: center;
+  gap: 8px;
+  max-width: 520px;
+  margin-inline: auto;
+}
+.quiz-writing-pads.single-pad {
+  grid-template-columns: min(100%, clamp(120px, 26dvh, 220px));
+}
 #readingQuizTrace .quiz-trace-pad {
-  width: min(100%, clamp(120px, 26dvh, 220px));
+  width: 100%;
+  max-width: 220px;
   aspect-ratio: 1;
   display: block;
   margin: 0 auto;
@@ -446,7 +492,7 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 }
 .quiz-writing-actions button {
   min-height: 44px;
-  min-width: 72px;
+  width: 84px;
 }
 .quiz-writing-status {
   margin: 6px 0 0;
@@ -454,13 +500,11 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 }
 
 @media (max-width: 480px) {
-  .reading-practice-dialog:has(#readingPracticeBody[data-phase=quiz]) {
-    padding-inline: 14px;
-  }
-  .reading-practice-dialog:has(#readingPracticeBody[data-phase=quiz]) .reading-practice-close {
-    right: 10px;
-  }
+  #readingPracticeDialog { --quiz-inset: 14px; }
   #readingPracticeBody[data-phase=quiz] .reading-quiz-options.latin-options button {
     font-size: 16px;
   }
+}
+@media (min-width: 768px) and (min-height: 700px) {
+  #readingPracticeDialog { --quiz-inset: 28px; }
 }

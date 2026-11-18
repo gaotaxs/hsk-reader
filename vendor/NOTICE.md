@@ -17,6 +17,8 @@ Upstream provenance: Make Me a Hanzi, derived from fonts released by Arphic Tech
 
 Modification for this application: selected the 622 characters appearing in the supplied vocabulary, combined their unmodified stroke/median records into a character-keyed JSON object, and serialized compactly as `characters.json`. No stroke geometry was changed. The complete editable JSON source of this subset is included; this derived data remains under the Arphic Public License. The data licence does not relicense unrelated application code.
 
+The Reader quiz also bundles medians for the additional characters in the shipped sentence bank in `reader-character-medians.json`. These records use the same pinned archive and licence. Stroke paths are omitted from this supplement.
+
 ## Supplied materials
 
 The original vocabulary and three icon PNGs were supplied with the user's application. They are retained unchanged. No new licence is asserted over those user-supplied materials or the original application.

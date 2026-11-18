@@ -8,10 +8,12 @@ function start(a,{type='zh-meaning',questions=5,order=false,writing=true,unknown
 function recognition(a,correct=true){const p=state(a).practice,q=p.questions[p.q];assert.ok(!['order','writing'].includes(q.kind));click(a,`[data-reading-answer="${q.options.findIndex(o=>correct?o===q.word:o!==q.word)}"]`);}
 function drag(a,dx,dy=0,target='readingPracticeBody',cancel=false){const el=a.$(target);for(const [type,x,y] of [['pointerdown',170,160],['pointermove',170+dx,160+dy],[cancel?'pointercancel':'pointerup',170+dx,160+dy]]){const e=new a.w.Event(type,{bubbles:true,cancelable:true});Object.assign(e,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});el.dispatchEvent(e);}const now=a.w.Date.now();a.w.Date.now=()=>now+500;}
 const settle=()=>new Promise(r=>setTimeout(r,0));
-const characters=JSON.parse(fs.readFileSync('vendor/characters.json','utf8'));
-function useCharacterData(a){a.w.fetch=async()=>({ok:true,json:async()=>characters});}
-function draw(a,strokes){
-  const pad=a.$('readingQuizTrace').querySelector('svg');
+const baseCharacters=JSON.parse(fs.readFileSync('vendor/characters.json','utf8'));
+const supplementalCharacters=JSON.parse(fs.readFileSync('vendor/reader-character-medians.json','utf8'));
+const characters={...baseCharacters,...supplementalCharacters};
+function useCharacterData(a){a.w.fetch=async url=>({ok:true,json:async()=>url.endsWith('reader-character-medians.json')?supplementalCharacters:baseCharacters});}
+function draw(a,strokes,index=0){
+  const pad=a.$('readingQuizTrace').querySelectorAll('svg')[index];
   pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
   for(const stroke of strokes)stroke.forEach(([x,y],i)=>{
     const event=new a.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
@@ -19,10 +21,14 @@ function draw(a,strokes){
     pad.dispatchEvent(event);
   });
 }
+function handwriting(character){
+  return characters[character].medians.slice().reverse().map(stroke =>
+    stroke.slice().reverse().map(([x,y],i)=>[22+x/6+Math.sin(i)*2,29+(900-y)/6+Math.cos(i)*2]));
+}
 function drawCurrent(a,correct=true){
   const p=state(a).practice;
-  const medians=characters[p.questions[p.q].character].medians;
-  draw(a,correct?medians.slice().reverse().map(stroke=>stroke.slice().reverse().map(([x,y])=>[22+x/6,29+(900-y)/6])):[[[14,16],[15,16]]]);
+  Array.from(p.questions[p.q].word).forEach((character,i)=>
+    draw(a,correct?handwriting(character):[[[14,16],[15,16]]],i));
 }
 function checkInk(a){click(a,'[data-ink-check]');return settle();}
 function custom(a){a.run(`extras.reading.source='custom';extras.reading.custom='我 爱 你 他 是 好 人。今天 我们 去 学校 学习 中文。明天 一起 回家 吃 米饭 鸡蛋。';extras.reading.positions.custom=2;extras.reading.read=ReadingStudio.sentences().map(s=>s.id);extras.reading.quizCovered={};ReadingStudio.render()`);}
@@ -42,12 +48,16 @@ await test('Unknown Quiz opens a blank pad and accepts reversed stroke order and
   assert.equal(q.kind,'writing');assert.equal(p.scope,'unknown');
   assert.equal(pad.querySelectorAll('path').length,0);
   assert.ok(pad.querySelector('[data-ink-check]').disabled);
-  assert.ok(!a.$('readingPracticeBody').textContent.includes(q.character));
+  assert.ok(!a.$('readingPracticeBody').textContent.includes(q.word));
   drawCurrent(a);await checkInk(a);
   assert.equal(state(a).practice.score,1);
-  assert.equal(a.run(`extras.writing[${JSON.stringify(q.character)}].count`),1);
+  assert.equal(a.run(`extras.writing[${JSON.stringify(q.word[0])}].count`),Array.from(q.word).filter(c=>c===q.word[0]).length);
+  const ink=pad.querySelectorAll('path').length;
+  assert.ok(ink>0);
+  assert.equal(a.$('readingQuizTrace').querySelectorAll('path').length,ink);
   a.$('readingQuestionNext').click();a.$('readingQuestionPrev').click();
-  assert.equal(a.$('readingQuizTrace'),null);assert.equal(state(a).practice.total,1);
+  assert.equal(a.$('readingQuizTrace').querySelectorAll('path').length,ink);
+  assert.equal(state(a).practice.total,1);
 });
 await test('Shape checking rejects a tiny mark, preserves Known and counts one attempt',async a=>{
   useCharacterData(a);start(a,{type:'writing'});
@@ -56,7 +66,7 @@ await test('Shape checking rejects a tiny mark, preserves Known and counts one a
   drawCurrent(a,false);await checkInk(a);
   assert.equal(state(a).practice.questions[0].result.correct,false);
   assert.equal(a.run(`resolveEntry(${key})?statusOf(${key}):extras.reading.labels[${key}]`),'known');
-  assert.equal(a.run(`extras.writing[${JSON.stringify(q.character)}].count`),1);
+  assert.equal(a.run(`extras.writing[${JSON.stringify(q.word[0])}].count`),Array.from(q.word).filter(c=>c===q.word[0]).length);
 });
 await test('Leaving a quiz invalidates pending handwriting results',async a=>{
   let resolve;
@@ -81,7 +91,7 @@ await test('Tracing snapshots reload without inventing partial completion',a=>{
   const before=state(a).practice,b=boot(a.snapshot());
   try{
     b.$('readingResumePractice').click();
-    assert.equal(state(b).practice.questions[0].character,before.questions[0].character);
+    assert.equal(state(b).practice.questions[0].word,before.questions[0].word);
     assert.equal(state(b).practice.total,0);assert.equal(state(b).practice.answered,false);
     assert.equal(b.$('readingQuizTrace').querySelectorAll('path').length,0);
   }finally{b.dom.window.close();}
@@ -90,6 +100,63 @@ await test('Mixed includes freehand writing in the manual Unknown Quiz',a=>{
   custom(a);start(a,{type:'mixed',questions:5,unknown:true});
   const kinds=state(a).practice.questions.map(q=>q.kind);
   assert.ok(kinds.includes('writing'));assert.ok(!kinds.includes('order'));
+});
+await test('随便 requires both characters in order and saves both drawings across reload',async a=>{
+  useCharacterData(a);
+  a.run(`extras.reading.source='custom';extras.reading.custom='随便。';ReadingStudio.render()`);
+  start(a,{type:'writing',unknown:true});
+  assert.equal(state(a).practice.questions[0].word,'随便');
+  assert.equal(a.$('readingQuizTrace').querySelectorAll('svg').length,2);
+  draw(a,handwriting('随'),0);
+  assert.ok(a.$('readingQuizTrace').querySelector('[data-ink-check]').disabled);
+  assert.ok(a.$('readingQuestionNext').disabled);
+  draw(a,handwriting('便'),1);
+  await checkInk(a);
+  const result=state(a).practice.questions[0].result;
+  assert.equal(result.correct,true);
+  assert.equal(result.ink.length,2);
+  assert.equal(a.$('readingQuizTrace').querySelectorAll('svg path').length,characters['随'].medians.length+characters['便'].medians.length);
+  const b=boot(a.snapshot());
+  try{
+    b.$('readingResumePractice').click();
+    assert.deepEqual(state(b).practice.questions[0].result,result);
+    assert.deepEqual([...b.$('readingQuizTrace').querySelectorAll('path')].map(path=>path.getAttribute('d')),
+      [...a.$('readingQuizTrace').querySelectorAll('path')].map(path=>path.getAttribute('d')));
+    b.$('readingQuizRestart').click();
+    assert.equal(b.$('readingQuizTrace').querySelectorAll('path').length,0);
+  }finally{b.dom.window.close();}
+});
+await test('An older unanswered 随便 question upgrades to two pads without losing its quiz position',a=>{
+  a.run(`extras.reading.source='custom';extras.reading.custom='随便。';ReadingStudio.render()`);
+  start(a,{type:'writing',unknown:true});
+  a.run(`extras.reading.practice.questions[0].character='便';saveExtras()`);
+  const b=boot(a.snapshot());
+  try{
+    b.$('readingResumePractice').click();
+    assert.equal(state(b).practice.q,0);
+    assert.equal(state(b).practice.total,0);
+    assert.equal(b.$('readingQuizTrace').querySelectorAll('svg').length,2);
+  }finally{b.dom.window.close();}
+});
+await test('One good character and one scribble fail the entire writing question',async a=>{
+  useCharacterData(a);
+  a.run(`extras.reading.source='custom';extras.reading.custom='随便。';ReadingStudio.render()`);
+  start(a,{type:'writing',unknown:true});
+  draw(a,handwriting('随'));
+  draw(a,[[[24,30],[210,50],[25,115],[205,135],[29,200]]],1);
+  await checkInk(a);
+  const p=state(a).practice;
+  assert.equal(p.questions[0].result.correct,false);
+  assert.equal(p.score,0);
+  assert.equal(p.total,1);
+  assert.match(a.w.document.querySelector('.reading-feedback').textContent,/Incorrect · 随便/);
+  assert.equal(a.$('readingQuizTrace').querySelectorAll('svg')[1].querySelectorAll('path').length,1);
+});
+await test('Retracing and connecting every stroke into one scribble fail shape checking',a=>{
+  const medians=characters['便'].medians, ink=handwriting('便');
+  for(const attempt of [ink.map(stroke=>[...stroke,...stroke.slice().reverse()]),[ink.flat()]]){
+    assert.equal(a.run(`QuizHandwriting.matches(${JSON.stringify(attempt)},${JSON.stringify(medians)})`),false);
+  }
 });
 await test('A different character with the same number of strokes does not pass',a=>{
   const different=characters['十'].medians.map(stroke=>stroke.map(([x,y])=>[x/5,(900-y)/5]));
@@ -103,7 +170,7 @@ await test('Standalone quiz swipes retain exact options/direction, block unanswe
 await test('Standalone Don’t know completes history and long quizzes retain every question on reload',a=>{a.run(`switchTab('quiz');startQuiz(VOCAB.slice(0,40))`);for(let i=0;i<40;i++)a.$('quizDontKnow').click();assert.equal(a.run('extras.quizHistory.length'),1);assert.equal(a.run('extras.quizHistory[0].practice.total'),40);assert.equal(a.run('sanitizeExtras(extras).quizHistory[0].practice.questions.length'),40);assert.equal(a.run('extras.quizHistory[0].practice.questions.filter(q=>q.result.skipped).length'),40);});
 await test('Unknown Quiz filters the two 长 pronunciations independently',a=>{a.run(`extras.reading.source='3';extras.reading.read=['cháng','zhǎng'].map(py=>READING_SENTENCES.find(s=>s.level===3&&ReadingStudio.segments(s.zh,s.py).some(t=>t.text==='长'&&t.py===py)).id);setStatus('长::cháng','known');setStatus('长::zhǎng','new');ReadingStudio.render()`);start(a,{unknown:true,questions:30});assert.ok(!state(a).practice.words.includes('长::cháng'));assert.ok(state(a).practice.words.includes('长::zhǎng'));assert.ok(!state(a).practice.questions.some(q=>q.target==='长::cháng'));});
 await test('Failed result saves keep in-memory answers and history available for backup',a=>{start(a);const set=a.w.Storage.prototype.setItem;a.w.Storage.prototype.setItem=function(k,v){if(k.includes('Studio'))throw Error('synthetic quota');return set.call(this,k,v)};try{for(let i=0;i<5;i++)a.$('readingDontKnow').click();assert.equal(state(a).practice.total,5);assert.equal(a.run('getBackup().studio.quizHistory[0].practice.questions.filter(q=>q.result.skipped).length'),5);assert.equal(a.$('readingQuizSaveStatus').hidden,false);assert.match(a.$('readingQuizSaveStatus').textContent,/Not saved/);}finally{a.w.Storage.prototype.setItem=set;}});
-await test('History escapes definition text and preserves trace results in a lossless backup',async a=>{useCharacterData(a);start(a,{type:'writing'});const q=state(a).practice.questions[0];drawCurrent(a,false);await checkInk(a);a.$('readingQuizRestart').click();a.run(`extras.quizHistory[0].practice.questions[0].result.feedback='<img src=x onerror=alert(1)>';renderQuizHistory()`);click(a,'[data-history-open]');assert.equal(a.$('quizHistoryDetail').querySelector('img'),null);assert.ok(a.$('quizHistoryDetail').textContent.includes('<img'));const saved=a.run('sanitizeExtras(getBackup().studio).quizHistory[0].practice');assert.equal(saved.questions[0].character,q.character);assert.equal(saved.questions[0].result.correct,false);assert.equal(saved.questions[0].result.feedback,'<img src=x onerror=alert(1)>');});
+await test('History escapes definition text and preserves trace results in a lossless backup',async a=>{useCharacterData(a);start(a,{type:'writing'});const q=state(a).practice.questions[0];drawCurrent(a,false);await checkInk(a);a.$('readingQuizRestart').click();a.run(`extras.quizHistory[0].practice.questions[0].result.feedback='<img src=x onerror=alert(1)>';renderQuizHistory()`);click(a,'[data-history-open]');assert.equal(a.$('quizHistoryDetail').querySelector('img'),null);assert.ok(a.$('quizHistoryDetail').textContent.includes('<img'));const saved=a.run('sanitizeExtras(getBackup().studio).quizHistory[0].practice');assert.equal(saved.questions[0].word,q.word);assert.equal(saved.questions[0].result.correct,false);assert.equal(saved.questions[0].result.feedback,'<img src=x onerror=alert(1)>');});
 await test('Reset and import clear stale standalone navigation controls and history is study data',a=>{a.run(`startQuiz([resolveEntry('我'),resolveEntry('你')])`);a.$('quizDontKnow').click();assert.equal(a.$('quizPrevBtn').disabled,false);a.run('clearTransientStudy()');assert.equal(a.$('quizPrevBtn').disabled,true);assert.equal(a.$('quizDontKnow').hidden,true);assert.equal(a.$('quizHistoryDetail').hidden,true);a.run('resetStudyProgress()');assert.equal(a.run('extras.quizHistory.length'),0);});
 await test('Five-question Mixed keeps both sentence building and tracing when eligible',a=>{custom(a);start(a,{type:'mixed',questions:5,order:true});const qs=state(a).practice.questions;assert.equal(qs.length,5);assert.ok(qs.some(q=>q.kind==='order'));assert.ok(qs.some(q=>q.kind==='writing'));});
 await test('Confirmed replacement from Unknown Quiz retains the requested manual scope',a=>{start(a);recognition(a);a.$('readingQuizLeave').click();a.$('readingUnknownQuiz').click();a.$('readingQuizRestart').click();assert.match(a.$('readingPracticeBody').textContent,/Unknown Quiz/);a.$('readingSetupType').value='zh-meaning';a.$('readingQuizStart').click();assert.equal(state(a).practice.scope,'unknown');});
