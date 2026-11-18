@@ -51,6 +51,17 @@ const QuizHandwriting = (() => {
     });
   }
 
+  function nearestSquared(x, y, target) {
+    let squared = Infinity;
+    for (let i = 0; i < target.length; i++) {
+      const point = target[i];
+      const dx = x - point[0], dy = y - point[1];
+      const gap = dx * dx + dy * dy;
+      if (gap < squared) squared = gap;
+    }
+    return squared;
+  }
+
   function measureCoverage(source, target, relaxed) {
     const farLimit = relaxed ? 0.19 : 0.11;
     const strayLimit = relaxed ? 0.11 : 0.085;
@@ -58,14 +69,7 @@ const QuizHandwriting = (() => {
     for (const stroke of source) {
       let offStroke = 0;
       for (const [x, y] of stroke) {
-        let squared = Infinity;
-        for (let i = 0; i < target.length; i++) {
-          const point = target[i];
-          const dx = x - point[0], dy = y - point[1];
-          const gap = dx * dx + dy * dy;
-          if (gap < squared) squared = gap;
-        }
-        const error = Math.sqrt(squared);
+        const error = Math.sqrt(nearestSquared(x, y, target));
         if (error > (relaxed ? 0.25 : 0.19)) return Infinity;
         if (error > farLimit) distant++;
         if (error > strayLimit) offStroke++;
@@ -177,20 +181,26 @@ const QuizHandwriting = (() => {
 
   const complexModels = new WeakMap();
 
+  function referenceSummary(bundle, character) {
+    if (!complexModels.has(bundle)) complexModels.set(bundle, new Map());
+    const cache = complexModels.get(bundle);
+    if (!cache.has(character)) {
+      const medians = bundle[character].medians.map(stroke => stroke.map(([x, y]) => [x, -y]));
+      const reference = normalize(medians, 1);
+      cache.set(character, reference ? summarize(reference) : null);
+    }
+    return cache.get(character);
+  }
+
   function recognizesComplex(ink, character, bundle, strictMatch) {
     const delta = Math.abs(ink.length - bundle[character].medians.length);
     if (delta > 2) return false;
     const normalized = normalize(ink, 16);
     if (!normalized) return false;
-    if (!complexModels.has(bundle)) complexModels.set(bundle, new Map());
-    const cache = complexModels.get(bundle);
     const drawn = summarize(normalized);
     function score(key, medians) {
-      if (!cache.has(key)) {
-        const reference = normalize(medians.map(stroke => stroke.map(([x, y]) => [x, -y])), 1);
-        cache.set(key, summarize(reference));
-      }
-      return silhouetteScore(drawn, cache.get(key), true) + 0.003 * Math.abs(ink.length - medians.length);
+      const model = referenceSummary(bundle, key);
+      return model ? silhouetteScore(drawn, model, true) + 0.003 * Math.abs(ink.length - medians.length) : Infinity;
     }
     const expected = score(character, bundle[character].medians);
     if (!Number.isFinite(expected)) return strictMatch;
@@ -202,6 +212,17 @@ const QuizHandwriting = (() => {
     return true;
   }
 
+  function shortModels(bundle, count) {
+    if (!rankedModels.has(bundle)) rankedModels.set(bundle, new Map());
+    const byCount = rankedModels.get(bundle);
+    if (!byCount.has(count)) {
+      const models = Object.entries(bundle).filter(([, {medians}]) => medians.length === count)
+        .map(([key, {medians}]) => [key, handwritingFeatures(normalize(medians.map(s => s.map(([x, y]) => [x, -y])), 1))]);
+      byCount.set(count, new Map(models));
+    }
+    return byCount.get(count);
+  }
+
   function recognizes(ink, character, bundle) {
     const medians = bundle[character].medians;
     const strictMatch = matches(ink, medians);
@@ -211,14 +232,7 @@ const QuizHandwriting = (() => {
     if (ink.length < 2 || ink.length > 6 || ink.length !== medians.length) return strictMatch;
     const normalized = normalize(ink, 16);
     if (!normalized || normalized.some(stroke => lengthOf(stroke) < 0.018)) return strictMatch;
-    if (!rankedModels.has(bundle)) rankedModels.set(bundle, new Map());
-    const byCount = rankedModels.get(bundle);
-    if (!byCount.has(ink.length)) {
-      const models = Object.entries(bundle).filter(([, {medians}]) => medians.length === ink.length)
-        .map(([key, {medians}]) => [key, handwritingFeatures(normalize(medians.map(s => s.map(([x, y]) => [x, -y])), 1))]);
-      byCount.set(ink.length, new Map(models));
-    }
-    const models = byCount.get(ink.length);
+    const models = shortModels(bundle, ink.length);
     const drawn = handwritingFeatures(normalized);
     const expected = models.get(character);
     if (!strictMatch && drawn.length === 2) {
@@ -233,6 +247,39 @@ const QuizHandwriting = (() => {
       if (other !== character && rankScore(drawn, model) < limit) return false;
     }
     return true;
+  }
+
+  // Candidate mode ranks the supplied ink without knowing the quiz answer.
+  function guessCharacters(ink, bundle, styles = {}) {
+    const drawing = normalize(ink, 26);
+    if (!drawing) return [];
+    const drawn = summarize(drawing);
+    const meanGap = (from, to) => from.reduce((sum, [x, y]) =>
+      sum + Math.sqrt(nearestSquared(x, y, to)), 0) / from.length;
+    function score(model, strokeCount) {
+      if (!model || !model.length || Math.abs(ink.length - strokeCount) > Math.max(3, ink.length * 0.4)) return Infinity;
+      const lengthGap = Math.abs(Math.log(drawn.length / model.length));
+      if (lengthGap > 0.75) return Infinity;
+      return (meanGap(drawn.points, model.points) + meanGap(model.points, drawn.points)) / 2 +
+        0.035 * lengthGap + 0.005 * Math.abs(ink.length - strokeCount);
+    }
+    const short = ink.length >= 2 && ink.length <= 6 ? shortModels(bundle, ink.length) : null;
+    const features = short ? handwritingFeatures(drawing) : null;
+    const ranked = [];
+    for (const [character, {medians}] of Object.entries(bundle)) {
+      if (Math.abs(ink.length - medians.length) > Math.max(3, ink.length * 0.4) && !styles[character]) continue;
+      let best = score(referenceSummary(bundle, character), medians.length);
+      if (short?.has(character)) {
+        const strokeFit = rankScore(features, short.get(character));
+        if (strokeFit <= 0.20) best = Math.min(best, 0.01 + 0.31 * strokeFit);
+      }
+      for (const inkSample of styles[character] || []) {
+        const personal = normalize(inkSample, 26);
+        if (personal) best = Math.min(best, score(summarize(personal), inkSample.length));
+      }
+      if (best <= 0.17) ranked.push({character, score: best});
+    }
+    return ranked.sort((a, b) => a.score - b.score).slice(0, 5).map(item => item.character);
   }
 
   function canSaveSample(ink) {
@@ -267,7 +314,7 @@ const QuizHandwriting = (() => {
     return 'M' + stroke.map(p => p.join(' ')).join(' L') + (stroke.length === 1 ? ' l0.01 0' : '');
   }
 
-  function mount(host, {check, valid, savedInk}) {
+  function mount(host, {check, guess, onEdit, valid, savedInk}) {
     const pads = [...host.querySelectorAll('svg')];
     const groups = pads.map(pad => pad.querySelector('g'));
     const appendStroke = (group, stroke) => {
@@ -282,6 +329,7 @@ const QuizHandwriting = (() => {
     }
 
     const undo = host.querySelector('[data-ink-undo]');
+    const guessButton = host.querySelector('[data-ink-guess]');
     const clear = host.querySelector('[data-ink-clear]'), submit = host.querySelector('[data-ink-check]');
     const status = host.querySelector('[data-ink-status]') || host.querySelector('[role="status"]');
     const ink = pads.map(() => []), history = [];
@@ -290,6 +338,7 @@ const QuizHandwriting = (() => {
       clear.disabled = busy || active !== null || !ink.some(strokes => strokes.length);
       if (undo) undo.disabled = busy || active !== null || !history.length;
       submit.disabled = busy || active !== null || !ink.every(strokes => strokes.length);
+      if (guessButton) guessButton.disabled = submit.disabled;
     };
     function add(event, pad) {
       const rect = pad.getBoundingClientRect();
@@ -308,6 +357,7 @@ const QuizHandwriting = (() => {
         if (busy || active || event.button !== 0 || event.isPrimary === false || strokes.length >= 48) return;
         event.preventDefault();
         pad.setPointerCapture?.(event.pointerId);
+        onEdit?.();
         const stroke = [];
         strokes.push(stroke);
         active = {id: event.pointerId, pad, stroke, path: appendStroke(groups[i], stroke)};
@@ -331,6 +381,7 @@ const QuizHandwriting = (() => {
       for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) pad.addEventListener(type, finish);
     });
     if (undo) undo.onclick = () => {
+      onEdit?.();
       const i = history.pop();
       ink[i].pop();
       groups[i].lastElementChild.remove();
@@ -338,18 +389,19 @@ const QuizHandwriting = (() => {
       setControls();
     };
     clear.onclick = () => {
+      onEdit?.();
       history.length = 0;
       ink.forEach(strokes => { strokes.length = 0; });
       groups.forEach(group => group.replaceChildren());
       status.textContent = '';
       setControls();
     };
-    submit.onclick = async () => {
+    const run = action => async () => {
       if (submit.disabled) return;
       busy = true;
       setControls();
       try {
-        await check(ink);
+        await action(ink);
       } catch {
         if (valid()) status.textContent = 'Writing data unavailable. Try Check again.';
       } finally {
@@ -357,9 +409,11 @@ const QuizHandwriting = (() => {
         if (valid()) setControls();
       }
     };
+    submit.onclick = run(check);
+    if (guessButton && guess) guessButton.onclick = run(guess);
     setControls();
     return () => snapshot(ink);
   }
 
-  return {additionalCharacters, matches, recognizes, canSaveSample, matchesPersonal, mount, snapshot};
+  return {additionalCharacters, matches, recognizes, guessCharacters, canSaveSample, matchesPersonal, mount, snapshot};
 })();

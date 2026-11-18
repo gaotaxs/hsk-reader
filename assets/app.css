@@ -609,6 +609,15 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
   color: var(--muted);
 }
 
+.tracing-guesses {
+  order: 5;
+  margin-top: 12px;
+  text-align: center;
+}
+.tracing-guesses p { margin: 0 0 6px; }
+.tracing-guess-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.tracing-guess-list button { width: 44px; min-height: 44px; padding: 0; font: 24px/1.2 var(--han); }
+
 /* Compact phone study screens. The tab rail keeps its existing height. */
 @media (min-width: 721px) {
   header .header-title-row {
@@ -695,6 +704,8 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
   }
   .tracing-card .tracing-actions button { min-width:0; padding-inline:8px; }
   .tracing-card .tracing-style-actions { display:flex; }
+  .tracing-card .tracing-entry-actions { width:100%; gap:4px; }
+  .tracing-card .tracing-entry-actions button { min-width:44px; padding-inline:4px; font-size:13px; }
 
   #flashcards .flash-top-card { padding: 0 12px; margin:0 0 8px; }
   #flashOptionsToggle { display:flex; align-items:center; justify-content:space-between; }

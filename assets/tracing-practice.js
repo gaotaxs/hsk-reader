@@ -49,11 +49,13 @@
           `<span class="${result.correct ? 'tracing-correct' : ''}">${verdict}</span><strong lang="zh-Hans">${escapeHtml(question.word)}</strong>` :
           '<p class="small">Write the character from memory.</p>'}</div>
         <p class="small tracing-error" role="status" data-ink-status></p>
-        <div class="tracing-actions">${result ?
+        <div class="tracing-actions${result ? '' : ' tracing-entry-actions'}">${result ?
           `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary">Next character</button>` :
-          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-guess>Guess</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+        ${result ? '' : '<section class="tracing-guesses" aria-label="Handwriting guesses" hidden><p class="small" tabindex="-1">Pick the character you wrote.</p><div class="tracing-guess-list"></div></section>'}
         ${canTeach || (result && samples?.length) ? `<div class="tracing-actions tracing-style-actions">
-          ${canTeach ? '<button id="tracingTeach" type="button">Save my writing</button>' : ''}
+          ${result ? '' : '<section class="tracing-guesses" aria-label="Handwriting guesses" hidden><p class="small" tabindex="-1">Pick the character you wrote.</p><div class="tracing-guess-list"></div></section>'}
+        ${canTeach ? '<button id="tracingTeach" type="button">Save my writing</button>' : ''}
           ${samples?.length ? '<button id="tracingForget" type="button">Forget saved writing</button>' : ''}
         </div>` : ''}
       </div>
@@ -61,9 +63,32 @@
 
     const card = panel.firstElementChild;
     const valid = () => panel.firstElementChild === card && current === question && !result;
+    const guesses = card.querySelector('.tracing-guesses');
+    const status = card.querySelector('[data-ink-status]');
     const readInk = QuizHandwriting.mount($('tracingInput'), {
       savedInk: result?.ink,
       valid,
+      onEdit: () => { if (guesses) guesses.hidden = true; },
+      guess: async ink => {
+        const bundle = await loadCharacterBundle();
+        if (!valid()) return;
+        const choices = QuizHandwriting.guessCharacters(ink[0], bundle, extras.tracingStyles);
+        guesses.hidden = !choices.length;
+        status.textContent = choices.length ? '' : 'No clear guess yet. Keep writing or try again.';
+        const list = guesses.querySelector('.tracing-guess-list');
+        list.replaceChildren(...choices.map(character => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.lang = 'zh-Hans';
+          option.textContent = character;
+          option.onclick = () => finish(character === question.word, QuizHandwriting.snapshot(ink));
+          return option;
+        }));
+        if (choices.length) {
+          guesses.querySelector('p').focus({preventScroll: true});
+          guesses.scrollIntoView({block: 'nearest'});
+        }
+      },
       check: async ink => {
         const personalMatch = QuizHandwriting.matchesPersonal(ink[0], question.word, extras.tracingStyles);
         const correct = personalMatch || QuizHandwriting.recognizes(ink[0], question.word, await loadCharacterBundle());
