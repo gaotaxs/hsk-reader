@@ -303,7 +303,7 @@ const ReadingStudio=(()=>{
     if(p.answered&&!q.result?.ink)return '';
     const pads=chars.map((_,i)=>`<svg class="quiz-trace-pad" viewBox="0 0 240 240" role="img" aria-label="${p.answered?'Submitted drawing':'Handwriting pad'} ${i+1} of ${chars.length}"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></g></svg>`).join('');
     return `${p.answered?'':`<p class="small quiz-writing-instruction">${instruction}</p>`}<div id="readingQuizTrace"><div class="quiz-writing-pads ${chars.length===1?'single-pad':''}">${pads}</div>
-      ${p.answered?'':`<div class="quiz-writing-actions"><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button></div><p class="small quiz-writing-status" role="status"></p>`}</div>`;
+      ${p.answered?'':`<div class="quiz-writing-actions"><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button></div><p class="small quiz-writing-status" role="status"></p>`}</div>`;
   }
   function renderQuizWriting(p,q){
     const host=$('readingQuizTrace');
@@ -449,6 +449,7 @@ const ReadingStudio=(()=>{
       const star=e.target.closest('[data-r-star]');if(star){toggleStar('starWords',star.dataset.rStar);return;}
       const speak=e.target.closest('[data-r-speak]');if(speak){const id=speak.dataset.rSpeak;if(resolveEntry(id))speakEntry(id);else speakChinese(id.split('::')[0]);}
     });
+    $('readingWorkspaceBtn').onclick=()=>{$('readingOptions').close();switchTab('workspace');};
     $('readingSource').onchange=e=>{data().reviewSession=null;data().source=e.target.value;selectedWord='';translationOpen=false;save();render();};
     $('readingRoute').onchange=e=>setRoute(e.target.value);$('readingOrder').onchange=e=>setOrder(e.target.value);$('readingReviewEarlier').onclick=()=>startSentenceReview();$('readingReviewMissed').onclick=()=>startSentenceReview(true);$('readingExitReview').onclick=()=>{data().reviewSession=null;save();render();};
     $('readingPinyinMode').onchange=e=>{data().pinyin=e.target.value;save();render();};

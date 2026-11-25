@@ -651,7 +651,7 @@
     $('vocabStudyResultsBtn').disabled=!rows.length;
     $('vocabTable').innerHTML=shown.map(v=>{
       const st=statusOf(entryKey(v));
-      return `<tr class="vocab-state-${st}"><td data-label="Chinese"><button class="word-link" data-word="${escapeHtml(entryKey(v))}" style="font-size:26px;padding:4px 6px;border:0;background:transparent">${escapeHtml(v.word)}</button>${traceProgress(v.word)===3?' <span class="small trace-progress">Mastered</span>':''}</td><td data-label="Pinyin">${escapeHtml(v.pinyin)}</td><td data-label="Meaning">${escapeHtml(v.english)}</td><td data-label="Level"><span class="pill">HSK ${v.level}</span></td><td data-label="Mark"><div class="actions-cell"><button class="good" data-status-word="${escapeHtml(entryKey(v))}" data-status="known" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} known" ${st==='known'?'aria-pressed="true"':''}>Known</button><button class="learn" data-status-word="${escapeHtml(entryKey(v))}" data-status="learning" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} learning" ${st==='learning'?'aria-pressed="true"':''}>Learning</button><button data-status-word="${escapeHtml(entryKey(v))}" data-status="new" aria-label="Reset ${escapeHtml(v.word)}" title="Reset word" class="icon-button vocab-reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 7M3 4v7h7"/></svg></button></div></td></tr>`;
+      return `<tr class="vocab-state-${st}"><td data-label="Chinese"><button class="word-link" data-word="${escapeHtml(entryKey(v))}" style="font-size:26px;padding:4px 6px;border:0;background:transparent">${escapeHtml(v.word)}</button>${traceProgress(v.word)===3?' <span class="small trace-progress">Mastered</span>':''}</td><td data-label="Pinyin">${escapeHtml(v.pinyin)}</td><td data-label="Meaning">${escapeHtml(v.english)}</td><td data-label="Level"><span class="pill">HSK ${v.level}</span></td><td data-label="Mark"><select class="vocab-status-control" data-vocab-status="${escapeHtml(entryKey(v))}" aria-label="${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} study status">${[['new','New'],['learning','Learning'],['known','Known']].map(([value,label])=>`<option value="${value}"${st===value?' selected':''}>${label}</option>`).join('')}</select></td></tr>`;
     }).join('');
   }
   function studyVocabResults(){
@@ -1162,11 +1162,14 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){window.refreshReadingStudio?.();renderQuizHistory();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','tracing','lessons','flashcards','workspace','vocab','quiz','history','settings'];
-  const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],tracing:['Tracing','HANDWRITING PRACTICE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
+  const PRIMARY_TABS=['reader','tracing','practice','vocab'];
+  const PRACTICE_MODES=['lessons','flashcards','quiz','history'];
+  const APP_TAB_NAMES=[...PRIMARY_TABS,...PRACTICE_MODES,'workspace','settings'];
+  const APP_TAB_DETAILS={practice:['Practice',''],workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],tracing:['Tracing','HANDWRITING PRACTICE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
-    document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
+    const primary=PRACTICE_MODES.includes(name)?'practice':name==='workspace'?'reader':name;
+    document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===primary;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false');});
     document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===name));
     $('pageTitle').textContent=APP_TAB_DETAILS[name][0];$('pageKicker').textContent=APP_TAB_DETAILS[name][1];
     document.title=`${APP_TAB_DETAILS[name][0]} · HSK Reader`;
@@ -1175,6 +1178,8 @@
     if(name==='reader')window.refreshReadingStudio?.();if(name==='history'){historySelectedId=null;renderQuizHistory();}
     if(name==='tracing')window.openTracingPractice?.();
     if(name==='vocab')renderVocab();
+    if(name==='practice')renderPracticeHome();
+    $('appSettingsBtn').setAttribute('aria-pressed',String(name==='settings'));
     if(matchMedia('(max-width: 600px)').matches)document.querySelector('.side-tab.active')?.scrollIntoView({block:'nearest',inline:'nearest'});
     if(name==='workspace'&&compactEditor())showPassageEditor(true);
     if(name!=='flashcards'&&flashStrokeOpen)toggleFlashStrokePanel(false);
@@ -1239,6 +1244,8 @@
   document.addEventListener('click', e=>{
     const tab = e.target.closest('[data-tab]');
     if(tab){switchTab(tab.dataset.tab);return;}
+    const mode=e.target.closest('[data-practice-mode]');
+    if(mode){switchTab(mode.dataset.practiceMode);return;}
     const wordEl = e.target.closest('[data-word]');
     if(wordEl){ showWord(wordEl.dataset.word, wordEl.dataset.tokenIndex); return; }
     const st = e.target.closest('[data-status-word]');
@@ -1247,6 +1254,16 @@
     const startLesson=e.target.closest('[data-start-lesson]'); if(startLesson){activeLessonLevel=Number(startLesson.dataset.startLesson);renderLessons();studyLessonWords();return;}
     const ll = e.target.closest('[data-lesson-load]'); if(ll){ activeLessonLevel=Number(ll.dataset.lessonLoad); renderLessons(); return; }
     const lr = e.target.closest('[data-lesson-reset]'); if(lr){ resetPlan(lr.dataset.lessonReset); return; }
+  });
+  $('appSettingsBtn').onclick=()=>switchTab('settings');
+  $('vocabTable').addEventListener('change',e=>{
+    const control=e.target.closest('[data-vocab-status]');
+    if(!control)return;
+    const key=control.dataset.vocabStatus;
+    setStatus(key,control.value);
+    const replacement=Array.from($('vocabTable').querySelectorAll('[data-vocab-status]'))
+      .find(select=>select.dataset.vocabStatus===key);
+    (replacement||$('vocabStatus')).focus({preventScroll:true});
   });
   let undoneReaderText=null,readerInputTimer=0;
   function saveReaderDraft(){if(!canPersistStudy())return false;const extrasOK=saveExtras(),draftOK=writeJSON(STORE.draft,$('inputText').value),ok=extrasOK&&draftOK;$('draftNotice').textContent=ok?'Draft saved on this device':'Not saved — export a backup';return ok;}
@@ -1449,8 +1466,8 @@
   document.addEventListener('keydown',e=>{
     if($('readingPracticeDialog')?.open||$('readingWordDialog')?.open||$('readingOptions')?.open||$('readingJumpDialog')?.open)return;
     if($('flashStrokeShell').open){if(e.key==='Escape'){e.preventDefault();toggleFlashStrokePanel(false);}return;}
-    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-9]$/.test(e.key)){
-      e.preventDefault();switchTab(APP_TAB_NAMES[Number(e.key)-1]);return;
+    if(!$('wordDialog').open&&e.altKey&&!e.ctrlKey&&!e.metaKey&&/^[1-4]$/.test(e.key)){
+      e.preventDefault();switchTab(PRIMARY_TABS[Number(e.key)-1]);return;
     }
     const tag=document.activeElement?.tagName;
     const editing=['INPUT','TEXTAREA','SELECT'].includes(tag)||document.activeElement?.isContentEditable;
@@ -1584,11 +1601,30 @@
   function nextIntervalLabel(v){const n=REVIEW_DAYS[extras.srs[entryKey(v)]?.step||0];return `${n} day${n===1?'':'s'}`;}
   function renderDaily(){
     const done=(extras.daily[todayISO()]||[]).length,due=dueEntries().length;
-    $('dailyHeadline').textContent=done>=settings.dailyGoal?'A little better than yesterday.':'A little Chinese, every day.';
     $('dailySummary').textContent=`${done} / ${settings.dailyGoal} reviewed today · ${due} due for review`;
     $('reviewDueBtn').textContent=due?`Review ${due} due`:'Start daily review';
     const count=Object.values(extras.writing).reduce((n,x)=>n+x.count,0);
     $('writingSummary').textContent=`Writing practice: ${count} completed characters across ${Object.keys(extras.writing).length} different characters.`;
+  }
+  function renderPracticeHome(){
+    const saved=extras.reading?.practice;
+    const readerQuiz=saved?.phase==='quiz'&&saved.questions?.length;
+    const due=dueEntries().length;
+    const action=$('practicePrimary');
+    if (readerQuiz) {
+      $('practiceSummary').textContent=`${saved.total} of ${saved.questions.length} questions answered`;
+      action.textContent='Resume Reader quiz';
+      action.onclick=()=>{switchTab('reader');$('readingResumePractice').click();};
+    } else if (quiz.current&&quiz.snapshots) {
+      $('practiceSummary').textContent=`${quiz.total} of ${quiz.deck.length} questions answered`;
+      action.textContent='Resume quiz';
+      action.onclick=()=>switchTab('quiz');
+    } else {
+      const today=(extras.daily[todayISO()]||[]).length;
+      $('practiceSummary').textContent=`${today} of ${settings.dailyGoal} reviewed today`;
+      action.textContent=due?`Review ${due} due`:'Start daily review';
+      action.onclick=startDailyReview;
+    }
   }
   function startDailyReview(){
     let pool=dueEntries();

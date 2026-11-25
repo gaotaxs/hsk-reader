@@ -257,7 +257,7 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   recognition(a);
   a.$('readingQuizLeave').click();
   const before=state(a).practice;
-  a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+  a.run(`HSK2.forEach(v=>statuses[entryKey(v)]='known'); shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
   click(a,'[data-tab=tracing]');
   const panel=a.$('tracing'),pinyin=panel.querySelector('.tracing-prompt p').textContent;
   const meaning=panel.querySelector('.tracing-prompt p+p').textContent;
@@ -313,7 +313,7 @@ await test('A delayed close event cannot cancel a just-reopened tracing quiz',as
 await test('Tracing learns a confirmed shorthand, restores it on reload and can forget it',async a=>{
   const setup=instance=>{
     useCharacterData(instance);
-    instance.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+    instance.run(`HSK2.forEach(v=>statuses[entryKey(v)]='known'); shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
     click(instance,'[data-tab=tracing]');
     assert.equal(instance.$('tracingPrompt').querySelector('p').textContent,'yún');
   };
@@ -432,7 +432,7 @@ await test('Stroke ranking distinguishes distorted characters with 10 or more st
 });
 await test('Tracing Check grades clear reads and asks for help on close calls',async a=>{
   useCharacterData(a);
-  a.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+  a.run(`HSK2.forEach(v=>statuses[entryKey(v)]='known'); shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
   click(a,'[data-tab=tracing]');
   const pad=a.$('tracingInput').querySelector('svg');
   pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
@@ -482,8 +482,9 @@ await test('Tracing is second and mastery requires three independent days across
       b.w.Date=class extends b.w.Date {
         constructor(...args){super(...(args.length?args:[day+'T12:00:00']));}
       };
-      b.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+      b.run(`HSK2.forEach(v=>statuses[entryKey(v)]='known'); shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
       click(b,'[data-tab=tracing]');
+      if(b.run("traceProgress('云')")===3)click(b,'.tracing-mode');
       const pad=b.$('tracingInput').querySelector('svg');
       pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
       for(const stroke of handwriting('云'))stroke.forEach(([x,y],i)=>{
@@ -511,6 +512,64 @@ await test('Tracing is second and mastery requires three independent days across
       assert.equal(b.run("traceProgress('云')"),3);
     }finally{b.dom.window.close();}
   }
+});
+await test('Practice resumes saved Reader quizzes and keeps vocabulary status editable',a=>{
+  start(a);
+  recognition(a);
+  a.$('readingQuizLeave').click();
+  const saved=state(a).practice;
+  click(a,'[data-tab="practice"]');
+  assert.equal(a.$('practicePrimary').textContent,'Resume Reader quiz');
+  a.$('practicePrimary').click();
+  assert.equal(a.$('readingPracticeDialog').open,true);
+  assert.deepEqual(state(a).practice,saved);
+  a.$('readingQuizLeave').click();
+  click(a,'[data-tab="vocab"]');
+  const status=a.$('vocabTable').querySelector('[data-vocab-status]');
+  const key=status.dataset.vocabStatus;
+  assert.equal(status.closest('tr').querySelectorAll('select').length,1);
+  status.value='learning';
+  status.dispatchEvent(new a.w.Event('change',{bubbles:true}));
+  assert.equal(a.run(`statusOf(${JSON.stringify(key)})`),'learning');
+  assert.equal(a.w.document.activeElement.dataset.vocabStatus,key);
+});
+await test('Tracing locks HSK 3 until all HSK 2 entries are Known, then weights review by progress',a=>{
+  const samples=a.run(`(() => {
+    const entries=VOCAB.filter(v=>v.word.length===1&&isChineseChar(v.word)&&!v.english.includes(v.word));
+    const [plain,due,known,mastered]=entries.filter(v=>v.level===2).slice(0,4);
+    const three=entries.find(v=>v.level===3&&!entries.some(other=>other.word===v.word&&other.level===2));
+    const last=HSK2.find(v=>v.word.length>1);
+    statuses[entryKey(known)]='known';
+    extras.traceSuccessDays[due.word]=['2026-01-01','2026-01-02'];
+    extras.traceSuccessDays[mastered.word]=['2026-01-01','2026-01-02','2026-01-03'];
+    let pool;
+    const previous=shuffle;
+    shuffle=items=>{if(items[0]?.word&&items.includes(plain))pool=items;return items;};
+    switchTab('tracing');
+    const [ordinary,waiting,learned,review,locked]=[plain,due,known,mastered,three].map(entry=>pool.filter(item=>item===entry).length);
+    HSK2.forEach(v=>statuses[entryKey(v)]='known');
+    statuses[entryKey(last)]='learning';
+    resetTracingPractice();
+    const stillLocked=!pool.includes(three);
+    statuses[entryKey(last)]='known';
+    openTracingPractice();
+    document.getElementById('tracingSkip').click();
+    document.getElementById('tracingNext').click();
+    const unlocked=pool.includes(three)&&pool.filter(item=>item===three).length>pool.filter(item=>item===plain).length;
+    shuffle=previous;
+    return {ordinary,waiting,learned,review,locked,stillLocked,unlocked,mastered:mastered.pinyin};
+  })()`);
+  assert.ok(samples.waiting>samples.ordinary&&samples.ordinary>samples.learned);
+  assert.equal(samples.review,0);
+  assert.equal(samples.locked,0);
+  assert.equal(samples.stillLocked,true);
+  assert.equal(samples.unlocked,true);
+  assert.equal(a.$('tracing').querySelector('.tracing-practice-options p'),null);
+  click(a,'.tracing-mode');
+  assert.equal(a.$('tracing').querySelector('[data-trace-progress]').textContent,'Mastered');
+  assert.equal(a.$('tracingPrompt').querySelector('p').textContent,samples.mastered);
+  click(a,'.tracing-mode');
+  assert.notEqual(a.$('tracing').querySelector('[data-trace-progress]').textContent,'Mastered');
 });
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
