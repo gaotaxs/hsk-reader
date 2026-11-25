@@ -1,3 +1,10 @@
+## 1.18.13
+
+- Simplify navigation to Reader, Tracing, Practice and Vocab. Practice brings together lessons, flashcards, quizzes and history and surfaces quiz resumption and daily review.
+- Open Workspace from Reader’s track controls and Settings from the header. Use one study-status control per vocabulary row.
+- Keep HSK 3 out of Tracing until all HSK 2 vocabulary entries are Known. Favor unfamiliar characters and mastery progress, with optional review of mastered characters.
+- Add Undo to Reader writing quizzes and align Tracing’s entry and result controls.
+
 ## 1.18.12
 
 - Place Tracing second in navigation.

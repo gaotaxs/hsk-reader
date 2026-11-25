@@ -10,11 +10,38 @@
   }
 
   let deck = [], current, result, gradedResult, correctCount = 0, answeredCount = 0;
+  let reviewMastered = false;
+  let hsk3Unlocked = false;
+  const knownHsk2 = () => HSK2.filter(entry => statusOf(entryKey(entry)) === 'known').length;
+  const eligible = entry => entry.level === 2 || hsk3Unlocked;
+
+  function refreshLevelGate() {
+    const unlocked = knownHsk2() === HSK2.length;
+    if (unlocked !== hsk3Unlocked) deck = [];
+    hsk3Unlocked = unlocked;
+  }
+
+  function makeDeck() {
+    const today = todayISO();
+    const tickets = [];
+    for (const entry of cards.values()) {
+      if (!eligible(entry)) continue;
+      const days = extras.traceSuccessDays[entry.word] || [];
+      if ((days.length === 3) !== reviewMastered) continue;
+      // Shuffle tickets, then visit each eligible character once per round.
+      const familiarity = statusOf(entryKey(entry)) === 'known' ? 1 : 5;
+      const level = entry.level === 2 ? 2 : 1;
+      const credit = reviewMastered ? 1 : days.includes(today) ? 1 : 2 + days.length;
+      for (let i = 0; i < familiarity * level * credit; i++) tickets.push(entry);
+    }
+    return uniq(shuffle(tickets));
+  }
 
   function nextQuestion() {
+    refreshLevelGate();
     if (!deck.length) {
-      deck = shuffle([...cards.values()]);
-      if (deck[0] === current) [deck[0], deck[1]] = [deck[1], deck[0]];
+      deck = makeDeck();
+      if (deck.length > 1 && deck[0] === current) [deck[0], deck[1]] = [deck[1], deck[0]];
     }
     if (gradedResult) {
       answeredCount++;
@@ -29,6 +56,13 @@
     const question = current;
     const score = correctCount + Number(!!gradedResult?.correct);
     const total = answeredCount + Number(!!gradedResult);
+    if (!question) {
+      const message = reviewMastered ? 'No mastered characters to review.' : hsk3Unlocked ?
+        'All Tracing characters are mastered.' : 'All HSK 2 Tracing characters are mastered.';
+      panel.innerHTML = `<article class="card tracing-card"><p>${message}</p></article>`;
+      renderPracticeOptions();
+      return;
+    }
     const samples = extras.tracingStyles?.[question.word];
     const canTeach = result && !result.correct && !result.skipped && QuizHandwriting.canSaveSample(result.ink[0]);
     const verdict = result ? result.skipped ? 'Skipped' : result.correct ? result.assisted ? 'Correct with help' : 'Correct' : 'Incorrect' : '';
@@ -51,8 +85,8 @@
         ${result?.saveFailed ? '<p class="small tracing-read-as" role="status">Mastery progress could not be saved. Export a backup before closing.</p>' : ''}
         ${result?.readAs && !result.correct ? `<p class="small tracing-read-as">Read as <span lang="zh-Hans">${escapeHtml(result.readAs)}</span></p>` : ''}
         <p class="small tracing-error" role="status" data-ink-status></p>
-        <div class="tracing-actions${result ? '' : ' tracing-entry-actions'}">${result ?
-          `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary">Next character</button>` :
+        <div class="tracing-actions${result ? ' tracing-result-actions' : ' tracing-entry-actions'}">${result ?
+          `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary" aria-label="Next character">Next</button>` :
           '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
         ${result ? '' : `<section class="tracing-guesses" aria-label="Handwriting choices" hidden>
           <p class="small" tabindex="-1">Which character did you write?</p>
@@ -69,8 +103,10 @@
       </div>
     </article>`;
 
+    renderPracticeOptions();
     const card = panel.firstElementChild;
-    const valid = () => panel.firstElementChild === card && current === question && !result;
+    const valid = () => panel.firstElementChild === card && current === question && !result &&
+      (question.level === 2 || knownHsk2() === HSK2.length);
     const guesses = card.querySelector('.tracing-guesses');
     const status = card.querySelector('[data-ink-status]');
     const unclear = $('tracingUnclear');
@@ -156,6 +192,34 @@
     }
   }
 
+  function renderPracticeOptions() {
+    panel.querySelector('.tracing-practice-options')?.remove();
+    const options = document.createElement('div');
+    options.className = 'tracing-practice-options';
+    if (!hsk3Unlocked) {
+      const hint = document.createElement('p');
+      hint.className = 'small';
+      hint.textContent = `HSK 3 unlocks when all HSK 2 words are Known (${knownHsk2()}/${HSK2.length}).`;
+      options.append(hint);
+    }
+    if (reviewMastered || [...cards.values()].some(entry => eligible(entry) && traceProgress(entry.word) === 3)) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'tracing-mode';
+      button.textContent = reviewMastered ? 'Practise unmastered' : 'Review mastered';
+      button.onclick = () => {
+        if (!result && panel.querySelector('.quiz-trace-pad g path') &&
+            !confirm('Switch practice and discard the current drawing?')) return;
+        reviewMastered = !reviewMastered;
+        deck = [];
+        nextQuestion();
+        (panel.querySelector('#tracingPrompt') || panel.querySelector('.tracing-mode'))?.focus({preventScroll:true});
+      };
+      options.append(button);
+    }
+    if (options.childElementCount) panel.append(options);
+  }
+
   function saveStyle(word, samples) {
     const before = extras.tracingStyles;
     const next = {...before};
@@ -178,11 +242,16 @@
   }
 
   window.openTracingPractice = () => {
-    if (!current) nextQuestion();
-    else panel.querySelector('[data-trace-progress]').textContent = traceProgressLabel(current.word);
+    refreshLevelGate();
+    if (!current || !eligible(current)) nextQuestion();
+    else {
+      panel.querySelector('[data-trace-progress]').textContent = traceProgressLabel(current.word);
+      renderPracticeOptions();
+    }
   };
   window.resetTracingPractice = () => {
     deck = [];
+    reviewMastered = false;
     current = result = gradedResult = null;
     panel.replaceChildren();
     correctCount = answeredCount = 0;

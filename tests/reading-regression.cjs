@@ -108,7 +108,7 @@ test('Flashcard review stays separate and completes without silently becoming a 
 test('Workspace is separate from Reader and keeps text tools and credits together',()=>{
  assert.equal($('inputText').closest('.panel').id,'workspace');assert.equal($('readingUseCustom').closest('.panel').id,'workspace');
  assert.equal(w.document.querySelector('.reading-credit').closest('.panel').id,'workspace');assert.equal($('reader').querySelector('textarea'),null);
- click('[data-tab="workspace"]');assert.equal($('workspace').classList.contains('active'),true);assert.equal($('pageTitle').textContent,'Workspace');
+ $('readingOptionsToggle').click();$('readingWorkspaceBtn').click();assert.equal($('workspace').classList.contains('active'),true);assert.equal($('pageTitle').textContent,'Workspace');
 });
 test('Every study entry has a matching-track sentence, without claiming universal three-example coverage',()=>{
  const audit=JSON.parse(fs.readFileSync('tools/vocabulary-coverage.json','utf8'));assert.equal(audit.entries.length,601);
@@ -180,7 +180,7 @@ test('Quiz exit and resume preserve track, sentence, arrows and all eligible wor
 });
 test('Navigation, progress and vocabulary status controls have the requested structure',()=>{
  assert.equal(w.document.querySelector('[data-tab]').dataset.tab,'reader');assert.equal($('progressSummary').closest('section').id,'lessons');assert.equal($('writingSummary').closest('section').id,'lessons');
- assert.ok($('settings').querySelectorAll('.settings-grid>details').length>=6);assert.equal($('vocabTable').querySelector('.status-chip'),null);assert.ok($('vocabTable').querySelector('[data-status="new"] svg'));
+ assert.ok($('settings').querySelectorAll('.settings-grid>details').length>=6);assert.equal($('vocabTable').querySelector('.status-chip'),null);assert.equal($('vocabTable').querySelectorAll('[data-vocab-status]').length,$('vocabTable').rows.length);
 });
 test('A stale review list or numeric track never leaves a preset reader empty',()=>{
  run(`extras.reading.source=2;extras.reading.reviewSession={ids:['obsolete-sentence'],index:0};ReadingStudio.render()`);assert.equal(run('ReadingStudio.sentences().length'),421);assert.equal(run('extras.reading.reviewSession'),null);assert.equal($('readingNext').disabled,false);
