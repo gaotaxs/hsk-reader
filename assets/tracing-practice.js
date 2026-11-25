@@ -1,4 +1,4 @@
-/* Standalone, session-only practice with one character per question. */
+/* Standalone handwriting practice with a session score and persistent mastery. */
 (() => {
   const panel = $('tracing');
   const cards = new Map();
@@ -34,7 +34,7 @@
     const verdict = result ? result.skipped ? 'Skipped' : result.correct ? result.assisted ? 'Correct with help' : 'Correct' : 'Incorrect' : '';
     panel.innerHTML = `<article class="card tracing-card">
       <div class="tracing-heading">
-        <h2>Tracing</h2>
+        <span class="small trace-progress" data-trace-progress title="Write correctly without help on three different days.">${traceProgressLabel(question.word)}</span>
         <p class="small" aria-label="${score} correct out of ${total}">${score} / ${total}</p>
       </div>
       <div class="tracing-prompt" id="tracingPrompt" tabindex="-1">
@@ -48,6 +48,7 @@
         <div class="tracing-feedback" role="status" tabindex="-1">${result ?
           `<span class="${result.correct ? 'tracing-correct' : ''}">${verdict}</span><strong lang="zh-Hans">${escapeHtml(question.word)}</strong>` :
           '<p class="small">Write the character from memory.</p>'}</div>
+        ${result?.saveFailed ? '<p class="small tracing-read-as" role="status">Mastery progress could not be saved. Export a backup before closing.</p>' : ''}
         ${result?.readAs && !result.correct ? `<p class="small tracing-read-as">Read as <span lang="zh-Hans">${escapeHtml(result.readAs)}</span></p>` : ''}
         <p class="small tracing-error" role="status" data-ink-status></p>
         <div class="tracing-actions${result ? '' : ' tracing-entry-actions'}">${result ?
@@ -76,7 +77,7 @@
     function teachSample(ink) {
       if (!confirm(`Is this your handwritten form of ${question.word}? This will count as correct and teach Tracing to accept similar writing next time.`)) return;
       const next = [...(samples || []), ink[0]].slice(-3);
-      if (saveStyle(question.word, next)) finish(true, ink);
+      if (saveStyle(question.word, next)) finish(true, ink, {taught: true});
     }
     function unreadable(ink) {
       guesses.hidden = true;
@@ -168,14 +169,17 @@
     return false;
   }
 
-  function finish(correct, ink, {skipped = false, readAs, assisted = false} = {}) {
-    result = gradedResult = {correct, ink, skipped, readAs, assisted};
+  function finish(correct, ink, {skipped = false, readAs, assisted = false, taught = false} = {}) {
+    const updated = correct && !assisted && !taught && recordTraceSuccess(current.word);
+    const saveFailed = updated && !saveExtras();
+    result = gradedResult = {correct, ink, skipped, readAs, assisted, saveFailed};
     render();
     if (panel.classList.contains('active')) panel.querySelector('.tracing-feedback').focus({preventScroll: true});
   }
 
   window.openTracingPractice = () => {
     if (!current) nextQuestion();
+    else panel.querySelector('[data-trace-progress]').textContent = traceProgressLabel(current.word);
   };
   window.resetTracingPractice = () => {
     deck = [];

@@ -1,3 +1,8 @@
+## 1.18.12
+
+- Place Tracing second in navigation.
+- Track handwriting mastery separately from vocabulary status. Three unassisted, correct freehand submissions on different days earn Mastered. Reader writing quizzes require the full word. Mastery is included in progress backups.
+
 ## 1.18.11
 
 - Tracing checks the shape and position of individual strokes alongside the overall character. Clear matches can score immediately even if the handwriting is narrow, uneven or written out of stroke order.

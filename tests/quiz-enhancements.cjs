@@ -115,6 +115,8 @@ await test('随便 requires both characters in order and saves both drawings acr
   const result=state(a).practice.questions[0].result;
   assert.equal(result.correct,true);
   assert.equal(result.ink.length,2);
+  assert.equal(a.run("traceProgress('随便')"),1);
+  assert.equal(a.run("traceProgress('随')"),0);
   assert.equal(a.$('readingQuizTrace').querySelectorAll('svg path').length,characters['随'].medians.length+characters['便'].medians.length);
   const b=boot(a.snapshot());
   try{
@@ -150,6 +152,7 @@ await test('One good character and one scribble fail the entire writing question
   assert.equal(p.score,0);
   assert.equal(p.total,1);
   assert.match(a.w.document.querySelector('.reading-feedback').textContent,/Incorrect · 随便/);
+  assert.equal(a.run("traceProgress('随便')"),0);
   assert.equal(a.$('readingQuizTrace').querySelectorAll('svg')[1].querySelectorAll('path').length,1);
 });
 await test('Tracing ranks natural 小, 让 and 七 above the bundled alternatives',a=>{
@@ -341,6 +344,7 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
   a.w.confirm=()=>true;
   a.$('tracingTeachUnclear').click();
   assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
+  assert.equal(a.run("traceProgress('云')"),0);
   const saved=a.run("JSON.stringify(extras.tracingStyles['云'])");
   const b=boot(a.snapshot());
   try{
@@ -462,8 +466,51 @@ await test('Tracing Check grades clear reads and asks for help on close calls',a
   newList.querySelector('button').click();
   assert.match(a.$('tracing').querySelector('.tracing-heading p').textContent,/1 \/ 1/);
   assert.match(a.$('tracing').querySelector('.tracing-feedback').textContent,/Correct with help/);
+  assert.equal(a.run("traceProgress('云')"),0);
   a.run('QuizHandwriting').rankCharacters=rank;
   a.run('QuizHandwriting').clearStructureMatch=clearStructureMatch;
+});
+await test('Tracing is second and mastery requires three independent days across reloads',async a=>{
+  const tabs=[...a.w.document.querySelectorAll('.sidebar-nav [data-tab]')].map(tab=>tab.dataset.tab);
+  assert.deepEqual(tabs.slice(0,2),['reader','tracing']);
+  a.run("setStatus('云','known'); extras.writing['云']={count:50,mistakes:0,last:todayISO()}; saveExtras()");
+  let snapshot=a.snapshot();
+  for(const [day,count] of [['2026-11-21',1],['2026-11-21',1],['2026-11-23',2],['2026-11-25',3],['2026-11-26',3]]){
+    const b=boot(snapshot);
+    try{
+      useCharacterData(b);
+      b.w.Date=class extends b.w.Date {
+        constructor(...args){super(...(args.length?args:[day+'T12:00:00']));}
+      };
+      b.run(`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='云')-Number(a.word==='云'))`);
+      click(b,'[data-tab=tracing]');
+      const pad=b.$('tracingInput').querySelector('svg');
+      pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+      for(const stroke of handwriting('云'))stroke.forEach(([x,y],i)=>{
+        const event=new b.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+        Object.assign(event,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+        pad.dispatchEvent(event);
+      });
+      click(b,'#tracing [data-ink-check]');
+      await settle();
+      assert.equal(b.$('tracing').querySelector('.tracing-feedback span').textContent,'Correct');
+      assert.equal(b.$('tracing').querySelector('[data-trace-progress]').textContent,count===3?'Mastered':`Mastery ${count}/3 days`);
+      assert.equal(b.run("statusOf('云')"),'known');
+      assert.equal(b.run("traceProgress('云')"),count);
+      snapshot=b.snapshot();
+      if(count!==3)continue;
+      click(b,'[data-tab=vocab]');
+      b.$('vocabStatus').value='mastered';
+      b.$('vocabStatus').dispatchEvent(new b.w.Event('input',{bubbles:true}));
+      assert.equal(b.$('vocabTable').querySelectorAll('tr').length,1);
+      assert.match(b.$('vocabTable').textContent,/云.*Mastered/);
+      const backup=b.run('getBackup()');
+      assert.deepEqual(Array.from(backup.studio.traceSuccessDays.云),['2026-11-21','2026-11-23','2026-11-25']);
+      const old=JSON.parse(JSON.stringify(backup));delete old.studio.traceSuccessDays;
+      b.run(`importBackup(${JSON.stringify(JSON.stringify(old))})`);
+      assert.equal(b.run("traceProgress('云')"),3);
+    }finally{b.dom.window.close();}
+  }
 });
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
