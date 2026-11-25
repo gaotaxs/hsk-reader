@@ -322,7 +322,9 @@ const ReadingStudio=(()=>{
         record.last=new Date().toISOString();
       });
       const correct=results.every(Boolean);
-      answer(correct,(correct?'Correct · ':'Incorrect · ')+q.word,QuizHandwriting.snapshot(ink));
+      if(correct)recordTraceSuccess(q.word);
+      const feedback=(correct?'Correct · ':'Incorrect · ')+q.word;
+      answer(correct,correct?`${feedback} · ${traceProgressLabel(q.word)}`:feedback,QuizHandwriting.snapshot(ink));
     }});
   }
   function reviewMistakes(record){
@@ -383,7 +385,7 @@ const ReadingStudio=(()=>{
   function showDetails(word,pyHint=''){
     const v=definition(word,pyHint)||{word,pinyin:'',english:'This word is not in the local reading dictionary.'};
     detailWord=word;detailHint=pyHint;detailGuide=true;$('readingWordGuide').textContent='Hide guide';
-    $('readingWordHeading').textContent=word;$('readingWordPronunciation').textContent=v.pinyin;$('readingWordMeaning').textContent=v.english;$('readingWordState').textContent=status(word,pyHint);
+    $('readingWordHeading').textContent=word;$('readingWordPronunciation').textContent=v.pinyin;$('readingWordMeaning').textContent=v.english;$('readingWordState').textContent=[status(word,pyHint),traceProgress(word)?traceProgressLabel(word):''].filter(Boolean).join(' · ');
     const dialog=$('readingWordDialog');if(!dialog.open)dialog.showModal();renderDetailsWriting();
   }
   let drag=null,suppressClickUntil=0,lastKnown=null,undoTimer=0;

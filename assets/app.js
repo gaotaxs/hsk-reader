@@ -93,6 +93,20 @@
     const id=entryKey(v), state=Object.prototype.hasOwnProperty.call(statuses,id)?statuses[id]:statuses[v.word];
     return ['known','learning'].includes(state)?state:'new';
   }
+  function traceProgress(word){
+    return extras.traceSuccessDays[word]?.length || 0;
+  }
+  function traceProgressLabel(word){
+    const count=traceProgress(word);
+    return count===3?'Mastered':`Mastery ${count}/3 days`;
+  }
+  function recordTraceSuccess(word){
+    const days=extras.traceSuccessDays[word]||[];
+    const today=todayISO();
+    if(days.length>=3||days.includes(today))return false;
+    extras.traceSuccessDays[word]=[...days,today];
+    return true;
+  }
   function setStatus(key,status){
     const v=resolveEntry(key);if(!v||!['new','known','learning'].includes(status))return;
     statuses[entryKey(v)]=status;
@@ -319,6 +333,7 @@
           <div class="word-english">${escapeHtml(v.english)}</div>
           <div class="word-level">HSK ${v.level}</div>
           <span class="status-chip ${statusClass}">${escapeHtml(status)}</span>
+          ${traceProgress(v.word) ? `<span class="small trace-progress">${traceProgressLabel(v.word)}</span>` : ''}
         </div>
       </div>
       <div class="word-actions">
@@ -618,7 +633,7 @@
     const qRoman=normalizePinyin(q).replace(/\s+/g,'');
     const lev=$('vocabLevel').value,stat=$('vocabStatus').value,sort=$('vocabSort').value;
     const tokens=q.split(/\s+/).filter(Boolean);
-    let rows=VOCAB.filter(v=>(lev==='all'||String(v.level)===lev)&&(stat==='all'||statusOf(entryKey(v))===stat));
+    let rows=VOCAB.filter(v=>(lev==='all'||String(v.level)===lev)&&(stat==='all'||(stat==='mastered'?traceProgress(v.word)===3:statusOf(entryKey(v))===stat)));
     if(q) rows=rows.filter(v=>{
       const hay=[v.word.toLowerCase(),v.pinyin.toLowerCase(),v.english.toLowerCase(),normalizePinyin(v.pinyin).replace(/\s+/g,'')];
       return hay.some(t=>t.includes(q))||hay[3].includes(qRoman)||tokens.every(part=>hay.some(t=>t.includes(part)));
@@ -636,7 +651,7 @@
     $('vocabStudyResultsBtn').disabled=!rows.length;
     $('vocabTable').innerHTML=shown.map(v=>{
       const st=statusOf(entryKey(v));
-      return `<tr class="vocab-state-${st}"><td data-label="Chinese"><button class="word-link" data-word="${escapeHtml(entryKey(v))}" style="font-size:26px;padding:4px 6px;border:0;background:transparent">${escapeHtml(v.word)}</button></td><td data-label="Pinyin">${escapeHtml(v.pinyin)}</td><td data-label="Meaning">${escapeHtml(v.english)}</td><td data-label="Level"><span class="pill">HSK ${v.level}</span></td><td data-label="Mark"><div class="actions-cell"><button class="good" data-status-word="${escapeHtml(entryKey(v))}" data-status="known" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} known" ${st==='known'?'aria-pressed="true"':''}>Known</button><button class="learn" data-status-word="${escapeHtml(entryKey(v))}" data-status="learning" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} learning" ${st==='learning'?'aria-pressed="true"':''}>Learning</button><button data-status-word="${escapeHtml(entryKey(v))}" data-status="new" aria-label="Reset ${escapeHtml(v.word)}" title="Reset word" class="icon-button vocab-reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 7M3 4v7h7"/></svg></button></div></td></tr>`;
+      return `<tr class="vocab-state-${st}"><td data-label="Chinese"><button class="word-link" data-word="${escapeHtml(entryKey(v))}" style="font-size:26px;padding:4px 6px;border:0;background:transparent">${escapeHtml(v.word)}</button>${traceProgress(v.word)===3?' <span class="small trace-progress">Mastered</span>':''}</td><td data-label="Pinyin">${escapeHtml(v.pinyin)}</td><td data-label="Meaning">${escapeHtml(v.english)}</td><td data-label="Level"><span class="pill">HSK ${v.level}</span></td><td data-label="Mark"><div class="actions-cell"><button class="good" data-status-word="${escapeHtml(entryKey(v))}" data-status="known" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} known" ${st==='known'?'aria-pressed="true"':''}>Known</button><button class="learn" data-status-word="${escapeHtml(entryKey(v))}" data-status="learning" aria-label="Mark ${escapeHtml(v.word)} ${escapeHtml(v.pinyin)} learning" ${st==='learning'?'aria-pressed="true"':''}>Learning</button><button data-status-word="${escapeHtml(entryKey(v))}" data-status="new" aria-label="Reset ${escapeHtml(v.word)}" title="Reset word" class="icon-button vocab-reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 7M3 4v7h7"/></svg></button></div></td></tr>`;
     }).join('');
   }
   function studyVocabResults(){
@@ -1147,7 +1162,7 @@
     $('progressSummary').innerHTML=[['Known',known],['Learning',learning],['New',fresh]].map(([k,n])=>`<div class="progress-stat"><strong>${n}</strong><small>${k}</small></div>`).join('');
   }
   function renderAll(){window.refreshReadingStudio?.();renderQuizHistory();renderDaily();renderReader();renderVocab();renderLessons();renderFlash();renderProgressSummary();const stats=$('dataStats');if(stats)stats.textContent=`Embedded rows: ${RAW_VOCAB.length}. Reader entries: ${VOCAB.length}. HSK 2: ${HSK2.length}. HSK 3: ${HSK3.length}.`;}
-  const APP_TAB_NAMES=['reader','lessons','flashcards','workspace','vocab','quiz','history','settings','tracing'];
+  const APP_TAB_NAMES=['reader','tracing','lessons','flashcards','workspace','vocab','quiz','history','settings'];
   const APP_TAB_DETAILS={workspace:['Workspace','YOUR TEXTS & TOOLS'],reader:['Reader','READ · LEARN · RETAIN'],vocab:['Vocabulary','BROWSE & DISCOVER'],lessons:['Lessons','DAILY STUDY PLAN'],flashcards:['Flashcards','RECALL PRACTICE'],quiz:['Quiz','TEST YOUR KNOWLEDGE'],tracing:['Tracing','HANDWRITING PRACTICE'],history:['History','YOUR QUIZ RESULTS'],settings:['Settings','MAKE IT YOURS']};
   function switchTab(name){
     if(!APP_TAB_NAMES.includes(name))return;
@@ -1159,6 +1174,7 @@
     stopVoice();
     if(name==='reader')window.refreshReadingStudio?.();if(name==='history'){historySelectedId=null;renderQuizHistory();}
     if(name==='tracing')window.openTracingPractice?.();
+    if(name==='vocab')renderVocab();
     if(matchMedia('(max-width: 600px)').matches)document.querySelector('.side-tab.active')?.scrollIntoView({block:'nearest',inline:'nearest'});
     if(name==='workspace'&&compactEditor())showPassageEditor(true);
     if(name!=='flashcards'&&flashStrokeOpen)toggleFlashStrokePanel(false);
@@ -1192,6 +1208,7 @@
       nextLessons[level]={wordsPerDay:Math.max(1,Math.min(100,Math.floor(Number(v.wordsPerDay)||10))),startDate:typeof v.startDate==='string'?v.startDate:'',completedDays:Math.max(0,Math.min(600,Math.floor(Number(v.completedDays)||0))),completedDates:Array.isArray(v.completedDates)?v.completedDates.filter(x=>typeof x==='string').slice(0,600):[],coveredWords:v.coveredWords!=null&&Number.isFinite(Number(v.coveredWords))?Math.max(0,Math.floor(Number(v.coveredWords))):null,daySizes:Array.isArray(v.daySizes)?v.daySizes.slice(0,600).map(n=>Math.max(0,Math.floor(Number(n)||0))):null};
     }
     const nextExtras=data.studio?sanitizeExtras(data.studio):sanitizeExtras(extras);if(data.studio&&!Object.hasOwn(data.studio,'quizHistory'))nextExtras.quizHistory=extras.quizHistory||[];
+    if(data.studio&&!Object.hasOwn(data.studio,'traceSuccessDays'))nextExtras.traceSuccessDays=extras.traceSuccessDays;
     if(!data.studio)nextExtras.session=null;
     const nextText=typeof data.readerText==='string'?data.readerText:$('inputText').value;
     if(!canPersistStudy()){toast('Reopen the app before importing a backup.');return;}
@@ -1476,7 +1493,7 @@
   }
   function sanitizeExtras(raw){
     raw=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
-    const out={passages:[],srs:{},daily:{},writing:{},activePassage:'',readerSense:'长::cháng',session:null};
+    const out={passages:[],srs:{},daily:{},writing:{},traceSuccessDays:{},activePassage:'',readerSense:'长::cháng',session:null};
     const validKey=k=>BY_ID.has(k);
     if(Array.isArray(raw.passages)){
       const ids=new Set();
@@ -1488,6 +1505,15 @@
     if(raw.readerSense==='长::zhǎng')out.readerSense=raw.readerSense;
     for(const [k,v] of Object.entries(raw.srs||{}))if(validKey(k)&&v&&Number.isFinite(v.due)&&Number.isFinite(v.step))out.srs[k]={due:Math.max(0,v.due),step:Math.max(0,Math.min(5,Math.floor(v.step))),reviews:Math.max(0,Math.floor(Number(v.reviews)||0))};
     for(const [k,v] of Object.entries(raw.daily||{}).slice(-90))if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&Array.isArray(v))out.daily[k]=uniq(v.filter(validKey));
+    for(const [word,days] of Object.entries(raw.traceSuccessDays||{})){
+      if(!/^[\u3400-\u9fff]{1,20}$/.test(word)||!Array.isArray(days))continue;
+      const valid=uniq(days.filter(day=>{
+        if(typeof day!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(day))return false;
+        const date=new Date(day);
+        return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===day;
+      })).sort().slice(0,3);
+      if(valid.length)out.traceSuccessDays[word]=valid;
+    }
     const styles={};
     for(const [word,samples] of Object.entries(raw.tracingStyles||{})){
       if(!/^[\u3400-\u9fff]$/.test(word)||!BY_WORD.has(word)||!Array.isArray(samples))continue;

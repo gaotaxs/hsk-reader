@@ -537,12 +537,13 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
   align-items: baseline;
   gap: 12px;
 }
-.tracing-heading h2, .tracing-heading p {
+.tracing-heading p {
   margin: 0;
 }
 .tracing-heading p {
   font-variant-numeric: tabular-nums;
 }
+.trace-progress { color: var(--muted); }
 .tracing-prompt {
   text-align: center;
   margin: 14px 0;
@@ -676,10 +677,8 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 
   #tracing .tracing-card { padding: 12px; }
   .tracing-card .tracing-heading {
-    justify-content: flex-end;
     min-height: 18px;
   }
-  .tracing-card .tracing-heading h2 { display: none; }
   .tracing-card .tracing-prompt {
     margin: 0 0 8px;
   }
