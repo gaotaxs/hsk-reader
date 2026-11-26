@@ -546,7 +546,7 @@ await test('Tracing locks HSK 3 until all HSK 2 entries are Known, then weights 
     extras.traceSuccessDays[mastered.word]=['2026-01-01','2026-01-02','2026-01-03'];
     let pool;
     const previous=shuffle;
-    shuffle=items=>{if(items[0]?.word&&items.includes(plain))pool=items;return items;};
+    shuffle=items=>{if(items[0]?.word&&items.includes(known))pool=items;return items;};
     switchTab('tracing');
     const [ordinary,waiting,learned,review,locked]=[plain,due,known,mastered,three].map(entry=>pool.filter(item=>item===entry).length);
     HSK2.forEach(v=>statuses[entryKey(v)]='known');
@@ -557,7 +557,7 @@ await test('Tracing locks HSK 3 until all HSK 2 entries are Known, then weights 
     openTracingPractice();
     document.getElementById('tracingSkip').click();
     document.getElementById('tracingNext').click();
-    const unlocked=pool.includes(three)&&pool.filter(item=>item===three).length>pool.filter(item=>item===plain).length;
+    const unlocked=pool.includes(three)&&pool.filter(item=>item===three).length>pool.filter(item=>item===known).length;
     shuffle=previous;
     return {ordinary,waiting,learned,review,locked,stillLocked,unlocked,mastered:mastered.pinyin};
   })()`);
