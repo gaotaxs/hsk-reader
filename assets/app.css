@@ -560,7 +560,7 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 }
 .tracing-input .quiz-trace-pad {
   display: block;
-  width: min(100%, clamp(150px, 36dvh, 264px));
+  width: min(100%, 60dvh);
   aspect-ratio: 1;
   margin: 0 auto;
   color: var(--text);
@@ -597,6 +597,18 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
 .tracing-actions button {
   min-height: 44px;
   min-width: 72px;
+}
+
+.tracing-entry-actions svg {
+  display:block;
+  width:22px;
+  height:22px;
+  margin:auto;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
 .tracing-style-actions {
@@ -681,12 +693,11 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
     margin: 0 0 8px;
   }
   .tracing-card .tracing-input {
-    --tracing-pad-width: clamp(150px, 36dvh, 264px);
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .tracing-card .tracing-input svg { order: 1; }
+  .tracing-card .tracing-input .quiz-trace-pad { order: 1; width: 100%; }
   .tracing-card .tracing-feedback { min-height: 34px; margin-block: 0 4px; }
   .tracing-card .tracing-input:has(.tracing-feedback strong) .tracing-feedback {
     order: 2;
@@ -698,7 +709,7 @@ body:has(#reader.active) .app-main{scrollbar-gutter:stable}
     display:grid;
     grid-auto-flow:column;
     grid-auto-columns:minmax(0,1fr);
-    width:min(100%, var(--tracing-pad-width));
+    width:100%;
     margin-top:8px;
   }
   .tracing-card .tracing-actions button { min-width:0; padding-inline:8px; }

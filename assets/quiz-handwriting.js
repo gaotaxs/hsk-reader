@@ -385,7 +385,7 @@ const QuizHandwriting = (() => {
   }
 
   function mount(host, {check, onEdit, valid, savedInk}) {
-    const pads = [...host.querySelectorAll('svg')];
+    const pads = [...host.querySelectorAll('svg.quiz-trace-pad')];
     const groups = pads.map(pad => pad.querySelector('g'));
     const appendStroke = (group, stroke) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');

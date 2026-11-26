@@ -1,4 +1,4 @@
-# HSK Reader 1.18.13
+# HSK Reader 1.18.14
 
 The toolbar has four destinations: Reader, Tracing, Practice and Vocab. Practice contains Lessons, Flashcards, Quiz and History. Open the passage Workspace from the Reading track controls in Reader settings. App settings are in the main header.
 

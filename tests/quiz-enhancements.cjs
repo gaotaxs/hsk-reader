@@ -263,7 +263,7 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   const meaning=panel.querySelector('.tracing-prompt p+p').textContent;
   const entry=a.run(`VOCAB.find(v=>v.word.length===1&&v.pinyin===${JSON.stringify(pinyin)}&&v.english===${JSON.stringify(meaning)})`);
   assert.ok(entry);
-  assert.equal(panel.querySelectorAll('svg path').length,0);
+  assert.equal(panel.querySelectorAll('.quiz-trace-pad path').length,0);
   assert.equal(panel.querySelector('[data-ink-check]').disabled,true);
   assert.ok(!panel.textContent.includes(entry.word));
   const drawTrace=strokes=>{
@@ -278,15 +278,15 @@ await test('Tracing grades random single characters, retains ink and leaves exis
   const undo=()=>panel.querySelector('[data-ink-undo]');
   assert.ok(undo().disabled);
   drawTrace([[[70,70],[105,105]]]);
-  assert.equal(panel.querySelectorAll('svg path').length,1);
+  assert.equal(panel.querySelectorAll('.quiz-trace-pad path').length,1);
   undo().click();
-  assert.equal(panel.querySelectorAll('svg path').length,0);
+  assert.equal(panel.querySelectorAll('.quiz-trace-pad path').length,0);
   assert.ok(undo().disabled);
   drawTrace([[[75,70],[78,75]]]);
   click(a,'#tracing [data-ink-check]');
   await settle();
   assert.match(panel.querySelector('[data-ink-status]').textContent,/Couldn’t read/);
-  assert.equal(panel.querySelectorAll('svg path').length,1);
+  assert.equal(panel.querySelectorAll('.quiz-trace-pad path').length,1);
   assert.match(panel.querySelector('.tracing-heading p').textContent,/0 \/ 0/);
   click(a,'#tracing [data-ink-clear]');
   drawTrace(handwriting(entry.word));
@@ -570,6 +570,46 @@ await test('Tracing locks HSK 3 until all HSK 2 entries are Known, then weights 
   assert.equal(a.$('tracingPrompt').querySelector('p').textContent,samples.mastered);
   click(a,'.tracing-mode');
   assert.notEqual(a.$('tracing').querySelector('[data-trace-progress]').textContent,'Mastered');
+});
+await test('Skipped Tracing prompts cool down, survive reload and return ahead of new prompts',async a=>{
+  const now=Date.UTC(2026,10,26,12);
+  a.w.Date.now=()=>now;
+  a.w.Math.random=()=>0.25;
+  const prefer=`shuffle=items=>[...items].sort((a,b)=>Number(b.word==='走')-Number(a.word==='走'))`;
+  a.run(prefer);
+  click(a,'[data-tab=tracing]');
+  const prompt=instance=>instance.$('tracingPrompt').querySelector('p').textContent;
+  assert.equal(prompt(a),'zǒu');
+  const actions=a.$('tracingInput').querySelectorAll('.tracing-entry-actions button');
+  assert.deepEqual([...actions].map(b=>b.getAttribute('aria-label')),['Skip','Undo last stroke','Clear drawing','Check drawing']);
+  assert.ok([...actions].every(b=>b.firstElementChild.matches('svg[aria-hidden=true]')));
+  a.$('tracingSkip').click();
+  assert.equal(a.run("extras.traceReviewDue['走']"),now+180000);
+  a.$('tracingNext').click();
+  assert.notEqual(prompt(a),'zǒu');
+  const b=boot(a.snapshot());
+  try{
+    useCharacterData(b);
+    b.w.Date.now=()=>now+179999;
+    b.run(prefer);
+    click(b,'[data-tab=tracing]');
+    assert.notEqual(prompt(b),'zǒu');
+    b.$('tracingSkip').click();
+    b.w.Date.now=()=>now+180000;
+    b.$('tracingNext').click();
+    assert.equal(prompt(b),'zǒu');
+    const pad=b.$('tracingInput').querySelector('.quiz-trace-pad');
+    pad.getBoundingClientRect=()=>({left:0,top:0,width:240,height:240});
+    for(const stroke of handwriting('走'))stroke.forEach(([x,y],i)=>{
+      const e=new b.w.Event(i===0?'pointerdown':i===stroke.length-1?'pointerup':'pointermove',{bubbles:true,cancelable:true});
+      Object.assign(e,{button:0,isPrimary:true,pointerId:1,clientX:x,clientY:y});
+      pad.dispatchEvent(e);
+    });
+    click(b,'#tracing [data-ink-check]');
+    await settle();
+    assert.equal(b.$('tracing').querySelector('.tracing-feedback span').textContent,'Correct');
+    assert.equal(b.run("extras.traceReviewDue['走']"),undefined);
+  }finally{b.dom.window.close();}
 });
 console.log(count+' quiz enhancement checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
