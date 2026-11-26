@@ -14,6 +14,17 @@
   let hsk3Unlocked = false;
   const knownHsk2 = () => HSK2.filter(entry => statusOf(entryKey(entry)) === 'known').length;
   const eligible = entry => entry.level === 2 || hsk3Unlocked;
+  const inCurrentMode = entry => eligible(entry) && (traceProgress(entry.word) === 3) === reviewMastered;
+  const reviewTime = entry => extras.traceReviewDue[entry.word];
+  const icons = {
+    skip: '<path d="M8.8 8.3a3.25 3.25 0 0 1 6.5.15c0 2.6-3.3 2.95-3.3 5.55"/><path d="M12 18h.01"/>',
+    undo: '<path d="M4 9h10a5 5 0 1 1 0 10h-3M8 5 4 9l4 4"/>',
+    clear: '<path d="m7.5 19-4-4a2 2 0 0 1 0-2.8l8.7-8.7a2 2 0 0 1 2.8 0l5.5 5.5a2 2 0 0 1 0 2.8L13.2 19H7.5ZM9 7l8 8m-4 4h8"/>',
+    check: '<path d="m5 12 4 4L19 6"/>'
+  };
+  function actionIcon(name) {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name]}</svg>`;
+  }
 
   function refreshLevelGate() {
     const unlocked = knownHsk2() === HSK2.length;
@@ -25,9 +36,8 @@
     const today = todayISO();
     const tickets = [];
     for (const entry of cards.values()) {
-      if (!eligible(entry)) continue;
+      if (!inCurrentMode(entry) || reviewTime(entry)) continue;
       const days = extras.traceSuccessDays[entry.word] || [];
-      if ((days.length === 3) !== reviewMastered) continue;
       // Shuffle tickets, then visit each eligible character once per round.
       const familiarity = statusOf(entryKey(entry)) === 'known' ? 1 : 5;
       const level = entry.level === 2 ? 2 : 1;
@@ -47,7 +57,11 @@
       answeredCount++;
       if (gradedResult.correct) correctCount++;
     }
-    current = deck.shift();
+    const now = Date.now();
+    const due = [...cards.values()].filter(entry => inCurrentMode(entry) && reviewTime(entry) <= now)
+      .sort((a, b) => reviewTime(a) - reviewTime(b));
+    const returning = due.find(entry => entry !== current) || (!deck.length ? due[0] : undefined);
+    current = returning || deck.shift();
     result = gradedResult = null;
     render();
   }
@@ -57,9 +71,12 @@
     const score = correctCount + Number(!!gradedResult?.correct);
     const total = answeredCount + Number(!!gradedResult);
     if (!question) {
-      const message = reviewMastered ? 'No mastered characters to review.' : hsk3Unlocked ?
+      const waiting = [...cards.values()].some(entry => inCurrentMode(entry) && reviewTime(entry));
+      const message = waiting ? 'The remaining characters are waiting for another review.' :
+        reviewMastered ? 'No mastered characters to review.' : hsk3Unlocked ?
         'All Tracing characters are mastered.' : 'All HSK 2 Tracing characters are mastered.';
-      panel.innerHTML = `<article class="card tracing-card"><p>${message}</p></article>`;
+      panel.innerHTML = `<article class="card tracing-card"><p>${message}</p>${waiting ? '<button id="tracingRecheck" type="button">Check for reviews</button>' : ''}</article>`;
+      if (waiting) $('tracingRecheck').onclick = nextQuestion;
       renderPracticeOptions();
       return;
     }
@@ -82,12 +99,15 @@
         <div class="tracing-feedback" role="status" tabindex="-1">${result ?
           `<span class="${result.correct ? 'tracing-correct' : ''}">${verdict}</span><strong lang="zh-Hans">${escapeHtml(question.word)}</strong>` :
           '<p class="small">Write the character from memory.</p>'}</div>
-        ${result?.saveFailed ? '<p class="small tracing-read-as" role="status">Mastery progress could not be saved. Export a backup before closing.</p>' : ''}
+        ${result?.saveFailed ? '<p class="small tracing-read-as" role="status">Tracing progress could not be saved. Export a backup before closing.</p>' : ''}
         ${result?.readAs && !result.correct ? `<p class="small tracing-read-as">Read as <span lang="zh-Hans">${escapeHtml(result.readAs)}</span></p>` : ''}
         <p class="small tracing-error" role="status" data-ink-status></p>
         <div class="tracing-actions${result ? ' tracing-result-actions' : ' tracing-entry-actions'}">${result ?
           `${result.correct ? '' : '<button id="tracingRetry">Retry</button>'}<button id="tracingNext" class="primary" aria-label="Next character">Next</button>` :
-          '<button id="tracingSkip">Skip</button><button type="button" data-ink-undo aria-label="Undo last stroke">Undo</button><button type="button" data-ink-clear>Clear</button><button type="button" data-ink-check class="primary">Check</button>'}</div>
+          `<button type="button" id="tracingSkip" aria-label="Skip" title="Skip">${actionIcon('skip')}</button>
+          <button type="button" data-ink-undo aria-label="Undo last stroke" title="Undo last stroke">${actionIcon('undo')}</button>
+          <button type="button" data-ink-clear aria-label="Clear drawing" title="Clear drawing">${actionIcon('clear')}</button>
+          <button type="button" data-ink-check class="primary" aria-label="Check drawing" title="Check drawing">${actionIcon('check')}</button>`}</div>
         ${result ? '' : `<section class="tracing-guesses" aria-label="Handwriting choices" hidden>
           <p class="small" tabindex="-1">Which character did you write?</p>
           <div class="tracing-guess-list"></div>
@@ -185,7 +205,7 @@
       };
       $('tracingNext').onclick = () => {
         nextQuestion();
-        $('tracingPrompt').focus({preventScroll: true});
+        $('tracingPrompt')?.focus({preventScroll: true});
       };
     } else {
       $('tracingSkip').onclick = () => finish(false, readInk(), {skipped: true});
@@ -234,8 +254,16 @@
   }
 
   function finish(correct, ink, {skipped = false, readAs, assisted = false, taught = false} = {}) {
-    const updated = correct && !assisted && !taught && recordTraceSuccess(current.word);
-    const saveFailed = updated && !saveExtras();
+    const independent = correct && !assisted && !taught;
+    const updated = independent && recordTraceSuccess(current.word);
+    const hadReview = Boolean(reviewTime(current));
+    if (!independent) {
+      // Give the learner time away from the answer before prompting it again.
+      extras.traceReviewDue[current.word] = Date.now() + 120000 + Math.floor(Math.random() * 240001);
+    } else if (hadReview) {
+      delete extras.traceReviewDue[current.word];
+    }
+    const saveFailed = (updated || hadReview || !independent) && !saveExtras();
     result = gradedResult = {correct, ink, skipped, readAs, assisted, saveFailed};
     render();
     if (panel.classList.contains('active')) panel.querySelector('.tracing-feedback').focus({preventScroll: true});

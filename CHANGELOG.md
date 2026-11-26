@@ -1,3 +1,8 @@
+## 1.18.14
+
+- Return missed, skipped or assisted Tracing prompts after a randomized two-to-six-minute delay. Pending prompts survive reloads and backups.
+- Expand the drawing pad and use accessible icons for Skip, Undo, Clear and Check.
+
 ## 1.18.13
 
 - Simplify navigation to Reader, Tracing, Practice and Vocab. Practice brings together lessons, flashcards, quizzes and history and surfaces quiz resumption and daily review.

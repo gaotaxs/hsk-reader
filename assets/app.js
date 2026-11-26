@@ -1214,6 +1214,7 @@
     }
     const nextExtras=data.studio?sanitizeExtras(data.studio):sanitizeExtras(extras);if(data.studio&&!Object.hasOwn(data.studio,'quizHistory'))nextExtras.quizHistory=extras.quizHistory||[];
     if(data.studio&&!Object.hasOwn(data.studio,'traceSuccessDays'))nextExtras.traceSuccessDays=extras.traceSuccessDays;
+    if(data.studio&&!Object.hasOwn(data.studio,'traceReviewDue'))nextExtras.traceReviewDue=extras.traceReviewDue;
     if(!data.studio)nextExtras.session=null;
     const nextText=typeof data.readerText==='string'?data.readerText:$('inputText').value;
     if(!canPersistStudy()){toast('Reopen the app before importing a backup.');return;}
@@ -1510,7 +1511,7 @@
   }
   function sanitizeExtras(raw){
     raw=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
-    const out={passages:[],srs:{},daily:{},writing:{},traceSuccessDays:{},activePassage:'',readerSense:'长::cháng',session:null};
+    const out={passages:[],srs:{},daily:{},writing:{},traceSuccessDays:{},traceReviewDue:{},activePassage:'',readerSense:'长::cháng',session:null};
     const validKey=k=>BY_ID.has(k);
     if(Array.isArray(raw.passages)){
       const ids=new Set();
@@ -1530,6 +1531,9 @@
         return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===day;
       })).sort().slice(0,3);
       if(valid.length)out.traceSuccessDays[word]=valid;
+    }
+    for(const [word,due] of Object.entries(raw.traceReviewDue||{})){
+      if(/^[\u3400-\u9fff]$/.test(word)&&BY_WORD.has(word)&&Number.isSafeInteger(due)&&due>0)out.traceReviewDue[word]=due;
     }
     const styles={};
     for(const [word,samples] of Object.entries(raw.tracingStyles||{})){
