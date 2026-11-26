@@ -348,6 +348,8 @@ await test('Tracing learns a confirmed shorthand, restores it on reload and can 
   const saved=a.run("JSON.stringify(extras.tracingStyles['云'])");
   const b=boot(a.snapshot());
   try{
+    const due=b.run("extras.traceReviewDue['云']");
+    b.w.Date.now=()=>due;
     setup(b);
     assert.equal(b.run("JSON.stringify(extras.tracingStyles['云'])"),saved);
     const redrawn=shorthand.slice().reverse().map(stroke=>stroke.slice().reverse().map(([x,y],i)=>[x+5+i%3,y+7-i%2]));
